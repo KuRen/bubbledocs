@@ -1,0 +1,132 @@
+package pt.tecnico.bubbledocs.domain;
+
+enum pt.tecnico.bubbledocs.domain.PermissionType as PermissionTypeEnum;
+
+class BubbleDocs;
+
+class User {
+    String name;
+    String password;
+    String username;
+}
+
+class Spreadsheet {
+    Integer id;
+    Integer rows;
+    Integer columns;
+    DateTime creationDate;
+}
+
+class Permission {
+    PermissionTypeEnum permission;
+}
+
+class Cell {
+    Integer row;
+    Integer column;
+}
+
+class Content;
+
+class Literal extends Content {
+    Integer literal;
+}
+
+class Reference extends Content;
+
+class Function extends Content;
+
+class BinaryFunction extends Function;
+
+class Addition extends BinaryFunction;
+class Multiplication extends BinaryFunction;
+class Division extends BinaryFunction;
+class Subtraction extends BinaryFunction;
+
+relation DomainRootHasBubbleDocsApplication {
+    .pt.ist.fenixframework.DomainRoot playsRole root {
+        multiplicity 0..1;
+    }
+    BubbleDocs playsRole bubbleDocs {
+        multiplicity 0..1;
+    }
+}
+
+relation BinaryFunctionHasArgumentCell1 {
+    BinaryFunction playsRole binaryFunctionArg1 {
+        multiplicity *;
+    }
+    Cell playsRole cell1 {
+        multiplicity 1..1;
+    }
+}
+
+relation BinaryFunctionHasArgumentCell2 {
+    BinaryFunction playsRole binaryFunctionArg2 {
+        multiplicity *;
+    }
+    Cell playsRole cell2 {
+        multiplicity 1..1;
+    }
+}
+
+relation CellHasContent {
+    Cell playsRole cell;
+    Content playsRole content {
+        multiplicity 1..1;
+    }
+}
+
+relation SpreadsheetContainsCells {
+    Spreadsheet playsRole spreadsheet {
+        multiplicity 1..1;
+    }
+    Cell playsRole cells {
+        multiplicity *;
+    }
+}
+
+relation SpreadsheetHasOwner {
+    Spreadsheet playsRole spreadsheets {
+        multiplicity *;
+    }
+    User playsRole owner {
+        multiplicity 1..1;
+    }
+}
+
+relation SpreadsheetHasPermissions {
+    Spreadsheet playsRole spreadsheet {
+        multiplicity 1..1;
+    }
+    Permission playsRole permissions {
+        multiplicity *;
+    }
+}
+
+relation UserHasPermissions {
+    User playsRole user {
+        multiplicity 1..1;
+    }
+    Permission playsRole permissions {
+        multiplicity *;
+    }
+}
+
+relation BubbleDocsContainsSpreadsheets {
+    BubbleDocs playsRole bubbledocs {
+        multiplicity 1..1;
+    }
+    Spreadsheet playsRole spreadsheets {
+        multiplicity *;
+    }
+}
+
+relation BubbleDocsContainsUsers {
+    BubbleDocs playsRole bubbledocs {
+        multiplicity 1..1;
+    }
+    User playsRole users {
+        multiplicity *;
+    }
+}
