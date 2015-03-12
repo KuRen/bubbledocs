@@ -12,6 +12,7 @@ class User {
 
 class Spreadsheet {
     Integer id;
+    String name;
     Integer rows;
     Integer columns;
     DateTime creationDate;
