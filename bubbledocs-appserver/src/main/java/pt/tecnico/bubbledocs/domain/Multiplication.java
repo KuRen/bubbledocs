@@ -6,4 +6,9 @@ public class Multiplication extends Multiplication_Base {
         super();
     }
     
+    public Multiplication(Content content1, Content content2) {
+        super();
+        init(content1, content2);
+    }
+    
 }

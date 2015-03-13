@@ -53,22 +53,31 @@ relation DomainRootHasBubbleDocsApplication {
     }
 }
 
-relation BinaryFunctionHasArgumentCell1 {
+relation BinaryFunctionHasArgumentContent1 {
     BinaryFunction playsRole binaryFunctionArg1 {
         multiplicity *;
     }
-    Cell playsRole cell1 {
+    Content playsRole content1 {
         multiplicity 1..1;
     }
 }
 
-relation BinaryFunctionHasArgumentCell2 {
+relation BinaryFunctionHasArgumentContent2 {
     BinaryFunction playsRole binaryFunctionArg2 {
         multiplicity *;
     }
-    Cell playsRole cell2 {
+    Content playsRole content2 {
         multiplicity 1..1;
     }
+}
+
+relation ReferenceHasCell {
+	Reference playsRole reference {
+		multiplicity *;
+	}
+	Cell playsRole cell {
+		multiplicity 1..1;
+	}
 }
 
 relation CellHasContent {

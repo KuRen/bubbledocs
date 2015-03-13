@@ -6,4 +6,9 @@ public class Subtraction extends Subtraction_Base {
         super();
     }
     
+    public Subtraction(Content content1, Content content2) {
+        super();
+        init(content1, content2);
+    }
+    
 }
