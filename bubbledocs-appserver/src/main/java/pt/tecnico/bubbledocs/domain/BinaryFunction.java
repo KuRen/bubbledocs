@@ -19,8 +19,8 @@ public abstract class BinaryFunction extends BinaryFunction_Base {
     @Override
     public void delete() {
         setCell(null);
-        getArgument1().setCell(null);
-        getArgument2().setCell(null);
+        setArgument1(null);
+        setArgument2(null);
         deleteDomainObject();
     }
 }
