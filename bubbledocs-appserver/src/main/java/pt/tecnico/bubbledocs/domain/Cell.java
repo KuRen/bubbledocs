@@ -1,6 +1,11 @@
 package pt.tecnico.bubbledocs.domain;
 
-public class Cell extends Cell_Base {
+import org.jdom2.Element;
+
+import pt.tecnico.bubbledocs.xml.XMLWriter;
+import pt.tecnico.bubbledocs.xml.XMLable;
+
+public class Cell extends Cell_Base implements XMLable {
     
     public Cell(Integer row, Integer column) {
         super();
@@ -8,5 +13,10 @@ public class Cell extends Cell_Base {
         setColumn(column);
         setContent(null);
     }
+    
+    @Override
+	public Element accept(XMLWriter writer) {
+		return writer.visit(this);
+	}
     
 }

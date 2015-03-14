@@ -1,5 +1,9 @@
 package pt.tecnico.bubbledocs.domain;
 
+import org.jdom2.Element;
+
+import pt.tecnico.bubbledocs.xml.XMLWriter;
+
 public class Addition extends Addition_Base {
     
     public Addition() {
@@ -10,4 +14,9 @@ public class Addition extends Addition_Base {
         super();
         init(content1, content2);
     }
+    
+    @Override
+	public Element accept(XMLWriter writer) {
+		return writer.visit(this);
+	}
 }

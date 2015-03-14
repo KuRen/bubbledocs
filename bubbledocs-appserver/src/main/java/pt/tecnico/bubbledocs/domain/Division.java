@@ -1,5 +1,9 @@
 package pt.tecnico.bubbledocs.domain;
 
+import org.jdom2.Element;
+
+import pt.tecnico.bubbledocs.xml.XMLWriter;
+
 public class Division extends Division_Base {
     
     public Division() {
@@ -10,5 +14,10 @@ public class Division extends Division_Base {
         super();
         init(content1, content2);
     }
+    
+    @Override
+	public Element accept(XMLWriter writer) {
+		return writer.visit(this);
+	}
     
 }

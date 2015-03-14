@@ -1,5 +1,9 @@
 package pt.tecnico.bubbledocs.domain;
 
+import org.jdom2.Element;
+
+import pt.tecnico.bubbledocs.xml.XMLWriter;
+
 public class Subtraction extends Subtraction_Base {
     
     public Subtraction() {
@@ -10,5 +14,10 @@ public class Subtraction extends Subtraction_Base {
         super();
         init(content1, content2);
     }
+    
+    @Override
+	public Element accept(XMLWriter writer) {
+		return writer.visit(this);
+	}
     
 }

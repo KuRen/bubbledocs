@@ -1,6 +1,11 @@
 package pt.tecnico.bubbledocs.domain;
 
-public class Spreadsheet extends Spreadsheet_Base {
+import org.jdom2.Element;
+
+import pt.tecnico.bubbledocs.xml.XMLWriter;
+import pt.tecnico.bubbledocs.xml.XMLable;
+
+public class Spreadsheet extends Spreadsheet_Base implements XMLable {
     
     public Spreadsheet(Integer rows, Integer columns, String name, User user) {
         super();
@@ -9,5 +14,10 @@ public class Spreadsheet extends Spreadsheet_Base {
         setName(name);
         setOwner(user);
     }
+
+	@Override
+	public Element accept(XMLWriter writer) {
+		return writer.visit(this);
+	}
     
 }
