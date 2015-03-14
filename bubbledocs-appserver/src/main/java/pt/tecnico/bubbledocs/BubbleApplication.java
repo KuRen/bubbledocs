@@ -1,18 +1,17 @@
 package pt.tecnico.bubbledocs;
 
-import pt.tecnico.bubbledocs.domain.*;
-import pt.tecnico.bubbledocs.SetupDomain;
-
-import pt.ist.fenixframework.Atomic;
+//import pt.tecnico.bubbledocs.SetupDomain;
 
 public class BubbleApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
+        System.out.println("//Started Bubble App.");
         setupDomain();
     }
-    
+
     private static void setupDomain() {
-    	SetupDomain domainSetuper = new SetupDomain();
-    	domainSetuper.populateDomain();
+        //SetupDomain domainSetuper = new SetupDomain();
+        // domainSetuper.populateDomain();
+        System.out.println("//Placeholder od Domain Setup");
     }
 }
