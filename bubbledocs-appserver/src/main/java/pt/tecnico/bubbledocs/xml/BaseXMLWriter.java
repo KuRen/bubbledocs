@@ -3,6 +3,7 @@ package pt.tecnico.bubbledocs.xml;
 import org.jdom2.Element;
 
 import pt.tecnico.bubbledocs.domain.Addition;
+import pt.tecnico.bubbledocs.domain.BinaryFunction;
 import pt.tecnico.bubbledocs.domain.Cell;
 import pt.tecnico.bubbledocs.domain.Division;
 import pt.tecnico.bubbledocs.domain.Multiplication;
@@ -51,26 +52,30 @@ public class BaseXMLWriter implements XMLWriter {
 
 	@Override
 	public Element visit(Addition add) {
-		// TODO Auto-generated method stub
-		return null;
+		Element addElement = new Element("Addition");
+		addBinaryFunctionArguments((BinaryFunction) add, addElement);
+		return addElement;
 	}
 
 	@Override
 	public Element visit(Subtraction sub) {
-		// TODO Auto-generated method stub
-		return null;
+		Element subElement = new Element("Subtraction");
+		addBinaryFunctionArguments((BinaryFunction) sub, subElement);
+		return subElement;
 	}
 
 	@Override
 	public Element visit(Multiplication mul) {
-		// TODO Auto-generated method stub
-		return null;
+		Element mulElement = new Element("Multiplication");
+		addBinaryFunctionArguments((BinaryFunction) mul, mulElement);
+		return mulElement;
 	}
 
 	@Override
 	public Element visit(Division div) {
-		// TODO Auto-generated method stub
-		return null;
+		Element divElement = new Element("Division");
+		addBinaryFunctionArguments((BinaryFunction) div, divElement);
+		return divElement;
 	}
 
 	@Override
@@ -90,4 +95,8 @@ public class BaseXMLWriter implements XMLWriter {
 		return referenceElement;
 	}
 
+	private void addBinaryFunctionArguments(BinaryFunction function, Element element) {
+		// TODO: add arguments to element content
+	}
+	
 }
