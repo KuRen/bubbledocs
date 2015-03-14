@@ -12,7 +12,7 @@ public abstract class BinaryFunction extends BinaryFunction_Base {
     }
     
     protected void init(Content content1, Content content2) {
-        setContent1(content1);
-        setContent2(content2);
+        setArgument1(content1);
+        setArgument2(content2);
     }
 }

@@ -96,7 +96,8 @@ public class BaseXMLWriter implements XMLWriter {
 	}
 
 	private void addBinaryFunctionArguments(BinaryFunction function, Element element) {
-		// TODO: add arguments to element content
+		element.addContent(function.getArgument1().accept(this));
+		element.addContent(function.getArgument2().accept(this));
 	}
 	
 }
