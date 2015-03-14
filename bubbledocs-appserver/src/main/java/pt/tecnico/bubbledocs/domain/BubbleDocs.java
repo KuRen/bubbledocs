@@ -38,4 +38,19 @@ public class BubbleDocs extends BubbleDocs_Base {
         // TODO: import from XML
         //spreadsheet.importFromXML(spreadsheetElement);
     }
+
+//REDO
+    /*@Atomic(mode = TxMode.READ)
+    public User getUserByUsername(String username) {
+
+        for (User u : getUsersSet()) {
+            if (u.getUsername().equals(username)) {
+                return u;
+            }
+        }
+
+        // If user not found
+        return null;
+    }*/
+
 }

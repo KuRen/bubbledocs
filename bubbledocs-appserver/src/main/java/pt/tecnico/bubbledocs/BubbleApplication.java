@@ -1,7 +1,5 @@
 package pt.tecnico.bubbledocs;
 
-//import pt.tecnico.bubbledocs.SetupDomain;
-
 public class BubbleApplication {
 
     public static void main(String[] args) {
@@ -10,8 +8,7 @@ public class BubbleApplication {
     }
 
     private static void setupDomain() {
-        //SetupDomain domainSetuper = new SetupDomain();
-        // domainSetuper.populateDomain();
-        System.out.println("//Placeholder od Domain Setup");
+        SetupDomain.populateDomain();
+        System.out.println("//Finished populating domain");
     }
 }
