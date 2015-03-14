@@ -7,11 +7,10 @@ import pt.ist.fenixframework.Atomic;
 public class SetupDomain {
 
     @Atomic
-    public static void main(String[] args) {
-        populateDomain();
-    }
-    
     static void populateDomain() {
+    	
+    //Would it be good to erase the curent data stored?
+    	
         BubbleDocs bd = BubbleDocs.getInstance();
         
         User pf = new User("pf", "sub", "Paul Door");
