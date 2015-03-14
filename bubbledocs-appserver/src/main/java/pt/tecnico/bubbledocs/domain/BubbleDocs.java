@@ -2,6 +2,8 @@ package pt.tecnico.bubbledocs.domain;
 
 import org.jdom2.Element;
 
+import pt.ist.fenixframework.Atomic;
+import pt.ist.fenixframework.Atomic.TxMode;
 import pt.ist.fenixframework.FenixFramework;
 
 public class BubbleDocs extends BubbleDocs_Base {
@@ -39,8 +41,7 @@ public class BubbleDocs extends BubbleDocs_Base {
         //spreadsheet.importFromXML(spreadsheetElement);
     }
 
-//REDO
-    /*@Atomic(mode = TxMode.READ)
+    @Atomic(mode = TxMode.READ)
     public User getUserByUsername(String username) {
 
         for (User u : getUsersSet()) {
@@ -51,6 +52,6 @@ public class BubbleDocs extends BubbleDocs_Base {
 
         // If user not found
         return null;
-    }*/
+    }
 
 }
