@@ -75,7 +75,7 @@ relation ReferenceHasCell {
 	Reference playsRole reference {
 		multiplicity *;
 	}
-	Cell playsRole cell {
+	Cell playsRole referencedCell {
 		multiplicity 1..1;
 	}
 }
