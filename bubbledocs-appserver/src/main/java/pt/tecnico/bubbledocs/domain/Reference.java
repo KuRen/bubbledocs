@@ -13,7 +13,7 @@ public class Reference extends Reference_Base implements XMLable {
             
     public Reference(Cell cell) {
         super();
-        setCell(cell);
+        setReferencedCell(cell);
     }
     
     @Override

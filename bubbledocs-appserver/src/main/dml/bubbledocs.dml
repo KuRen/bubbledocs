@@ -86,9 +86,7 @@ relation ReferenceHasCell {
 
 relation CellHasContent {
     Cell playsRole cell;
-    Content playsRole content {
-        multiplicity 1..1;
-    }
+    Content playsRole content;
 }
 
 relation SpreadsheetContainsCells {

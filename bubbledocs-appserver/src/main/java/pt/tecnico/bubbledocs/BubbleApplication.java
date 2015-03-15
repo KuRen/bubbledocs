@@ -122,7 +122,6 @@ public class BubbleApplication {
             
             
             bd = null;
-            
             tm.commit();
             System.out.println("Olá");
             commit = true;
