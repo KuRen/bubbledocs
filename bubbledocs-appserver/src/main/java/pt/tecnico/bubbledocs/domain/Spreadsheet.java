@@ -14,10 +14,13 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
 
     public Spreadsheet(Integer rows, Integer columns, String name, User user) {
         super();
+        BubbleDocs bd = BubbleDocs.getInstance();
         setRows(rows);
         setColumns(columns);
         setName(name);
         setOwner(user);
+        
+        setBubbledocs(bd);
     }
     
     public void importFromXML(Element spreadsheetElement) {

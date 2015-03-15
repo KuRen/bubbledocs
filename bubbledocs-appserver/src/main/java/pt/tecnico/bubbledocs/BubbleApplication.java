@@ -35,6 +35,7 @@ public class BubbleApplication {
             
             System.out.println("//Started Bubble App");
             
+            
             // all registered users
             System.out.println("> Users:");
             for(User u : bd.getUsersSet()) {
@@ -43,7 +44,7 @@ public class BubbleApplication {
                 System.out.println("> password: " + u.getPassword());
                 System.out.println("-------------------");
             }
-            /*
+            
             // pf's spreadsheets: name
             System.out.println("> Spreadsheets (user: pf, attributes: name):");
             for(Spreadsheet s : bd.getSpreadsheetsSet()) {
@@ -119,7 +120,7 @@ public class BubbleApplication {
                 }
             }
             
-            */
+            
             bd = null;
             
             tm.commit();

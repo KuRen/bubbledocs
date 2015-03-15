@@ -11,11 +11,12 @@ public class Cell extends Cell_Base implements XMLable {
 		super();
 	}
 	
-    public Cell(Integer row, Integer column) {
+    public Cell(Spreadsheet ss, Integer row, Integer column) {
         super();
         setRow(row);
         setColumn(column);
         setContent(null);
+        setSpreadsheet(ss);
     }
     
     public void importFromXML(Element cellElement) {

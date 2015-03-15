@@ -16,6 +16,9 @@ public class User extends User_Base {
         setUsername(username);
         setPassword(password);
         setName(name);
+        
+        BubbleDocs bd = BubbleDocs.getInstance();
+        setBubbledocs(bd);
     }
 
     public void init(String username, String password, String name) {
