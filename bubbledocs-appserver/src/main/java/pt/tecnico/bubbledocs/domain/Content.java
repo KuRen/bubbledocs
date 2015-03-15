@@ -38,4 +38,10 @@ public abstract class Content extends Content_Base implements XMLable {
 
 	public abstract void importFromXML(Element contentElement);
 	public abstract Integer getValue();
+	public String toString() {
+		Integer value = getValue();
+		if (value != null)
+			return value.toString();
+		return "#VALUE";
+	}
 }

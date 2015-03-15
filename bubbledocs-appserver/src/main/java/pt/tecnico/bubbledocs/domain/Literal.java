@@ -30,5 +30,5 @@ public class Literal extends Literal_Base implements XMLable {
 	public Integer getValue() {
 		return getLiteral();
 	}
-    
+
 }
