@@ -38,7 +38,7 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
     	
     	Element cells = spreadsheetElement.getChild("cells");
     	for (Element cellElement : cells.getChildren("cell")) {
-    		Cell cell = new Cell(null, null);
+    		Cell cell = new Cell();
     		cell.importFromXML(cellElement);
     		addCells(cell);
     	}
