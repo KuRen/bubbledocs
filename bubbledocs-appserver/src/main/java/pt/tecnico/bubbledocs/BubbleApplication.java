@@ -27,22 +27,21 @@ public class BubbleApplication {
         tm.begin();
         
         try {
-            //tm.begin();
             BubbleDocs bd = BubbleDocs.getInstance();
             
             // initial state if it's empty
             if(bd.getUsersSet().isEmpty()) setupDomain();
             
-            System.out.println("//Started Bubble App");
+            System.out.println(" * * * * * * * * * * * * Started Bubble App * * * * * * * * * * * * ");
             
             
             // all registered users
-            System.out.println("> Users:");
+            System.out.println("--------------------------- USERS ---------------------------");
             for(User u : bd.getUsersSet()) {
                 System.out.println("> username: " + u.getUsername());
                 System.out.println("> name: " + u.getName());
                 System.out.println("> password: " + u.getPassword());
-                System.out.println("-------------------");
+                System.out.println("----------------------------------------------");
             }
             
             // pf's spreadsheets: name
