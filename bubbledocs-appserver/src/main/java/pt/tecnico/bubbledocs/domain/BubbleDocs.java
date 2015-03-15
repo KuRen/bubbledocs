@@ -31,16 +31,13 @@ public class BubbleDocs extends BubbleDocs_Base {
 
     public void importSpreadsheetFromXML(Element spreadsheetElement) {
 
-        Integer id = new Integer(spreadsheetElement.getAttribute("id").getValue());
+        String owner = spreadsheetElement.getAttribute("userid").getValue(); 
+
+        //TODO Check if owner and current user match
         
-        Spreadsheet spreadsheet = getSpreadsheetById(id);
-
-        if (spreadsheet == null) {
-        	spreadsheet = new Spreadsheet();
-        	addSpreadsheets(spreadsheet);
-        }
-
-        // TODO: import from XML
+        Spreadsheet spreadsheet = new Spreadsheet();
+        addSpreadsheets(spreadsheet);
+        	
         spreadsheet.importFromXML(spreadsheetElement);
     }
 
