@@ -15,6 +15,8 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
     public Spreadsheet(Integer rows, Integer columns, String name, User user) {
         super();
         BubbleDocs bd = BubbleDocs.getInstance();
+        setId(bd.getSheetsID());
+        bd.setSheetsID(bd.getSheetsID() + 1);
         setRows(rows);
         setColumns(columns);
         setName(name);

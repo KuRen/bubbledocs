@@ -2,7 +2,9 @@ package pt.tecnico.bubbledocs.domain;
 
 enum pt.tecnico.bubbledocs.domain.PermissionType as PermissionTypeEnum;
 
-class BubbleDocs;
+class BubbleDocs {
+	Integer SheetsID;
+}
 
 class User {
     String name;
