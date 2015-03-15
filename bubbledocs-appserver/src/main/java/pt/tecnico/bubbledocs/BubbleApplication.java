@@ -65,7 +65,7 @@ public class BubbleApplication {
                 }
                 System.out.println("-------------------");
             }
-            
+            /*
             // export pf's spreadsheets
             for(Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
                 try {
@@ -77,7 +77,7 @@ public class BubbleApplication {
                     System.err.println("Error while exporting to XML: " + ex.getMessage());
                 }
             }
-            
+            */
             // permanently removes spreadsheet "Notas ES"
             for(Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
                 if(s.getName().equals("Notas ES")) {
@@ -100,6 +100,15 @@ public class BubbleApplication {
             }
             
             // *missing*
+            /*
+            System.out.println("Importing Spreadsheet");
+            try {
+                ImportSpreadsheetService importService = new ImportSpreadsheetService(docSS);
+                importService.execute();
+            } catch (ImportDocumentException ide) {
+                System.err.println("Error importing document");
+            }
+            */
             
             System.out.println("> Spreadsheets (user: pf, attributes: name and id)");
             for(Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
