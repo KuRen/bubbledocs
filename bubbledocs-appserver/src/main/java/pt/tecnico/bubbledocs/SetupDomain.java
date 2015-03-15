@@ -22,6 +22,7 @@ public class SetupDomain {
         User pf = new User("pf", "sub", "Paul Door");
         new User("ra", "cor", "Step Rabbit");
         Spreadsheet sheet = new Spreadsheet(300, 20, "Notas ES", pf);
+        pf.addSpreadsheets(sheet);
 
         Cell cell34 = new Cell(sheet, 3, 4);
         cell34.setContent(new Literal(5));
@@ -29,7 +30,9 @@ public class SetupDomain {
         
         Cell cell11 = new Cell(sheet, 1, 1);
         Cell cell56 = new Cell(sheet, 5, 6);
+        //cell11.setContent(new Reference(cell34));
         cell11.setContent(new Reference(cell56));
+
         sheet.addCells(cell11);
         
         cell56.setContent(new Addition(new Literal(2), new Reference(cell34)));

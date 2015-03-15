@@ -20,6 +20,7 @@ public class BubbleDocs extends BubbleDocs_Base {
 
     private BubbleDocs() {
         FenixFramework.getDomainRoot().setBubbleDocs(this);
+        setSheetsID(1);
     }
 
     public Spreadsheet getSpreadsheetById(Integer id) {

@@ -46,39 +46,41 @@ public class BubbleApplication {
             
             // pf's spreadsheets: name
             System.out.println("> Spreadsheets (user: pf, attributes: name):");
-            for(Spreadsheet s : bd.getSpreadsheetsSet()) {
-                if(s.getOwner().getName().equals("pf")) {
+            for(Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
+                try {
                     System.out.println("> name: " + s.getName());
-                    System.out.println("-------------------");
+                } catch(Exception ex) {
+                    System.out.println("NONE");
                 }
+                System.out.println("-------------------");
             }
             
             // ra's spreadsheets: name
             System.out.println("> Spreadsheets (user: ra, attributes: name):");
-            for(Spreadsheet s : bd.getSpreadsheetsSet()) {
-                if(s.getOwner().getName().equals("ra")) {
+            for(Spreadsheet s : bd.getUserByUsername("ra").getSpreadsheetsSet()) {
+                try {
                     System.out.println("> name: " + s.getName());
-                    System.out.println("-------------------");
+                } catch(Exception ex) {
+                    System.out.println("NONE");
                 }
+                System.out.println("-------------------");
             }
             
             // export pf's spreadsheets
-            for(Spreadsheet s : bd.getSpreadsheetsSet()) {
-                if(s.getOwner().getName() == "pf") {
-                    try {
-                        ExportSpreadsheetService expSS = new ExportSpreadsheetService(s);
-                        expSS.execute();
-                        byte[] docSS = expSS.getResult();
-                        printDomainInXML(docSS);
-                    } catch(ExportDocumentException ex) {
-                        System.err.println("Error while exporting to XML: " + ex.getMessage());
-                    }
+            for(Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
+                try {
+                    ExportSpreadsheetService expSS = new ExportSpreadsheetService(s);
+                    expSS.execute();
+                    byte[] docSS = expSS.getResult();
+                    printDomainInXML(docSS);
+                } catch(ExportDocumentException ex) {
+                    System.err.println("Error while exporting to XML: " + ex.getMessage());
                 }
             }
             
             // permanently removes spreadsheet "Notas ES"
-            for(Spreadsheet s : bd.getSpreadsheetsSet()) {
-                if(s.getName().equals("Notas ES") && s.getOwner().equals("pf")) {
+            for(Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
+                if(s.getName().equals("Notas ES")) {
                     s.delete();
                     System.out.println("> Spreadsheet \"Notas ES\" of user pf permanently deleted from the database");
                     System.out.println("-------------------");
@@ -87,42 +89,43 @@ public class BubbleApplication {
             
             // pf's spreadsheets: name and id
             System.out.println("> Spreadsheets (user: pf, attributes: name and id)");
-            for(Spreadsheet s : bd.getSpreadsheetsSet()) {
-                if(s.getOwner().getName().equals("pf")) {
+            for(Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
+                try {
                     System.out.println("> name: " + s.getName());
-                    //System.out.println("> id:" + s.getId());
-                    System.out.println("-------------------");
+                    System.out.println("> id:" + s.getId());
+                } catch(Exception ex) {
+                    System.out.println("NONE");
                 }
+                System.out.println("-------------------");
             }
             
             // *missing*
             
             System.out.println("> Spreadsheets (user: pf, attributes: name and id)");
-            for(Spreadsheet s : bd.getSpreadsheetsSet()) {
-                if(s.getOwner().getName().equals("pf")) {
+            for(Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
+                try {
                     System.out.println("> name: " + s.getName());
-                    //System.out.println("> id:" + s.getId());
-                    System.out.println("-------------------");
+                    System.out.println("> id:" + s.getId());
+                } catch(Exception ex) {
+                    System.out.println("NONE");
                 }
+                System.out.println("-------------------");
             }
             
-            for(Spreadsheet s : bd.getSpreadsheetsSet()) {
-                if(s.getOwner().getName() == "pf") {
-                    try {
-                        ExportSpreadsheetService expSS = new ExportSpreadsheetService(s);
-                        expSS.execute();
-                        byte[] docSS = expSS.getResult();
-                        printDomainInXML(docSS);
-                    } catch(ExportDocumentException ex) {
-                        System.err.println("Error while exporting to XML: " + ex.getMessage());
-                    }
+            for(Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
+                try {
+                    ExportSpreadsheetService expSS = new ExportSpreadsheetService(s);
+                    expSS.execute();
+                    byte[] docSS = expSS.getResult();
+                    printDomainInXML(docSS);
+                } catch(ExportDocumentException ex) {
+                    System.err.println("Error while exporting to XML: " + ex.getMessage());
                 }
             }
             
             
             bd = null;
             tm.commit();
-            System.out.println("Olá");
             commit = true;
             
         } catch(SystemException | HeuristicRollbackException | HeuristicMixedException | RollbackException ex) {

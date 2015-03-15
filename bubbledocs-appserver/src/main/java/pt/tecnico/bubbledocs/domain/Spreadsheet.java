@@ -55,7 +55,6 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
     }
 
     public void delete() {
-
         for (Cell c : getCellsSet())
             c.delete();
         for (Permission p : this.getPermissionsSet())

@@ -34,5 +34,12 @@ public class Reference extends Reference_Base implements XMLable {
 	public Integer getValue() {
 		return getCell().getContent().getValue();
 	}
+	
+	@Override
+	public void delete() {
+	    setReferencedCell(null);
+        setCell(null);
+        deleteDomainObject();
+	}
     
 }
