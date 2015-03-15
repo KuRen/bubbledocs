@@ -7,7 +7,7 @@ import pt.ist.fenixframework.Atomic.TxMode;
 
 public class User extends User_Base {
 
-    public User() {
+    protected User() {
         super();
     }
     

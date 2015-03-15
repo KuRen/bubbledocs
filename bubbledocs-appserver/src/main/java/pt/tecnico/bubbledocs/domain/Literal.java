@@ -7,7 +7,7 @@ import pt.tecnico.bubbledocs.xml.XMLable;
 
 public class Literal extends Literal_Base implements XMLable {
     
-    public Literal() {
+    protected Literal() {
         super();
     }
     
