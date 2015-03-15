@@ -1,6 +1,5 @@
 package pt.tecnico.bubbledocs.domain;
 
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jdom2.Element;
 
 import pt.tecnico.bubbledocs.xml.XMLWriter;
