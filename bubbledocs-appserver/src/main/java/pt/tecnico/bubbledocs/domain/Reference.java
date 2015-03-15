@@ -20,5 +20,14 @@ public class Reference extends Reference_Base implements XMLable {
 	public Element accept(XMLWriter writer) {
 		return writer.visit(this);
 	}
+
+	@Override
+	public void importFromXML(Element contentElement) {
+		Cell cell = new Cell();
+		Element cellElement = contentElement.getChildren().get(0);
+		cell.setRow(Integer.parseInt(cellElement.getAttribute("row").getValue()));
+		cell.setColumn(Integer.parseInt(cellElement.getAttribute("column").getValue()));
+		setCell(cell);
+	}
     
 }

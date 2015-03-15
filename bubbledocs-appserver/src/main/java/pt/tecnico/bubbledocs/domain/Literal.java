@@ -20,5 +20,10 @@ public class Literal extends Literal_Base implements XMLable {
 	public Element accept(XMLWriter writer) {
 		return writer.visit(this);
 	}
+
+	@Override
+	public void importFromXML(Element contentElement) {
+		setLiteral(Integer.parseInt(contentElement.getValue()));
+	}
     
 }
