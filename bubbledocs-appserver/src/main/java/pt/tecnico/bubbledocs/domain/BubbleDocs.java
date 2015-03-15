@@ -30,15 +30,13 @@ public class BubbleDocs extends BubbleDocs_Base {
     }
 
     public void importSpreadsheetFromXML(Element spreadsheetElement) {
-
-        String owner = spreadsheetElement.getAttribute("userid").getValue(); 
-
-        //TODO Check if owner and current user match
-        
+    	//TODO Verify user
+    	
         Spreadsheet spreadsheet = new Spreadsheet();
-        addSpreadsheets(spreadsheet);
-        	
+        
         spreadsheet.importFromXML(spreadsheetElement);
+        
+        addSpreadsheets(spreadsheet);
     }
 
     @Atomic(mode = TxMode.READ)

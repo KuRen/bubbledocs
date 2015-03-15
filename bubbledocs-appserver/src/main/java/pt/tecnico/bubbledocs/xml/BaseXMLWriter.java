@@ -22,7 +22,7 @@ public class BaseXMLWriter implements XMLWriter {
 		spreadsheetElement.setAttribute("columns", ss.getColumns().toString());
 		spreadsheetElement.setAttribute("id", ss.getId().toString());
 		spreadsheetElement.setAttribute("name", ss.getName());
-		spreadsheetElement.setAttribute("userid", ss.getOwner().getUsername());
+		spreadsheetElement.setAttribute("owner", ss.getOwner().getUsername());
 		spreadsheetElement.setAttribute("created", ss.getCreationDate()
 				.toString());
 
