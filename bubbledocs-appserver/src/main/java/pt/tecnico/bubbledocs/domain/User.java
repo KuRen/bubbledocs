@@ -7,6 +7,10 @@ import pt.ist.fenixframework.Atomic.TxMode;
 
 public class User extends User_Base {
 
+    public User() {
+        super();
+    }
+    
     public User(String username, String password, String name) {
         super();
         setUsername(username);

@@ -7,6 +7,10 @@ import pt.tecnico.bubbledocs.xml.XMLable;
 
 public class Reference extends Reference_Base implements XMLable {
     
+    public Reference() {
+        super();
+    }
+            
     public Reference(Cell cell) {
         super();
         setCell(cell);
