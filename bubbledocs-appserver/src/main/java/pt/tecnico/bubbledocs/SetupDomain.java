@@ -11,6 +11,7 @@ import pt.tecnico.bubbledocs.domain.Permission;
 import pt.tecnico.bubbledocs.domain.Reference;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.domain.User;
+import pt.tecnico.bubbledocs.domain.Root;
 
 public class SetupDomain {
 
@@ -19,7 +20,9 @@ public class SetupDomain {
 
         //Would it be good to erase the current data stored?
         BubbleDocs bd = BubbleDocs.getInstance();
-                
+            
+        bd.addUsers(Root.getInstance());
+        
         User pf = new User("pf", "sub", "Paul Door");
         bd.addUsers(pf);
         User ra = new User("ra", "cor", "Step Rabbit");

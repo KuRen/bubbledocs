@@ -18,6 +18,12 @@ public class User extends User_Base {
         setName(name);
     }
 
+    public void init(String username, String password, String name) {
+        setUsername(username);
+        setPassword(password);
+        setName(name);
+    }
+    
     @Atomic(mode = TxMode.READ)
     public ArrayList<Spreadsheet> getOwnSpreadsheetsByName(String name) {
         ArrayList<Spreadsheet> list = new ArrayList<Spreadsheet>();

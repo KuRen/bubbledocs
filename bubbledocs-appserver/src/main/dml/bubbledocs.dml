@@ -29,6 +29,8 @@ class Cell {
 
 class Content;
 
+class Root extends User;
+
 class Literal extends Content {
     Integer literal;
 }
