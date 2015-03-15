@@ -32,17 +32,11 @@ public class BubbleDocs extends BubbleDocs_Base {
     public void importSpreadsheetFromXML(Element spreadsheetElement) {
 
         Integer id = new Integer(spreadsheetElement.getAttribute("id").getValue());
-        Integer rows = new Integer(spreadsheetElement.getAttribute("rows").getValue());
-        Integer columns = new Integer(spreadsheetElement.getAttribute("columns").getValue());
-        String name = spreadsheetElement.getAttribute("name").getValue();
-        DateTime date = new DateTime(); //FIXME
-        //date = parse(spreadsheetElement.getAttribute("date").getValue());
-        User user = getUserByUsername(spreadsheetElement.getAttribute("user").getValue()); //FIXME?
         
         Spreadsheet spreadsheet = getSpreadsheetById(id);
 
         if (spreadsheet == null) {
-        	spreadsheet = new Spreadsheet(rows, columns, name, user);
+        	spreadsheet = new Spreadsheet();
         	addSpreadsheets(spreadsheet);
         }
 

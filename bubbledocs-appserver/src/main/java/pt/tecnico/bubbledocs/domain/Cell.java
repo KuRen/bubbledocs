@@ -26,7 +26,7 @@ public class Cell extends Cell_Base implements XMLable {
     	
     	String elementType = contentElement.getName();
     	
-    	//setContent(Content.importFromXML(contentElement, elementType));
+    	setContent(Content.importFromXML(contentElement, elementType));
     	
     }
 
