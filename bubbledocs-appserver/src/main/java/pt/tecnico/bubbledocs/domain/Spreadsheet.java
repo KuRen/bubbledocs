@@ -14,6 +14,10 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
         setName(name);
         setOwner(user);
     }
+    
+    public void importFromXML(Element spreadsheetElement) {
+    	
+    }
 
     @Override
     public Element accept(XMLWriter writer) {

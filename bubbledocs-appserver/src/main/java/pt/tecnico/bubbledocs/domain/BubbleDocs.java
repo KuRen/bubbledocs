@@ -2,6 +2,8 @@ package pt.tecnico.bubbledocs.domain;
 
 import org.jdom2.Element;
 
+import org.joda.time.*;
+
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.Atomic.TxMode;
 import pt.ist.fenixframework.FenixFramework;
@@ -30,15 +32,22 @@ public class BubbleDocs extends BubbleDocs_Base {
     public void importSpreadsheetFromXML(Element spreadsheetElement) {
 
         Integer id = new Integer(spreadsheetElement.getAttribute("id").getValue());
+        Integer rows = new Integer(spreadsheetElement.getAttribute("rows").getValue());
+        Integer columns = new Integer(spreadsheetElement.getAttribute("columns").getValue());
+        String name = spreadsheetElement.getAttribute("name").getValue();
+        DateTime date = new DateTime(); //FIXME
+        //date = parse(spreadsheetElement.getAttribute("date").getValue());
+        User user = getUserByUsername(spreadsheetElement.getAttribute("user").getValue()); //FIXME?
+        
         Spreadsheet spreadsheet = getSpreadsheetById(id);
 
         if (spreadsheet == null) {
-            // TODO: create new spreadsheet
-            // spreadsheet = new Spreadsheet(rows, columns, name, user)
+        	spreadsheet = new Spreadsheet(rows, columns, name, user);
+        	addSpreadsheets(spreadsheet);
         }
 
         // TODO: import from XML
-        //spreadsheet.importFromXML(spreadsheetElement);
+        spreadsheet.importFromXML(spreadsheetElement);
     }
 
     @Atomic(mode = TxMode.READ)
