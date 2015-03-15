@@ -3,7 +3,6 @@ package pt.tecnico.bubbledocs;
 import pt.tecnico.bubbledocs.domain.*;
 import pt.tecnico.bubbledocs.service.*;
 import pt.tecnico.bubbledocs.exception.*;
-
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.TransactionManager;
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
@@ -21,13 +20,14 @@ import javax.transaction.*;
 
 public class BubbleApplication {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws NotSupportedException, SystemException {
         
         TransactionManager tm = FenixFramework.getTransactionManager();
         boolean commit = false;
+        tm.begin();
         
         try {
-            tm.begin();
+            //tm.begin();
             BubbleDocs bd = BubbleDocs.getInstance();
             
             // initial state if it's empty
@@ -43,7 +43,7 @@ public class BubbleApplication {
                 System.out.println("> password: " + u.getPassword());
                 System.out.println("-------------------");
             }
-            
+            /*
             // pf's spreadsheets: name
             System.out.println("> Spreadsheets (user: pf, attributes: name):");
             for(Spreadsheet s : bd.getSpreadsheetsSet()) {
@@ -119,13 +119,14 @@ public class BubbleApplication {
                 }
             }
             
-            
+            */
             bd = null;
             
             tm.commit();
+            System.out.println("Olá");
             commit = true;
             
-        } catch(SystemException | NotSupportedException | HeuristicRollbackException | HeuristicMixedException | RollbackException ex) {
+        } catch(SystemException | HeuristicRollbackException | HeuristicMixedException | RollbackException ex) {
             System.err.println("Transaction error: " + ex.getMessage());
         } finally {
             if(!commit) {
