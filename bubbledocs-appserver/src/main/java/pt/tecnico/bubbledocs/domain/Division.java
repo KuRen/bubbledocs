@@ -19,5 +19,14 @@ public class Division extends Division_Base {
 	public Element accept(XMLWriter writer) {
 		return writer.visit(this);
 	}
+
+	@Override
+	public Integer exec() {
+		try {
+			return getArgument1().getValue() / getArgument2().getValue();
+		} catch(ArithmeticException e) { throw new ArithmeticException();
+		} catch (Exception e){ return null;
+		}
+	}
     
 }

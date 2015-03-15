@@ -29,5 +29,10 @@ public class Reference extends Reference_Base implements XMLable {
 		cell.setColumn(Integer.parseInt(cellElement.getAttribute("column").getValue()));
 		setCell(cell);
 	}
+
+	@Override
+	public Integer getValue() {
+		return getCell().getContent().getValue();
+	}
     
 }

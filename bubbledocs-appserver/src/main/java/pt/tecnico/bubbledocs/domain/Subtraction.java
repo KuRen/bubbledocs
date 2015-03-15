@@ -19,5 +19,13 @@ public class Subtraction extends Subtraction_Base {
 	public Element accept(XMLWriter writer) {
 		return writer.visit(this);
 	}
+
+	@Override
+	public Integer exec() {
+		try {
+			return getArgument1().getValue() - getArgument2().getValue();
+		} catch (Exception e){ return null;
+		}
+	}
     
 }

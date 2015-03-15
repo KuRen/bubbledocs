@@ -29,7 +29,7 @@ public abstract class Content extends Content_Base implements XMLable {
 			return new Division();
 		case "Multiplication":
 			return new Multiplication();
-
+			
 		default:
 			break;
 		}
@@ -37,4 +37,5 @@ public abstract class Content extends Content_Base implements XMLable {
 	}
 
 	public abstract void importFromXML(Element contentElement);
+	public abstract Integer getValue();
 }

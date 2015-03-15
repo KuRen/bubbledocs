@@ -25,5 +25,10 @@ public class Literal extends Literal_Base implements XMLable {
 	public void importFromXML(Element contentElement) {
 		setLiteral(Integer.parseInt(contentElement.getValue()));
 	}
+
+	@Override
+	public Integer getValue() {
+		return getLiteral();
+	}
     
 }

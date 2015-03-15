@@ -19,6 +19,12 @@ public abstract class BinaryFunction extends BinaryFunction_Base {
         setArgument1(content1);
         setArgument2(content2);
     }
+    
+    public Integer getValue() {
+    	return exec();
+    }
+    
+    public abstract Integer exec();
 
     @Override
     public void delete() {
