@@ -13,6 +13,10 @@ public class Cell extends Cell_Base implements XMLable {
         setColumn(column);
         setContent(null);
     }
+    
+    public void importFromXML(Element cellElement) {
+    	
+    }
 
     @Override
     public Element accept(XMLWriter writer) {
