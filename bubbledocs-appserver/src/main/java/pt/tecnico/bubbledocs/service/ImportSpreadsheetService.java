@@ -40,7 +40,6 @@ public class ImportSpreadsheetService extends BubbleDocsService {
 
         String username = rootElement.getAttribute("owner").getValue();
         if (!(username.equals(user))) {
-            System.err.println("User " + user + " can't import this spreadsheet");
             throw new ImportDocumentException();
         }
         getBubbleDocs().importSpreadsheetFromXML(rootElement);
