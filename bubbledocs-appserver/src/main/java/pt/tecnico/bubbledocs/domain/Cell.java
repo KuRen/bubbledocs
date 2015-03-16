@@ -35,6 +35,7 @@ public class Cell extends Cell_Base implements XMLable {
 
     }
 
+    @Override
     public String toString() {
         return getContent().toString();
     }
@@ -45,10 +46,13 @@ public class Cell extends Cell_Base implements XMLable {
     }
 
     public void delete() {
-        //     setReference(null);
+        //for (Reference r : getReferenceSet())
+        //  r.setReferencedCell(null);
+
         getContent().delete();
         setSpreadsheet(null);
         setContent(null);
         deleteDomainObject();
+
     }
 }
