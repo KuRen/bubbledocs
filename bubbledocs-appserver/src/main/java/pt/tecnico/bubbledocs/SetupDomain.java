@@ -30,7 +30,6 @@ public class SetupDomain {
 
         Cell cell11 = new Cell(sheet, 1, 1);
         Cell cell56 = new Cell(sheet, 5, 6);
-        //cell11.setContent(new Reference(cell34));
         cell11.setContent(new Reference(cell56));
 
         sheet.addCells(cell11);

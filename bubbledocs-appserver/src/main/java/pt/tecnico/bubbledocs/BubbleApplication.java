@@ -22,6 +22,7 @@ import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.ExportDocumentException;
 import pt.tecnico.bubbledocs.exception.ImportDocumentException;
 import pt.tecnico.bubbledocs.service.ExportSpreadsheetService;
+import pt.tecnico.bubbledocs.service.ImportSpreadsheetService;
 
 public class BubbleApplication {
 
@@ -33,7 +34,7 @@ public class BubbleApplication {
 
         try {
             BubbleDocs bd = BubbleDocs.getInstance();
-
+            byte[] docSS = null;
             // initial state if it's empty
             if (bd.getUsersSet().isEmpty())
                 setupDomain();
@@ -76,7 +77,7 @@ public class BubbleApplication {
                 try {
                     ExportSpreadsheetService expSS = new ExportSpreadsheetService(s);
                     expSS.execute();
-                    byte[] docSS = expSS.getResult();
+                    docSS = expSS.getResult();
                     printDomainInXML(docSS);
                 } catch (ExportDocumentException ex) {
                     System.err.println("Error while exporting to XML: " + ex.getMessage());
@@ -104,8 +105,6 @@ public class BubbleApplication {
                 System.out.println("-------------------");
             }
 
-            // *missing*
-            /*
             System.out.println("Importing Spreadsheet");
             try {
                 ImportSpreadsheetService importService = new ImportSpreadsheetService(docSS);
@@ -113,7 +112,6 @@ public class BubbleApplication {
             } catch (ImportDocumentException ide) {
                 System.err.println("Error importing document");
             }
-            */
 
             System.out.println("> Spreadsheets (user: pf, attributes: name and id)");
             for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
@@ -130,7 +128,7 @@ public class BubbleApplication {
                 try {
                     ExportSpreadsheetService expSS = new ExportSpreadsheetService(s);
                     expSS.execute();
-                    byte[] docSS = expSS.getResult();
+                    docSS = expSS.getResult();
                     printDomainInXML(docSS);
                 } catch (ExportDocumentException ex) {
                     System.err.println("Error while exporting to XML: " + ex.getMessage());

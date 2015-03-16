@@ -11,6 +11,16 @@ public abstract class Content extends Content_Base implements XMLable {
     }
 
     public void delete() {
+        if (this.getFunctionArg1Set().size() != 0) {
+            for (BinaryFunction b : this.getFunctionArg1Set())
+                b.setArgument1(null);;
+        }
+
+        if (this.getFunctionArg2Set().size() != 0) {
+            for (BinaryFunction b : this.getFunctionArg2Set())
+                b.setArgument2(null);;
+        }
+
         setCell(null);
         deleteDomainObject();
     }
@@ -40,7 +50,7 @@ public abstract class Content extends Content_Base implements XMLable {
 
     public abstract Integer getValue();
 
-    public String toString() {
+    public String asString() {
         Integer value = getValue();
         if (value != null)
             return value.toString();

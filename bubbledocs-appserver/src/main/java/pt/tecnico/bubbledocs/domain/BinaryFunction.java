@@ -29,10 +29,11 @@ public abstract class BinaryFunction extends BinaryFunction_Base {
 
     @Override
     public void delete() {
+        getArgument1().removeFunctionArg1(this);
+        getArgument2().removeFunctionArg2(this);
         setArgument1(null);
         setArgument2(null);
-        setCell(null);
-        deleteDomainObject();
+        super.delete();
     }
 
     @Override

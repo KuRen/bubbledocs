@@ -58,7 +58,7 @@ relation DomainRootHasBubbleDocsApplication {
 }
 
 relation BinaryFunctionHasArgument1 {
-    BinaryFunction playsRole {
+    BinaryFunction playsRole functionArg1 {
         multiplicity *;
     }
     Content playsRole argument1 {
@@ -67,7 +67,7 @@ relation BinaryFunctionHasArgument1 {
 }
 
 relation BinaryFunctionHasArgument2 {
-    BinaryFunction playsRole {
+    BinaryFunction playsRole functionArg2 {
         multiplicity *;
     }
     Content playsRole argument2 {
@@ -76,7 +76,7 @@ relation BinaryFunctionHasArgument2 {
 }
 
 relation ReferenceHasCell {
-	Reference playsRole {
+	Reference playsRole reference{
 		multiplicity *;
 	}
 	Cell playsRole referencedCell {
