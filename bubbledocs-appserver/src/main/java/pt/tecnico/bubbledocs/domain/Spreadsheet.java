@@ -1,5 +1,6 @@
 package pt.tecnico.bubbledocs.domain;
 
+import org.apache.ojb.otm.lock.wait.NoWaitStrategy;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
@@ -21,6 +22,8 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
         setColumns(columns);
         setName(name);
         setOwner(user);
+        DateTime date = new DateTime();
+        setCreationDate(date);
         
         setBubbledocs(bd);
     }
@@ -34,7 +37,8 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
         String name = spreadsheetElement.getAttribute("name").getValue();
         setName(name);
         DateTime date = new DateTime(); //FIXME
-        //date = parse(spreadsheetElement.getAttribute("date").getValue());
+        setCreationDate(date);
+        //date = date.parse(spreadsheetElement.getAttribute("date").getValue());
         //User user = getUserByUsername(spreadsheetElement.getAttribute("user").getValue()); //FIXME?
         
     	// clear current Spreadsheet
