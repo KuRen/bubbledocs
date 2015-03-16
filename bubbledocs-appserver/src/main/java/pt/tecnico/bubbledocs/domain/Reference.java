@@ -38,8 +38,8 @@ public class Reference extends Reference_Base implements XMLable {
     @Override
     public void delete() {
 
-        getReferencedCell().removeReference(this);
-        //setReferencedCell(null);
+        // getReferencedCell().removeReference(this);
+        setReferencedCell(null);
         setCell(null);
         deleteDomainObject();
     }

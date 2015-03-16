@@ -20,6 +20,7 @@ public abstract class BinaryFunction extends BinaryFunction_Base {
         setArgument2(content2);
     }
 
+    @Override
     public Integer getValue() {
         return exec();
     }
@@ -28,9 +29,9 @@ public abstract class BinaryFunction extends BinaryFunction_Base {
 
     @Override
     public void delete() {
-        setCell(null);
         setArgument1(null);
         setArgument2(null);
+        setCell(null);
         deleteDomainObject();
     }
 
