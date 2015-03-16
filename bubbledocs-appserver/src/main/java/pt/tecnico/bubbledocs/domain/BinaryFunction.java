@@ -19,11 +19,11 @@ public abstract class BinaryFunction extends BinaryFunction_Base {
         setArgument1(content1);
         setArgument2(content2);
     }
-    
+
     public Integer getValue() {
-    	return exec();
+        return exec();
     }
-    
+
     public abstract Integer exec();
 
     @Override
@@ -33,22 +33,22 @@ public abstract class BinaryFunction extends BinaryFunction_Base {
         setArgument2(null);
         deleteDomainObject();
     }
-    
+
     @Override
-	public void importFromXML(Element contentElement) {
-    	List<Element> argsElement = contentElement.getChildren();
-    	Element arg1Element = argsElement.get(0);
-    	Element arg2Element = argsElement.get(1);
-    	
-    	String arg1Type = arg1Element.getName();
-    	Content arg1content = Content.contentFactory(arg1Type);
-    	arg1content.importFromXML(arg1Element);
-    	setArgument1(arg1content);
-    	
-    	String arg2Type = arg2Element.getName();
-    	Content arg2content = Content.contentFactory(arg2Type);
-    	arg1content.importFromXML(arg2Element);
-    	setArgument2(arg2content);
-		
-	}
+    public void importFromXML(Element contentElement) {
+        List<Element> argsElement = contentElement.getChildren();
+        Element arg1Element = argsElement.get(0);
+        Element arg2Element = argsElement.get(1);
+
+        String arg1Type = arg1Element.getName();
+        Content arg1content = Content.contentFactory(arg1Type);
+        arg1content.importFromXML(arg1Element);
+        setArgument1(arg1content);
+
+        String arg2Type = arg2Element.getName();
+        Content arg2content = Content.contentFactory(arg2Type);
+        arg1content.importFromXML(arg2Element);
+        setArgument2(arg2content);
+
+    }
 }

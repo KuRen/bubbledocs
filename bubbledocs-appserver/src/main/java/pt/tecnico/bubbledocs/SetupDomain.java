@@ -27,17 +27,17 @@ public class SetupDomain {
         Cell cell34 = new Cell(sheet, 3, 4);
         cell34.setContent(new Literal(5));
         sheet.addCells(cell34);
-        
+
         Cell cell11 = new Cell(sheet, 1, 1);
         Cell cell56 = new Cell(sheet, 5, 6);
         //cell11.setContent(new Reference(cell34));
         cell11.setContent(new Reference(cell56));
 
         sheet.addCells(cell11);
-        
+
         cell56.setContent(new Addition(new Literal(2), new Reference(cell34)));
         sheet.addCells(cell56);
-        
+
         Cell cell22 = new Cell(sheet, 2, 2);
         cell22.setContent(new Division(new Reference(cell11), new Reference(cell34)));
         sheet.addCells(cell22);

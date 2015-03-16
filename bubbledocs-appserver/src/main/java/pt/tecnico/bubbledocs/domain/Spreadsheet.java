@@ -1,6 +1,5 @@
 package pt.tecnico.bubbledocs.domain;
 
-import org.apache.ojb.otm.lock.wait.NoWaitStrategy;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
@@ -8,10 +7,10 @@ import pt.tecnico.bubbledocs.xml.XMLWriter;
 import pt.tecnico.bubbledocs.xml.XMLable;
 
 public class Spreadsheet extends Spreadsheet_Base implements XMLable {
-	
-	protected Spreadsheet() {
-		super();
-	}
+
+    protected Spreadsheet() {
+        super();
+    }
 
     public Spreadsheet(Integer rows, Integer columns, String name, User user) {
         super();
@@ -24,14 +23,14 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
         setOwner(user);
         DateTime date = new DateTime();
         setCreationDate(date);
-        
+
         setBubbledocs(bd);
     }
-    
+
     public void importFromXML(Element spreadsheetElement) {
-    	
-    	Integer rows = new Integer(spreadsheetElement.getAttribute("rows").getValue());
-    	setRows(rows);
+
+        Integer rows = new Integer(spreadsheetElement.getAttribute("rows").getValue());
+        setRows(rows);
         Integer columns = new Integer(spreadsheetElement.getAttribute("columns").getValue());
         setColumns(columns);
         String name = spreadsheetElement.getAttribute("name").getValue();
@@ -40,17 +39,17 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
         setCreationDate(date);
         //date = date.parse(spreadsheetElement.getAttribute("date").getValue());
         //User user = getUserByUsername(spreadsheetElement.getAttribute("user").getValue()); //FIXME?
-        
-    	// clear current Spreadsheet
-    	for (Cell cell : getCellsSet())
-    		cell.delete();
-    	
-    	Element cells = spreadsheetElement.getChild("cells");
-    	for (Element cellElement : cells.getChildren("cell")) {
-    		Cell cell = new Cell();
-    		cell.importFromXML(cellElement);
-    		addCells(cell);
-    	}
+
+        // clear current Spreadsheet
+        for (Cell cell : getCellsSet())
+            cell.delete();
+
+        Element cells = spreadsheetElement.getChild("cells");
+        for (Element cellElement : cells.getChildren("cell")) {
+            Cell cell = new Cell();
+            cell.importFromXML(cellElement);
+            addCells(cell);
+        }
     }
 
     @Override

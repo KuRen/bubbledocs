@@ -7,10 +7,10 @@ import pt.tecnico.bubbledocs.xml.XMLable;
 
 public class Cell extends Cell_Base implements XMLable {
 
-	protected Cell() {
-		super();
-	}
-	
+    protected Cell() {
+        super();
+    }
+
     public Cell(Spreadsheet ss, Integer row, Integer column) {
         super();
         setRow(row);
@@ -18,25 +18,25 @@ public class Cell extends Cell_Base implements XMLable {
         setContent(null);
         setSpreadsheet(ss);
     }
-    
+
     public void importFromXML(Element cellElement) {
-    	setRow(Integer.parseInt(cellElement.getAttribute("row").getValue()));
-    	setColumn(Integer.parseInt(cellElement.getAttribute("column").getValue()));
-    	
-    	Element contentElement = cellElement.getChildren().get(0);
-    	
-    	String elementType = contentElement.getName();
-    	
-    	Content content = Content.contentFactory(elementType);
-    	
-    	content.importFromXML(contentElement);
-    	
-    	setContent(content);
-    	
+        setRow(Integer.parseInt(cellElement.getAttribute("row").getValue()));
+        setColumn(Integer.parseInt(cellElement.getAttribute("column").getValue()));
+
+        Element contentElement = cellElement.getChildren().get(0);
+
+        String elementType = contentElement.getName();
+
+        Content content = Content.contentFactory(elementType);
+
+        content.importFromXML(contentElement);
+
+        setContent(content);
+
     }
-    
+
     public String toString() {
-    	return getContent().toString();
+        return getContent().toString();
     }
 
     @Override
@@ -45,7 +45,7 @@ public class Cell extends Cell_Base implements XMLable {
     }
 
     public void delete() {
-   //     setReference(null);
+        //     setReference(null);
         getContent().delete();
         setSpreadsheet(null);
         setContent(null);

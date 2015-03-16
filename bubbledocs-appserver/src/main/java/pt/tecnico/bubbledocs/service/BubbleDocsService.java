@@ -7,15 +7,15 @@ import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 
 public abstract class BubbleDocsService {
 
-	@Atomic
-	public final void execute() throws BubbleDocsException {
-		dispatch();
-	}
+    @Atomic
+    public final void execute() throws BubbleDocsException {
+        dispatch();
+    }
 
-	static BubbleDocs getBubbleDocs() {
-		return FenixFramework.getDomainRoot().getBubbleDocs();
-	}
+    static BubbleDocs getBubbleDocs() {
+        return FenixFramework.getDomainRoot().getBubbleDocs();
+    }
 
-	protected abstract void dispatch() throws BubbleDocsException;
+    protected abstract void dispatch() throws BubbleDocsException;
 
 }

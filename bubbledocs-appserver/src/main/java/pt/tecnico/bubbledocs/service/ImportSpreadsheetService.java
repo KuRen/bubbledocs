@@ -37,5 +37,4 @@ public class ImportSpreadsheetService extends BubbleDocsService {
         Element rootElement = jdomDocument.getRootElement();
         getBubbleDocs().importSpreadsheetFromXML(rootElement);
     }
-
 }

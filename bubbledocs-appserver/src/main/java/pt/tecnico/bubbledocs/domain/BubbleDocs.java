@@ -2,8 +2,6 @@ package pt.tecnico.bubbledocs.domain;
 
 import org.jdom2.Element;
 
-import org.joda.time.*;
-
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.Atomic.TxMode;
 import pt.ist.fenixframework.FenixFramework;
@@ -31,12 +29,12 @@ public class BubbleDocs extends BubbleDocs_Base {
     }
 
     public void importSpreadsheetFromXML(Element spreadsheetElement) {
-    	//TODO Verify user
-    	
+        //TODO Verify user
+
         Spreadsheet spreadsheet = new Spreadsheet();
-        
+
         spreadsheet.importFromXML(spreadsheetElement);
-        
+
         addSpreadsheets(spreadsheet);
     }
 

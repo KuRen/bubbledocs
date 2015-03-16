@@ -10,13 +10,13 @@ public class User extends User_Base {
     protected User() {
         super();
     }
-    
+
     public User(String username, String password, String name) {
         super();
         setUsername(username);
         setPassword(password);
         setName(name);
-        
+
         BubbleDocs bd = BubbleDocs.getInstance();
         setBubbledocs(bd);
     }
@@ -26,7 +26,7 @@ public class User extends User_Base {
         setPassword(password);
         setName(name);
     }
-    
+
     @Atomic(mode = TxMode.READ)
     public ArrayList<Spreadsheet> getOwnSpreadsheetsByName(String name) {
         ArrayList<Spreadsheet> list = new ArrayList<Spreadsheet>();

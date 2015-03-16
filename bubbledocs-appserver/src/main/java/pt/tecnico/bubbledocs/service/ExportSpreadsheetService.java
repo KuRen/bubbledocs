@@ -13,22 +13,22 @@ import pt.tecnico.bubbledocs.xml.XMLWriter;
 
 public class ExportSpreadsheetService extends BubbleDocsService {
 
-	private Spreadsheet spreadsheet;
-	private XMLWriter writer;
-	private byte[] document;
-	
-	public ExportSpreadsheetService(Spreadsheet ss) {
-		this(ss, new BaseXMLWriter());
-	}
-	
-	public ExportSpreadsheetService(Spreadsheet ss, XMLWriter xmlWriter) {
-		spreadsheet = ss;
-		writer = xmlWriter;
-	}
-	
-	@Override
-	protected void dispatch() throws BubbleDocsException {
-		Document jdomDoc = new Document();
+    private Spreadsheet spreadsheet;
+    private XMLWriter writer;
+    private byte[] document;
+
+    public ExportSpreadsheetService(Spreadsheet ss) {
+        this(ss, new BaseXMLWriter());
+    }
+
+    public ExportSpreadsheetService(Spreadsheet ss, XMLWriter xmlWriter) {
+        spreadsheet = ss;
+        writer = xmlWriter;
+    }
+
+    @Override
+    protected void dispatch() throws BubbleDocsException {
+        Document jdomDoc = new Document();
 
         jdomDoc.setRootElement(spreadsheet.accept(writer));
 
@@ -40,10 +40,10 @@ public class ExportSpreadsheetService extends BubbleDocsService {
             throw new ExportDocumentException();
         }
 
-	}
-	
-	public byte[] getResult() {
-		return document;
-	}
+    }
+
+    public byte[] getResult() {
+        return document;
+    }
 
 }

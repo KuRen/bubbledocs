@@ -15,35 +15,35 @@ public abstract class Content extends Content_Base implements XMLable {
         deleteDomainObject();
     }
 
-	public static Content contentFactory(String elementType) {
-		switch (elementType) {
-		case "Literal":
-			return new Literal();
-		case "Reference":
-			return new Reference();
-		case "Addition":
-			return new Addition();
-		case "Subtraction":
-			return new Subtraction();
-		case "Division":
-			return new Division();
-		case "Multiplication":
-			return new Multiplication();
-			
-		default:
-			break;
-		}
-		return null;
-	}
+    public static Content contentFactory(String elementType) {
+        switch (elementType) {
+        case "Literal":
+            return new Literal();
+        case "Reference":
+            return new Reference();
+        case "Addition":
+            return new Addition();
+        case "Subtraction":
+            return new Subtraction();
+        case "Division":
+            return new Division();
+        case "Multiplication":
+            return new Multiplication();
 
-	public abstract void importFromXML(Element contentElement);
-	
-	public abstract Integer getValue();
-	
-	public String toString() {
-		Integer value = getValue();
-		if (value != null)
-			return value.toString();
-		return "#VALUE";
-	}
+        default:
+            break;
+        }
+        return null;
+    }
+
+    public abstract void importFromXML(Element contentElement);
+
+    public abstract Integer getValue();
+
+    public String toString() {
+        Integer value = getValue();
+        if (value != null)
+            return value.toString();
+        return "#VALUE";
+    }
 }
