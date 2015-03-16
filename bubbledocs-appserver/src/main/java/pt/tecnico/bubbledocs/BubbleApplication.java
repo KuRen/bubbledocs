@@ -35,44 +35,37 @@ public class BubbleApplication {
         try {
             BubbleDocs bd = BubbleDocs.getInstance();
             byte[] docSS = null;
-            // initial state if it's empty
-            if (bd.getUsersSet().isEmpty())
-                setupDomain();
 
-            System.out.println(" * * * * * * * * * * * * Started Bubble App * * * * * * * * * * * * ");
+            // initial state if it's empty
+            if (bd.getUsersSet().isEmpty()) {
+                log("Setting up domain");
+                SetupDomain.populateDomain();
+                log("Domain populated");
+            }
+
+            log("Started Bubble Application");
 
             // all registered users
-            System.out.println("--------------------------- USERS ---------------------------");
+            log("Registered Users");
             for (User u : bd.getUsersSet()) {
-                System.out.println("> username: " + u.getUsername());
-                System.out.println("> name: " + u.getName());
-                System.out.println("> password: " + u.getPassword());
-                System.out.println("----------------------------------------------");
+                System.out.printf("[User] Username: %s | Name: %s | Password: %s\n", u.getUsername(), u.getName(),
+                        u.getPassword());
             }
 
             // pf's spreadsheets: name
-            System.out.println("> Spreadsheets (user: pf, attributes: name):");
+            log("Spreadsheets owned by pf");
             for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
-                try {
-                    System.out.println("> name: " + s.getName());
-                } catch (Exception ex) {
-                    System.out.println("NONE");
-                }
-                System.out.println("-------------------");
+                System.out.println("[Spreadsheet] Name: " + s.getName());
             }
 
             // ra's spreadsheets: name
-            System.out.println("> Spreadsheets (user: ra, attributes: name):");
+            log("Spreadsheets owned by ra");
             for (Spreadsheet s : bd.getUserByUsername("ra").getSpreadsheetsSet()) {
-                try {
-                    System.out.println("> name: " + s.getName());
-                } catch (Exception ex) {
-                    System.out.println("NONE");
-                }
-                System.out.println("-------------------");
+                System.out.println("[Spreadsheet] Name: " + s.getName());
             }
 
             // export pf's spreadsheets 
+            log("XML Export");
             for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
                 try {
                     ExportSpreadsheetService expSS = new ExportSpreadsheetService(s);
@@ -85,45 +78,35 @@ public class BubbleApplication {
             }
 
             // permanently removes spreadsheet "Notas ES"
+            log("Delete \"Notas ES\" Spreadsheet from User pf");
             for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
                 if (s.getName().equals("Notas ES")) {
                     s.delete();
-                    System.out.println("> Spreadsheet \"Notas ES\" of user pf permanently deleted from the database");
-                    System.out.println("-------------------");
+                    System.out.println("[Spreadsheet] Name: \"Notas ES\" deleted.");
                 }
             }
 
             // pf's spreadsheets: name and id
-            System.out.println("> Spreadsheets (user: pf, attributes: name and id)");
+            log("Spreadsheets owned by pf");
             for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
-                try {
-                    System.out.println("> name: " + s.getName());
-                    System.out.println("> id:" + s.getId());
-                } catch (Exception ex) {
-                    System.out.println("NONE");
-                }
-                System.out.println("-------------------");
+                System.out.println("[Spreadsheet] Name: " + s.getName() + " | Id: " + s.getId());
             }
 
-            System.out.println("Importing Spreadsheet");
+            log("Import from XML");
             try {
                 ImportSpreadsheetService importService = new ImportSpreadsheetService(docSS);
                 importService.execute();
+                System.out.println("Spreadsheet successfully imported!");
             } catch (ImportDocumentException ide) {
                 System.err.println("Error importing document");
             }
 
-            System.out.println("> Spreadsheets (user: pf, attributes: name and id)");
+            log("Spreadsheets owned by pf");
             for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
-                try {
-                    System.out.println("> name: " + s.getName());
-                    System.out.println("> id:" + s.getId());
-                } catch (Exception ex) {
-                    System.out.println("NONE");
-                }
-                System.out.println("-------------------");
+                System.out.println("[Spreadsheet] Name: " + s.getName() + " | Id: " + s.getId());
             }
 
+            log("XML Export");
             for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
                 try {
                     ExportSpreadsheetService expSS = new ExportSpreadsheetService(s);
@@ -136,11 +119,16 @@ public class BubbleApplication {
             }
 
             bd = null;
+            log("Ready to commit");
             tm.commit();
+            log("Done! 42");
             commit = true;
 
         } catch (SystemException | HeuristicRollbackException | HeuristicMixedException | RollbackException ex) {
-            System.err.println("Transaction error: " + ex.getMessage());
+            System.err.println("Transaction error! :(");
+            System.err.println("ex.toString() : " + ex);
+            System.err.println("ex.getMessage() : " + ex.getMessage());
+            System.err.println("ex.getClass().getName() : " + ex.getClass().getName());
         } finally {
             if (!commit) {
                 try {
@@ -151,11 +139,6 @@ public class BubbleApplication {
             }
         }
 
-    }
-
-    private static void setupDomain() {
-        SetupDomain.populateDomain();
-        System.out.println("//Finished populating domain");
     }
 
     public static void printDomainInXML(byte[] doc) {
@@ -178,5 +161,13 @@ public class BubbleApplication {
         XMLOutputter xml = new XMLOutputter();
         xml.setFormat(Format.getPrettyFormat());
         System.out.println(xml.outputString(jdomDoc));
+    }
+
+    public static void log(String msg) {
+        System.out.println("");
+        System.out.println("==============================================================================================");
+        System.out.println("== " + msg);
+        System.out.println("==============================================================================================");
+        System.out.println("");
     }
 }

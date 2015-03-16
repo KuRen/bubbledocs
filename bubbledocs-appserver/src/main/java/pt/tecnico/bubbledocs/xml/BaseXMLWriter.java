@@ -32,17 +32,12 @@ public class BaseXMLWriter implements XMLWriter {
             cellsElement.addContent(cell.accept(this));
         }
 
-        // TODO: add perms
-        // Element permissionsElement = new Element("Permissions");
-        // spreadsheetElement.addContent(permissionsElement);
-
         return spreadsheetElement;
     }
 
     @Override
     public Element visit(Cell cell) {
         Element cellElement = new Element("Cell");
-
         cellElement.setAttribute("row", cell.getRow().toString());
         cellElement.setAttribute("column", cell.getColumn().toString());
 
@@ -54,28 +49,28 @@ public class BaseXMLWriter implements XMLWriter {
     @Override
     public Element visit(Addition add) {
         Element addElement = new Element("Addition");
-        addBinaryFunctionArguments((BinaryFunction) add, addElement);
+        addBinaryFunctionArguments(add, addElement);
         return addElement;
     }
 
     @Override
     public Element visit(Subtraction sub) {
         Element subElement = new Element("Subtraction");
-        addBinaryFunctionArguments((BinaryFunction) sub, subElement);
+        addBinaryFunctionArguments(sub, subElement);
         return subElement;
     }
 
     @Override
     public Element visit(Multiplication mul) {
         Element mulElement = new Element("Multiplication");
-        addBinaryFunctionArguments((BinaryFunction) mul, mulElement);
+        addBinaryFunctionArguments(mul, mulElement);
         return mulElement;
     }
 
     @Override
     public Element visit(Division div) {
         Element divElement = new Element("Division");
-        addBinaryFunctionArguments((BinaryFunction) div, divElement);
+        addBinaryFunctionArguments(div, divElement);
         return divElement;
     }
 

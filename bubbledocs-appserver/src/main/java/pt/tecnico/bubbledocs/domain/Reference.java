@@ -23,11 +23,20 @@ public class Reference extends Reference_Base implements XMLable {
 
     @Override
     public void importFromXML(Element contentElement) {
-        Cell cell = new Cell();
         Element cellElement = contentElement.getChildren().get(0);
-        cell.setRow(Integer.parseInt(cellElement.getAttribute("row").getValue()));
-        cell.setColumn(Integer.parseInt(cellElement.getAttribute("column").getValue()));
-        setCell(cell);
+        Integer row = Integer.parseInt(cellElement.getAttribute("row").getValue());
+        Integer column = Integer.parseInt(cellElement.getAttribute("column").getValue());
+
+        Cell cell = getCell().getSpreadsheet().findCell(row, column);
+
+        if (cell == null) {
+            cell = new Cell();
+            cell.setRow(row);
+            cell.setColumn(column);
+            getCell().getSpreadsheet().addCells(cell);
+        }
+
+        setReferencedCell(cell);
     }
 
     @Override

@@ -29,7 +29,6 @@ public class ImportSpreadsheetService extends BubbleDocsService {
         try {
             jdomDocument = builder.build(new ByteArrayInputStream(document));
         } catch (JDOMException | IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
             throw new ImportDocumentException();
         }

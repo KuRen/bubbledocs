@@ -35,21 +35,39 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
         setColumns(columns);
         String name = spreadsheetElement.getAttribute("name").getValue();
         setName(name);
-        DateTime date = new DateTime(); //FIXME
+        DateTime date = new DateTime();
         setCreationDate(date);
-        //date = date.parse(spreadsheetElement.getAttribute("date").getValue());
-        //User user = getUserByUsername(spreadsheetElement.getAttribute("user").getValue()); //FIXME?
-
-        // clear current Spreadsheet
-        for (Cell cell : getCellsSet())
-            cell.delete();
+        String username = spreadsheetElement.getAttribute("owner").getValue();
+        BubbleDocs bd = BubbleDocs.getInstance();
+        User owner = bd.getUserByUsername(username);
+        setOwner(owner);
+        setId(bd.getSheetsID());
+        bd.setSheetsID(bd.getSheetsID() + 1);
 
         Element cells = spreadsheetElement.getChild("Cells");
         for (Element cellElement : cells.getChildren("Cell")) {
-            Cell cell = new Cell();
-            cell.importFromXML(cellElement);
+            Integer row = Integer.parseInt(cellElement.getAttribute("row").getValue());
+            Integer column = Integer.parseInt(cellElement.getAttribute("column").getValue());
+
+            Cell cell = findCell(row, column);
+
+            if (cell != null) {
+                cell.importFromXML(cellElement);
+                continue;
+            }
+
+            cell = new Cell();
             addCells(cell);
+            cell.importFromXML(cellElement);
+
         }
+    }
+
+    public Cell findCell(Integer row, Integer column) {
+        for (Cell c : getCellsSet())
+            if (c.getRow().equals(row) && c.getColumn().equals(column))
+                return c;
+        return null;
     }
 
     @Override

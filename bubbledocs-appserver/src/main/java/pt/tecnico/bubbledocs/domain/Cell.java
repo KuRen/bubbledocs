@@ -28,10 +28,8 @@ public class Cell extends Cell_Base implements XMLable {
         String elementType = contentElement.getName();
 
         Content content = Content.contentFactory(elementType);
-
-        content.importFromXML(contentElement);
-
         setContent(content);
+        content.importFromXML(contentElement);
 
     }
 

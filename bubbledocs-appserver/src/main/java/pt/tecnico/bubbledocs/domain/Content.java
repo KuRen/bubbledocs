@@ -39,11 +39,9 @@ public abstract class Content extends Content_Base implements XMLable {
             return new Division();
         case "Multiplication":
             return new Multiplication();
-
         default:
-            break;
+            return null;
         }
-        return null;
     }
 
     public abstract void importFromXML(Element contentElement);

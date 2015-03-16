@@ -41,7 +41,5 @@ public class SetupDomain {
         cell22.setContent(new Division(new Reference(cell11), new Reference(cell34)));
         sheet.addCells(cell22);
 
-        System.out.println("End Populate");
-
     }
 }

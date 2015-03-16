@@ -49,7 +49,7 @@ public abstract class BinaryFunction extends BinaryFunction_Base {
 
         String arg2Type = arg2Element.getName();
         Content arg2content = Content.contentFactory(arg2Type);
-        arg1content.importFromXML(arg2Element);
+        arg2content.importFromXML(arg2Element);
         setArgument2(arg2content);
 
     }
