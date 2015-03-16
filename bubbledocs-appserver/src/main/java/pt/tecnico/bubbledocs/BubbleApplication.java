@@ -43,29 +43,25 @@ public class BubbleApplication {
                 log("Domain populated");
             }
 
-            log("Started Bubble Application");
+            log("Started BubbleDocs Application");
 
-            // all registered users
-            log("Registered Users");
+            log("List of all users registered in BubbleDocs");
             for (User u : bd.getUsersSet()) {
-                System.out.printf("[User] Username: %s | Name: %s | Password: %s\n", u.getUsername(), u.getName(),
+                System.out.printf("[User] Username: %10s | Name: %15s | Password: %10s\n", u.getUsername(), u.getName(),
                         u.getPassword());
             }
 
-            // pf's spreadsheets: name
-            log("Spreadsheets owned by pf");
+            log("List of Spreadsheets owned by pf");
             for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
                 System.out.println("[Spreadsheet] Name: " + s.getName());
             }
 
-            // ra's spreadsheets: name
-            log("Spreadsheets owned by ra");
+            log("List of Spreadsheets owned by ra");
             for (Spreadsheet s : bd.getUserByUsername("ra").getSpreadsheetsSet()) {
                 System.out.println("[Spreadsheet] Name: " + s.getName());
             }
 
-            // export pf's spreadsheets 
-            log("XML Export");
+            log("XML conversion of pf's Spreadsheets");
             for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
                 try {
                     ExportSpreadsheetService expSS = new ExportSpreadsheetService(s);
@@ -77,36 +73,33 @@ public class BubbleApplication {
                 }
             }
 
-            // permanently removes spreadsheet "Notas ES"
-            log("Delete \"Notas ES\" Spreadsheet from User pf");
-            for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
-                if (s.getName().equals("Notas ES")) {
-                    s.delete();
-                    System.out.println("[Spreadsheet] Name: \"Notas ES\" deleted.");
-                }
+            log("Removal of 'Notas de ES' Spreadsheet owned by pf from persistency");
+            for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsByName("Notas ES")) {
+                String name = s.getName();
+                s.delete();
+                System.out.printf("[Spreadsheet] Name: '%s' deleted\n", name);
             }
 
-            // pf's spreadsheets: name and id
-            log("Spreadsheets owned by pf");
+            log("List of Spreadsheets owned by pf");
             for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
                 System.out.println("[Spreadsheet] Name: " + s.getName() + " | Id: " + s.getId());
             }
 
-            log("Import from XML");
+            log("Import of the previously removed Spreadsheet");
             try {
                 ImportSpreadsheetService importService = new ImportSpreadsheetService(docSS);
                 importService.execute();
-                System.out.println("Spreadsheet successfully imported!");
+                System.out.println("[Import] Spreadsheet successfully imported!");
             } catch (ImportDocumentException ide) {
                 System.err.println("Error importing document");
             }
 
-            log("Spreadsheets owned by pf");
+            log("List of Spreadsheets owned by pf");
             for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
                 System.out.println("[Spreadsheet] Name: " + s.getName() + " | Id: " + s.getId());
             }
 
-            log("XML Export");
+            log("XML conversion of pf's Spreadsheets");
             for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
                 try {
                     ExportSpreadsheetService expSS = new ExportSpreadsheetService(s);

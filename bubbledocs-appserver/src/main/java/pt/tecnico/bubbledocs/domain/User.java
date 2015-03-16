@@ -28,7 +28,8 @@ public class User extends User_Base {
         setName(name);
     }
 
-    public static List<Spreadsheet> getSpreadsheetsByUser(User owner, String name) {
+    @Atomic(mode = TxMode.READ)
+    public static List<Spreadsheet> getSpreadsheetsByName(User owner, String name) {
         List<Spreadsheet> spreadsheets = new ArrayList<Spreadsheet>();
         for (Spreadsheet s : owner.getSpreadsheetsSet())
             if (s.getName().equals(name))
@@ -36,14 +37,8 @@ public class User extends User_Base {
         return spreadsheets;
     }
 
-    @Atomic(mode = TxMode.READ)
-    public ArrayList<Spreadsheet> getOwnSpreadsheetsByName(String name) {
-        ArrayList<Spreadsheet> list = new ArrayList<Spreadsheet>();
-
-        for (Spreadsheet s : getSpreadsheetsSet())
-            if (s.getName().equals(name))
-                list.add(s);
-
-        return list;
+    public List<Spreadsheet> getSpreadsheetsByName(String name) {
+        return getSpreadsheetsByName(this, name);
     }
+
 }

@@ -40,14 +40,9 @@ public class BubbleDocs extends BubbleDocs_Base {
 
     @Atomic(mode = TxMode.READ)
     public User getUserByUsername(String username) {
-
-        for (User u : getUsersSet()) {
-            if (u.getUsername().equals(username)) {
-                return u;
-            }
-        }
-
-        // If user not found
+        for (User user : getUsersSet())
+            if (user.getUsername().equals(username))
+                return user;
         return null;
     }
 
