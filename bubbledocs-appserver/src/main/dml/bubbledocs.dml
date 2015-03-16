@@ -76,8 +76,12 @@ relation BinaryFunctionHasArgument2 {
 }
 
 relation ReferenceHasCell {
-	Reference playsRole reference;
-	Cell playsRole referencedCell;
+	Reference playsRole reference {
+		multiplicity *;
+	}
+	Cell playsRole referencedCell {
+		multiplicity 1..1;
+	}
 }
 
 relation CellHasContent {

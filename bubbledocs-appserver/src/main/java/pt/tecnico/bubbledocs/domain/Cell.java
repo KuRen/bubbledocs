@@ -45,7 +45,7 @@ public class Cell extends Cell_Base implements XMLable {
     }
 
     public void delete() {
-        setReference(null);
+   //     setReference(null);
         getContent().delete();
         setSpreadsheet(null);
         setContent(null);
