@@ -11,6 +11,7 @@ public abstract class Content extends Content_Base implements XMLable {
     }
 
     public void delete() {
+
         if (this.getFunctionArg1Set().size() != 0) {
             for (BinaryFunction b : this.getFunctionArg1Set())
                 b.setArgument1(null);;

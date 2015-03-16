@@ -83,6 +83,7 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
 
         this.setOwner(null);
         this.setBubbledocs(null);
+
         deleteDomainObject();
     }
 }

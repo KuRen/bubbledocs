@@ -29,10 +29,12 @@ public abstract class BinaryFunction extends BinaryFunction_Base {
 
     @Override
     public void delete() {
-        getArgument1().removeFunctionArg1(this);
-        getArgument2().removeFunctionArg2(this);
+        getArgument1().delete();
+        getArgument2().delete();
+
         setArgument1(null);
         setArgument2(null);
+
         super.delete();
     }
 
@@ -44,13 +46,13 @@ public abstract class BinaryFunction extends BinaryFunction_Base {
 
         String arg1Type = arg1Element.getName();
         Content arg1content = Content.contentFactory(arg1Type);
-        arg1content.importFromXML(arg1Element);
         setArgument1(arg1content);
+        arg1content.importFromXML(arg1Element);
 
         String arg2Type = arg2Element.getName();
         Content arg2content = Content.contentFactory(arg2Type);
-        arg2content.importFromXML(arg2Element);
         setArgument2(arg2content);
+        arg2content.importFromXML(arg2Element);
 
     }
 }
