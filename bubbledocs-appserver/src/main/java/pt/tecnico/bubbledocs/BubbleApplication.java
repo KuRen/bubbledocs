@@ -87,7 +87,7 @@ public class BubbleApplication {
 
             log("Import of the previously removed Spreadsheet");
             try {
-                ImportSpreadsheetService importService = new ImportSpreadsheetService(docSS);
+                ImportSpreadsheetService importService = new ImportSpreadsheetService(docSS, "pf");
                 importService.execute();
                 System.out.println("[Import] Spreadsheet successfully imported!");
             } catch (ImportDocumentException ide) {

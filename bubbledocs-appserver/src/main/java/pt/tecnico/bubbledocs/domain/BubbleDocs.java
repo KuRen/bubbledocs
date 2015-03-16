@@ -29,8 +29,6 @@ public class BubbleDocs extends BubbleDocs_Base {
     }
 
     public void importSpreadsheetFromXML(Element spreadsheetElement) {
-        //TODO Verify user
-
         Spreadsheet spreadsheet = new Spreadsheet();
 
         spreadsheet.importFromXML(spreadsheetElement);

@@ -15,8 +15,11 @@ public class ImportSpreadsheetService extends BubbleDocsService {
 
     private final byte[] document;
 
-    public ImportSpreadsheetService(byte[] doc) {
+    private final String user;
+
+    public ImportSpreadsheetService(byte[] doc, String username) {
         document = doc;
+        user = username;
     }
 
     @Override
@@ -34,6 +37,12 @@ public class ImportSpreadsheetService extends BubbleDocsService {
         }
 
         Element rootElement = jdomDocument.getRootElement();
+
+        String username = rootElement.getAttribute("owner").getValue();
+        if (!(username.equals(user))) {
+            System.err.println("User " + user + " can't import this spreadsheet");
+            throw new ImportDocumentException();
+        }
         getBubbleDocs().importSpreadsheetFromXML(rootElement);
     }
 }
