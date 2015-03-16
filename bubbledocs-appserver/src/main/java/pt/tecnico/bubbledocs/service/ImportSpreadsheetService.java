@@ -10,6 +10,7 @@ import org.jdom2.input.SAXBuilder;
 
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.ImportDocumentException;
+import pt.tecnico.bubbledocs.exception.UnauthorizedUserException;
 
 public class ImportSpreadsheetService extends BubbleDocsService {
 
@@ -40,7 +41,7 @@ public class ImportSpreadsheetService extends BubbleDocsService {
 
         String username = rootElement.getAttribute("owner").getValue();
         if (!(username.equals(user))) {
-            throw new ImportDocumentException();
+            throw new UnauthorizedUserException();
         }
         getBubbleDocs().importSpreadsheetFromXML(rootElement);
     }

@@ -21,6 +21,7 @@ import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.ExportDocumentException;
 import pt.tecnico.bubbledocs.exception.ImportDocumentException;
+import pt.tecnico.bubbledocs.exception.UnauthorizedUserException;
 import pt.tecnico.bubbledocs.service.ExportSpreadsheetService;
 import pt.tecnico.bubbledocs.service.ImportSpreadsheetService;
 
@@ -92,6 +93,8 @@ public class BubbleApplication {
                 System.out.println("[Import] Spreadsheet successfully imported!");
             } catch (ImportDocumentException ide) {
                 System.err.println("Error importing document");
+            } catch (UnauthorizedUserException aue) {
+                System.err.println("Error importing document: " + aue.getMessage());
             }
 
             log("List of Spreadsheets owned by pf");
