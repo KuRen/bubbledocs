@@ -82,7 +82,7 @@ public class BaseXMLWriter implements XMLWriter {
     @Override
     public Element visit(Literal literal) {
         Element literalElement = new Element("Literal");
-        literalElement.addContent(literal.getLiteral().toString());
+        literalElement.setAttribute("literal", literal.getLiteral().toString());
         return literalElement;
     }
 
