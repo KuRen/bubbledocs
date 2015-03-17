@@ -107,7 +107,7 @@ public class BubbleApplication {
 
     @Atomic
     private static void listSpreadsheetsOwnedBy(String username) {
-        for (Spreadsheet s : bd.getUserByUsername("pf").getSpreadsheetsSet()) {
+        for (Spreadsheet s : bd.getUserByUsername(username).getSpreadsheetsSet()) {
             System.out.println("[Spreadsheet] Name: " + s.getName() + " | Id: " + s.getId());
         }
     }
