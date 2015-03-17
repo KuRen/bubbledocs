@@ -8,6 +8,10 @@ To compile this application run this commands:
 mvn compile
 mvn ff:ff-process-atomic-annotations
 ```
+or
+```
+mvn test
+```
 
 ## Run
 
