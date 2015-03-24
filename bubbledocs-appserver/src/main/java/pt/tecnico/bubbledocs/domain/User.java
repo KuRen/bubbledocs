@@ -5,6 +5,7 @@ import java.util.List;
 
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.Atomic.TxMode;
+import pt.tecnico.bubbledocs.exception.DuplicateUsernameException;
 
 public class User extends User_Base {
 
@@ -13,12 +14,16 @@ public class User extends User_Base {
     }
 
     public User(String username, String password, String name) {
-        super();
+    	super();
+    	BubbleDocs bd = BubbleDocs.getInstance();
+    	for(User u : bd.getUsersSet()) {
+    		if(username.equals(u.getUsername())) {
+    			throw new DuplicateUsernameException();
+    		}
+    	}
         setUsername(username);
         setPassword(password);
         setName(name);
-
-        BubbleDocs bd = BubbleDocs.getInstance();
         setBubbledocs(bd);
     }
 

@@ -18,7 +18,7 @@ public class SetupDomain {
         BubbleDocs bd = BubbleDocs.getInstance();
 
         bd.addUsers(Root.getInstance());
-
+        
         User pf = new User("pf", "sub", "Paul Door");
         new User("ra", "cor", "Step Rabbit");
         Spreadsheet sheet = new Spreadsheet(300, 20, "Notas ES", pf);
