@@ -11,6 +11,7 @@ import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.InvalidSpreadSheetIdException;
+import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
