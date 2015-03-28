@@ -3,6 +3,7 @@ package pt.tecnico.bubbledocs.domain;
 import org.jdom2.Element;
 import org.joda.time.DateTime;
 
+import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
 import pt.tecnico.bubbledocs.xml.XMLWriter;
 import pt.tecnico.bubbledocs.xml.XMLable;
 
@@ -61,6 +62,15 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
             cell.importFromXML(cellElement);
 
         }
+    }
+
+    @Override
+    public void addCells(Cell cell) {
+        if (cell.getRow() != null && cell.getColumn() != null)
+            if (cell.getRow() > getRows() || cell.getColumn() > getColumns())
+                throw new CellOutOfRangeException();
+
+        super.addCells(cell);
     }
 
     public Cell findCell(Integer row, Integer column) {
