@@ -1,16 +1,23 @@
 package pt.tecnico.bubbledocs.service;
 
+import java.util.Random;
+
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 
+import org.joda.time.Hours;
+import org.joda.time.LocalTime;
 import org.junit.After;
 import org.junit.Before;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.core.WriteOnReadError;
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
+import pt.tecnico.bubbledocs.domain.Session;
+import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.domain.User;
+import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
 // add needed import declarations
 
@@ -82,20 +89,32 @@ public class BubbleDocsServiceTest {
 
     // put a user into session and returns the token associated to it
     String addUserToSession(String username) {
-        // add code here
-        return null;
+        BubbleDocs bd = BubbleDocs.getInstance();
+        SessionManager sm = bd.getManager();
+        String token = username + new Random().nextInt(10);
+        sm.addSession(new Session(username, token, new LocalTime()));
+        return token;
 
     }
 
     // remove a user from session given its token
     void removeUserFromSession(String token) {
-        // add code here
+    	BubbleDocs bd = BubbleDocs.getInstance();
+        SessionManager sm = bd.getManager();
+        for(Session session : sm.getSessionSet()) {
+    		if(session.getToken().equals(token)) {
+    			sm.removeSession(session);
+    			session.delete();
+    		}
+    	}
     }
 
     // return the user registered in session whose token is equal to token
     User getUserFromSession(String token) {
-        // add code here
-        return null;
+    	BubbleDocs bd = BubbleDocs.getInstance();
+        SessionManager sm = bd.getManager();
+        String username = sm.findUserByToken(token);
+        return bd.getUserByUsername(username);
     }
 
 }

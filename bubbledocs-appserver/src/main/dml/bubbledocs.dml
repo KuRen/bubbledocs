@@ -6,6 +6,14 @@ class BubbleDocs {
 	Integer SheetsID;
 }
 
+class SessionManager;
+
+class Session {
+	LocalTime lastActivity;
+	String username;
+	String token;
+}
+
 class User {
     String name;
     String password;
@@ -55,6 +63,24 @@ relation DomainRootHasBubbleDocsApplication {
     BubbleDocs playsRole bubbleDocs {
         multiplicity 0..1;
     }
+}
+
+relation BubbleDocsHasSessionManager {
+	BubbleDocs playsRole bubbledocs {
+		multiplicity 1..1;
+	}
+	SessionManager playsRole manager {
+		multiplicity 1..1;
+	}
+}
+
+relation SessionManagerHasSession {
+	SessionManager playsRole manager {
+		multiplicity 1..1;
+	}
+	Session playsRole session {
+		multiplicity *;
+	}
 }
 
 relation BinaryFunctionHasArgument1 {

@@ -1,20 +1,64 @@
 package pt.tecnico.bubbledocs.service;
 
+import java.util.Random;
+
+import org.joda.time.Hours;
+import org.joda.time.LocalTime;
+
+import pt.tecnico.bubbledocs.domain.BubbleDocs;
+import pt.tecnico.bubbledocs.domain.Session;
+import pt.tecnico.bubbledocs.domain.SessionManager;
+import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
+import pt.tecnico.bubbledocs.exception.UnknownBubbleDocsUserException;
+import pt.tecnico.bubbledocs.exception.WrongPasswordException;
 
 public class LoginUser extends BubbleDocsService {
     private String userToken;
+    private String username;
+    private String password;
 
     public LoginUser(String username, String password) {
-        // add code here
+        this.username = username;
+        this.password = password;
     }
 
     @Override
     protected void dispatch() throws BubbleDocsException {
-        // add code here
+    	BubbleDocs bd = BubbleDocs.getInstance();
+    	SessionManager sm = bd.getManager();
+    	sm.cleanOldSessions();
+    	User user = bd.getUserByUsername(getUsername());
+    	
+    	if(user==null) throw new UnknownBubbleDocsUserException();
+    	
+    	if(user.getPassword().equals(getPassword())) {
+    		if(sm.userIsInSession(getUsername())) {
+        		for(Session session : sm.getSessionSet()) {
+            		if(session.getUsername().equals(getUsername())) {
+            			sm.removeSession(session);
+            			session.delete();
+            		}
+            	}
+        	}
+    		userToken = username + new Random().nextInt(10);
+    		sm.addSession(new Session(getUsername(), getUserToken(), new LocalTime()));
+    	}
+    	else throw new WrongPasswordException();
     }
 
     public final String getUserToken() {
         return userToken;
     }
+    
+    public final String getUsername() {
+        return username;
+    }
+    
+    public final String getPassword() {
+        return password;
+    }
+    
+    
+    
 }
