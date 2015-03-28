@@ -8,6 +8,7 @@ import org.junit.Before;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.core.WriteOnReadError;
+import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.domain.User;
 
@@ -41,47 +42,53 @@ public class BubbleDocsServiceTest {
     }
 
     // auxiliary methods that access the domain layer and are needed in the test classes
-    // for defining the iniital state and checking that the service has the expected behavior
+    // for defining the initial state and checking that the service has the expected behavior
     User createUser(String username, String password, String name) {
-	// add code here
-    	return null;
+        // add code here
+        return null;
     }
 
-    public Spreadsheet createSpreadSheet(User user, String name, int row,
-            int column) {
-	// add code here
-    	return null;
+    public Spreadsheet createSpreadSheet(User user, String name, int row, int column) {
+        BubbleDocs bd = BubbleDocs.getInstance();
+        Spreadsheet ss = new Spreadsheet(row, column, name, user);
+        bd.addSpreadsheets(ss);
+        return ss;
     }
 
     // returns a spreadsheet whose name is equal to name
     public Spreadsheet getSpreadSheet(String name) {
-	// add code here
-    	return null;
+        BubbleDocs bd = BubbleDocs.getInstance();
+
+        for (Spreadsheet ss : bd.getSpreadsheetsSet())
+            if (ss.getName().equals(name))
+                return ss;
+
+        return null;
     }
 
     // returns the user registered in the application whose username is equal to username
     User getUserFromUsername(String username) {
-	// add code here
-    	return null;
+        // add code here
+        return null;
 
     }
 
     // put a user into session and returns the token associated to it
     String addUserToSession(String username) {
-	// add code here
-    	return null;
+        // add code here
+        return null;
 
     }
 
     // remove a user from session given its token
     void removeUserFromSession(String token) {
-	// add code here
+        // add code here
     }
 
     // return the user registered in session whose token is equal to token
     User getUserFromSession(String token) {
-	// add code here
-    	return null;
+        // add code here
+        return null;
     }
 
 }

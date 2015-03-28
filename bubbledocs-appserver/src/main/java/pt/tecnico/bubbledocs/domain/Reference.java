@@ -56,7 +56,7 @@ public class Reference extends Reference_Base implements XMLable {
 
     @Override
     public Integer getValue() {
-        return getCell().getContent().getValue();
+        return getReferencedCell().getContent().getValue();
     }
 
     @Override
