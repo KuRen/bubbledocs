@@ -16,11 +16,6 @@ public class User extends User_Base {
     public User(String username, String password, String name) {
     	super();
     	BubbleDocs bd = BubbleDocs.getInstance();
-    	for(User u : bd.getUsersSet()) {
-    		if(username.equals(u.getUsername())) {
-    			throw new DuplicateUsernameException();
-    		}
-    	}
         setUsername(username);
         setPassword(password);
         setName(name);
