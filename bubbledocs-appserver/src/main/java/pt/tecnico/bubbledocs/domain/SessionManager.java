@@ -3,45 +3,55 @@ package pt.tecnico.bubbledocs.domain;
 import org.joda.time.Hours;
 import org.joda.time.LocalTime;
 
+import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
 public class SessionManager extends SessionManager_Base {
-    
+
+    private static final int TIMEDIFFERENCE = 2;
+
     public SessionManager() {
         super();
     }
-    
+
     public void cleanOldSessions() {
-    	for(Session session : this.getSessionSet()) {
-    		if(Hours.hoursBetween(session.getLastActivity(), new LocalTime()).getHours() >= 2) {
-    			this.removeSession(session);
-    			session.delete();
-    		}
-    	}
+        for (Session session : this.getSessionSet()) {
+            if (Hours.hoursBetween(session.getLastActivity(), new LocalTime()).getHours() >= TIMEDIFFERENCE) {
+                this.removeSession(session);
+                session.delete();
+            }
+        }
     }
-    
+
     public boolean userIsInSession(String username) {
-    	for(Session session : this.getSessionSet()) {
-    		if(session.getUsername().equals(username)) return true;
-    	}
-    	return false;
+        for (Session session : this.getSessionSet()) {
+            if (session.getUsername().equals(username))
+                return true;
+        }
+        return false;
     }
-    
+
     public String findUserByToken(String token) {
-    	for(Session session : this.getSessionSet()) {
-    		if(session.getToken().equals(token)) return session.getUsername();
-    	}
-    	return null;
+        for (Session session : this.getSessionSet()) {
+            if (session.getToken().equals(token)) {
+                if (Hours.hoursBetween(session.getLastActivity(), new LocalTime()).getHours() < TIMEDIFFERENCE) {
+                    return session.getUsername();
+                } else {
+                    throw new TokenExpiredException();
+                }
+            }
+        }
+        return null;
     }
-    
+
     public void refreshSession(String username) {
-    	for(Session session : this.getSessionSet()) {
-    		if(session.getUsername().equals(username)) {
-    			session.setLastActivity(new LocalTime());
-    			return;
-    		}
-    	}
-    	throw new UserNotInSessionException();
+        for (Session session : this.getSessionSet()) {
+            if (session.getUsername().equals(username)) {
+                session.setLastActivity(new LocalTime());
+                return;
+            }
+        }
+        throw new UserNotInSessionException();
     }
-    
+
 }
