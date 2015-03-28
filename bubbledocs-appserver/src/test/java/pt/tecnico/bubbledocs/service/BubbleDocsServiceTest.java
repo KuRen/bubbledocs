@@ -5,7 +5,6 @@ import java.util.Random;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 
-import org.joda.time.Hours;
 import org.joda.time.LocalTime;
 import org.junit.After;
 import org.junit.Before;
@@ -17,7 +16,6 @@ import pt.tecnico.bubbledocs.domain.Session;
 import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.domain.User;
-import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
 // add needed import declarations
 
@@ -54,7 +52,7 @@ public class BubbleDocsServiceTest {
         BubbleDocs bd = BubbleDocs.getInstance();
         User user = new User(username, password, name);
         bd.addUsers(user);
-        return null;
+        return user;
     }
 
     public Spreadsheet createSpreadSheet(User user, String name, int row, int column) {
@@ -99,19 +97,19 @@ public class BubbleDocsServiceTest {
 
     // remove a user from session given its token
     void removeUserFromSession(String token) {
-    	BubbleDocs bd = BubbleDocs.getInstance();
+        BubbleDocs bd = BubbleDocs.getInstance();
         SessionManager sm = bd.getManager();
-        for(Session session : sm.getSessionSet()) {
-    		if(session.getToken().equals(token)) {
-    			sm.removeSession(session);
-    			session.delete();
-    		}
-    	}
+        for (Session session : sm.getSessionSet()) {
+            if (session.getToken().equals(token)) {
+                sm.removeSession(session);
+                session.delete();
+            }
+        }
     }
 
     // return the user registered in session whose token is equal to token
     User getUserFromSession(String token) {
-    	BubbleDocs bd = BubbleDocs.getInstance();
+        BubbleDocs bd = BubbleDocs.getInstance();
         SessionManager sm = bd.getManager();
         String username = sm.findUserByToken(token);
         return bd.getUserByUsername(username);

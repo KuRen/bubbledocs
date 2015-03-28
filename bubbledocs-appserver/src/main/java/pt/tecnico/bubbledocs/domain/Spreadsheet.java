@@ -19,14 +19,20 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
         BubbleDocs bd = BubbleDocs.getInstance();
         setId(bd.getSheetsID());
         bd.setSheetsID(bd.getSheetsID() + 1);
+        setBubbledocs(bd);
+
         setRows(rows);
         setColumns(columns);
         setName(name);
         setOwner(user);
+
+        Permission permission = new Permission();
+        permission.setPermission(PermissionType.WRITE);
+        permission.setUser(user);
+        addPermissions(permission);
+
         DateTime date = new DateTime();
         setCreationDate(date);
-
-        setBubbledocs(bd);
     }
 
     public void importFromXML(Element spreadsheetElement) {
@@ -70,44 +76,45 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
         if (cell.getRow() != null && cell.getColumn() != null)
             if (cell.getRow() > getRows() || cell.getColumn() > getColumns())
                 throw new CellOutOfRangeException();
-        
+
         super.addCells(cell);
     }
+
     /**
      * @Deprecated This method does not validate if the User can perform this operation
      */
     @Override
     @Deprecated
     public void addPermissions(Permission permission) {
-    	super.addPermissions(permission);
+        super.addPermissions(permission);
     }
-    
+
     public void addPermissions(Permission permissions, User user) {
-    	if (getOwner().equals(user)) {
-    		super.addPermissions(permissions);
-    		return;
-    	}
-    	
-    	Permission permission = findPermissionsForUser(user);
-    	
-    	if (permission == null || permission.getPermission() != PermissionType.WRITE) {
-    		throw new UnauthorizedUserException();
-    	}
-    	
-    	super.addPermissions(permissions);
+        if (getOwner().equals(user)) {
+            super.addPermissions(permissions);
+            return;
+        }
+
+        Permission permission = findPermissionsForUser(user);
+
+        if (permission == null || permission.getPermission() != PermissionType.WRITE) {
+            throw new UnauthorizedUserException();
+        }
+
+        super.addPermissions(permissions);
     }
-    
+
     public Permission findPermissionsForUser(User user) {
-    	return findPermissionsForUser(user.getUsername());
+        return findPermissionsForUser(user.getUsername());
     }
-    
+
     public Permission findPermissionsForUser(String username) {
-    	for (Permission p : getPermissionsSet()) {
-    		if (p.getUser().getUsername().equals(username)) {
-    			return p;
-    		}
-    	}
-    	return null;
+        for (Permission p : getPermissionsSet()) {
+            if (p.getUser().getUsername().equals(username)) {
+                return p;
+            }
+        }
+        return null;
     }
 
     public Cell findCell(Integer row, Integer column) {
