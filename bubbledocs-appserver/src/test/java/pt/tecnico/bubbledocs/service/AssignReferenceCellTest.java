@@ -1,6 +1,7 @@
 package pt.tecnico.bubbledocs.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 
@@ -45,6 +46,7 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
         Cell c1 = getSpreadSheet(SPREADSHEET_NAME).findCell(1, 1);
         Cell c2 = getSpreadSheet(SPREADSHEET_NAME).findCell(2, 2);
 
+        assertNotNull(c2.getContent());
         assertEquals(c2.getContent().getClass().getSimpleName(), "Reference");
         assertEquals(c1.asString(), c2.asString());
     }
