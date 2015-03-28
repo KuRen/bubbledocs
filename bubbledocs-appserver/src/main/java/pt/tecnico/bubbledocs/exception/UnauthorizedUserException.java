@@ -6,5 +6,9 @@ public class UnauthorizedUserException extends BubbleDocsException {
     public UnauthorizedUserException() {
         super("User is not authorized to perform this action.");
     }
+    
+    public UnauthorizedUserException(String message) {
+    	super(message);
+    }
 
 }

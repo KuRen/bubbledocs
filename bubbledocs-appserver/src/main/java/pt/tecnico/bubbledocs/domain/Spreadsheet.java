@@ -4,6 +4,7 @@ import org.jdom2.Element;
 import org.joda.time.DateTime;
 
 import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
+import pt.tecnico.bubbledocs.exception.UnauthorizedUserException;
 import pt.tecnico.bubbledocs.xml.XMLWriter;
 import pt.tecnico.bubbledocs.xml.XMLable;
 
@@ -69,8 +70,44 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
         if (cell.getRow() != null && cell.getColumn() != null)
             if (cell.getRow() > getRows() || cell.getColumn() > getColumns())
                 throw new CellOutOfRangeException();
-
+        
         super.addCells(cell);
+    }
+    /**
+     * @Deprecated This method does not validate if the User can perform this operation
+     */
+    @Override
+    @Deprecated
+    public void addPermissions(Permission permission) {
+    	super.addPermissions(permission);
+    }
+    
+    public void addPermissions(Permission permissions, User user) {
+    	if (getOwner().equals(user)) {
+    		super.addPermissions(permissions);
+    		return;
+    	}
+    	
+    	Permission permission = findPermissionsForUser(user);
+    	
+    	if (permission == null || permission.getPermission() != PermissionType.WRITE) {
+    		throw new UnauthorizedUserException();
+    	}
+    	
+    	super.addPermissions(permissions);
+    }
+    
+    public Permission findPermissionsForUser(User user) {
+    	return findPermissionsForUser(user.getUsername());
+    }
+    
+    public Permission findPermissionsForUser(String username) {
+    	for (Permission p : getPermissionsSet()) {
+    		if (p.getUser().getUsername().equals(username)) {
+    			return p;
+    		}
+    	}
+    	return null;
     }
 
     public Cell findCell(Integer row, Integer column) {
