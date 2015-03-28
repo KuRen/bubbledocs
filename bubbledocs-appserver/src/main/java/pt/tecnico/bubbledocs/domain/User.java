@@ -41,4 +41,15 @@ public class User extends User_Base {
         return getSpreadsheetsByName(this, name);
     }
 
+    public void delete() {
+    	setBubbledocs(null);
+    	for(Permission permission : getPermissionsSet()) {
+    		removePermissions(permission);
+    	}
+    	for(Spreadsheet spreadsheet : getSpreadsheetsSet()) {
+    		removeSpreadsheets(spreadsheet);
+    		spreadsheet.delete();
+    	}
+    	deleteDomainObject();
+    }
 }

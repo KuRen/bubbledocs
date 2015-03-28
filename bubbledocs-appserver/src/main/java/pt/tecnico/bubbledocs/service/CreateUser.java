@@ -6,7 +6,7 @@ import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.DuplicateUsernameException;
 import pt.tecnico.bubbledocs.exception.EmptyUsernameException;
-import pt.tecnico.bubbledocs.exception.UnauthorizedUserException;
+import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
 public class CreateUser extends BubbleDocsService {
@@ -42,7 +42,7 @@ public class CreateUser extends BubbleDocsService {
         	User user = new User(getNewUsername(),getPassword(), getName());
         	bd.addUsers(user);
         }
-        else throw new UnauthorizedUserException();
+        else throw new UnauthorizedOperationException();
     }
     
     public final String getUserToken() {
