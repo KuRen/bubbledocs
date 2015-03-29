@@ -9,6 +9,7 @@ import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
+import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.InvalidSpreadSheetIdException;
 import pt.tecnico.bubbledocs.exception.NotLiteralException;
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
@@ -32,11 +33,6 @@ public class AssignLiteralCell extends BubbleDocsService {
 
     @Override
     protected void dispatch() throws BubbleDocsException {
-
-        String[] cell = this.cellId.split(";");
-        Integer cellRow = Integer.parseInt(cell[0]);
-        Integer cellColumn = Integer.parseInt(cell[1]);
-
         BubbleDocs bd = getBubbleDocs();
         Spreadsheet ss = bd.getSpreadsheetById(docId);
 
@@ -60,6 +56,17 @@ public class AssignLiteralCell extends BubbleDocsService {
 
         if (permission == null || permission.getPermission() != PermissionType.WRITE)
             throw new UnauthorizedOperationException();
+
+        Integer cellRow;
+        Integer cellColumn;
+
+        try {
+            String[] cell = this.cellId.split(";");
+            cellRow = Integer.parseInt(cell[0]);
+            cellColumn = Integer.parseInt(cell[1]);
+        } catch (NumberFormatException e) {
+            throw new InvalidArgumentException();
+        }
 
         //para o caso da celula nao existir na folha (fora dos limites)
         if (cellRow > ss.getRows() || cellColumn > ss.getColumns()) {
