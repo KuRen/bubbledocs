@@ -32,11 +32,10 @@ public class CreateUserTest extends BubbleDocsServiceTest {
 
     @Test
     public void success() {
-        CreateUser service = new CreateUser(root, USERNAME_DOES_NOT_EXIST, "jose",
-                "José Ferreira");
+        CreateUser service = new CreateUser(root, USERNAME_DOES_NOT_EXIST, "jose", "José Ferreira");
         service.execute();
 
-	// User is the domain class that represents a User
+        // User is the domain class that represents a User
         User user = getUserFromUsername(USERNAME_DOES_NOT_EXIST);
 
         assertEquals(USERNAME_DOES_NOT_EXIST, user.getUsername());
@@ -46,8 +45,7 @@ public class CreateUserTest extends BubbleDocsServiceTest {
 
     @Test(expected = DuplicateUsernameException.class)
     public void usernameExists() {
-        CreateUser service = new CreateUser(root, USERNAME, "jose",
-                "José Ferreira");
+        CreateUser service = new CreateUser(root, USERNAME, "jose", "José Ferreira");
         service.execute();
     }
 
@@ -59,16 +57,14 @@ public class CreateUserTest extends BubbleDocsServiceTest {
 
     @Test(expected = UnauthorizedOperationException.class)
     public void unauthorizedUserCreation() {
-        CreateUser service = new CreateUser(ars, USERNAME_DOES_NOT_EXIST, "jose",
-                "José Ferreira");
+        CreateUser service = new CreateUser(ars, USERNAME_DOES_NOT_EXIST, "jose", "José Ferreira");
         service.execute();
     }
 
     @Test(expected = UserNotInSessionException.class)
     public void accessUsernameNotExist() {
         removeUserFromSession(root);
-        CreateUser service = new CreateUser(root, USERNAME_DOES_NOT_EXIST, "jose",
-                "José Ferreira");
+        CreateUser service = new CreateUser(root, USERNAME_DOES_NOT_EXIST, "jose", "José Ferreira");
         service.execute();
     }
 
