@@ -115,4 +115,22 @@ public class BubbleDocsServiceTest {
         return bd.getUserByUsername(username);
     }
 
+    boolean expireToken(String token) {
+        // very very ugly. but there is no relationship between User and Session
+        User user = getUserFromSession(token);
+        SessionManager sessionManager = FenixFramework.getDomainRoot().getBubbleDocs().getManager();
+        Session session = null;
+        for (Session s : sessionManager.getSessionSet()) {
+            if (s.getUsername().equals(user.getUsername())) {
+                session = s;
+                break;
+            }
+        }
+        if (session == null)
+            return false;
+
+        org.joda.time.LocalTime localTime = session.getLastActivity();
+        session.setLastActivity(localTime.minusHours(5));
+        return true;
+    }
 }
