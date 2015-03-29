@@ -2,6 +2,7 @@ package pt.tecnico.bubbledocs.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -57,7 +58,8 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
 
         assertNotNull(c2.getContent());
         assertEquals(c2.getContent().getClass().getSimpleName(), "Reference");
-        assertEquals(c1.asString(), c2.asString());
+        assertEquals(c1.getContent().getValue(), c2.getContent().getValue());
+        assertTrue(c2.getContent().getValue() == VALUE);
     }
 
     @Test(expected = UnauthorizedOperationException.class)
