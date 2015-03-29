@@ -5,7 +5,6 @@ import java.util.List;
 
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.Atomic.TxMode;
-import pt.tecnico.bubbledocs.exception.DuplicateUsernameException;
 
 public class User extends User_Base {
 
@@ -14,8 +13,8 @@ public class User extends User_Base {
     }
 
     public User(String username, String password, String name) {
-    	super();
-    	BubbleDocs bd = BubbleDocs.getInstance();
+        super();
+        BubbleDocs bd = BubbleDocs.getInstance();
         setUsername(username);
         setPassword(password);
         setName(name);
@@ -42,14 +41,14 @@ public class User extends User_Base {
     }
 
     public void delete() {
-    	setBubbledocs(null);
-    	for(Permission permission : getPermissionsSet()) {
-    		removePermissions(permission);
-    	}
-    	for(Spreadsheet spreadsheet : getSpreadsheetsSet()) {
-    		removeSpreadsheets(spreadsheet);
-    		spreadsheet.delete();
-    	}
-    	deleteDomainObject();
+        setBubbledocs(null);
+        for (Permission permission : getPermissionsSet()) {
+            removePermissions(permission);
+        }
+        for (Spreadsheet spreadsheet : getSpreadsheetsSet()) {
+            removeSpreadsheets(spreadsheet);
+            spreadsheet.delete();
+        }
+        deleteDomainObject();
     }
 }
