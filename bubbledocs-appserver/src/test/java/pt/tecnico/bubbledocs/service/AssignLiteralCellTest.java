@@ -15,6 +15,7 @@ import pt.tecnico.bubbledocs.exception.InvalidSpreadSheetIdException;
 import pt.tecnico.bubbledocs.exception.NotLiteralException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
+import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 
 public class AssignLiteralCellTest extends BubbleDocsServiceTest {
 
@@ -29,6 +30,7 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
     private static final String SPREADSHEET_NAME = "ss-name";
     private static final int COLUMNS = 5;
     private static final int ROWS = 5;
+    private static final String CELL = "1;1";
     private static final String VALUE = "42";
 
     @Override
@@ -39,18 +41,20 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
         User ars = createUser(USERNAME, PASSWORD, "António Rito Silva");
         token = addUserToSession(USERNAME);
 
+        //cria a spreadsheet
         Spreadsheet ss = createSpreadSheet(ars, SPREADSHEET_NAME, ROWS, COLUMNS);
         id = ss.getId();
 
-        //cria as celulas
+        //cria a celula
         Cell c1 = new Cell(ss, 1, 1);
-
+        
+        //adiciona a celula a spreadsheet
         ss.addCells(c1);
     }
 
     @Test
     public void success() {
-        AssignLiteralCell service = new AssignLiteralCell(token, id, "1;1", VALUE);
+        AssignLiteralCell service = new AssignLiteralCell(token, id, CELL, VALUE);
         service.execute();
 
         Cell c1 = getSpreadSheet(SPREADSHEET_NAME).findCell(1, 1);
@@ -63,28 +67,21 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
     //testa para o caso do user nao ter permissoes de escrita
     @Test(expected = UnauthorizedOperationException.class)
     public void unauthorizedToken() {
-        AssignLiteralCell service = new AssignLiteralCell(notOwnerToken, id, "1;1", VALUE);
+        AssignLiteralCell service = new AssignLiteralCell(notOwnerToken, id, CELL, VALUE);
         service.execute();
     }
 
     // testa para o caso do utilizador nao estar na sessao
     @Test(expected = UserNotInSessionException.class)
     public void absentUser() {
-        AssignLiteralCell service = new AssignLiteralCell("invalid", id, "2;2", VALUE);
-        service.execute();
-    }
-
-    //testa para o caso de nao ser dado um numero
-    @Test(expected = NotLiteralException.class)
-    public void invalidType() {
-        AssignLiteralCell service = new AssignLiteralCell(token, id, "1;1", "qwerty");
+        AssignLiteralCell service = new AssignLiteralCell("invalid", id, CELL, VALUE);
         service.execute();
     }
 
     //testa para o caso de nao ser dado um numero inteiro
     @Test(expected = NotLiteralException.class)
     public void invalidType2() {
-        AssignLiteralCell service = new AssignLiteralCell(token, id, "1;1", "-2.3");
+        AssignLiteralCell service = new AssignLiteralCell(token, id, CELL, "-2.3");
         service.execute();
     }
 
@@ -92,6 +89,13 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
     @Test(expected = InvalidArgumentException.class)
     public void invalidArgumentCell() {
         AssignLiteralCell service = new AssignLiteralCell(token, id, "qwerty", VALUE);
+        service.execute();
+    }
+    
+    //testa para o caso de nao ser dado um numero
+    @Test(expected = NotLiteralException.class)
+    public void invalidType() {
+        AssignLiteralCell service = new AssignLiteralCell(token, id, CELL, "qwerty");
         service.execute();
     }
 
@@ -105,7 +109,36 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
     //testa para o caso da folha nao existir
     @Test(expected = InvalidSpreadSheetIdException.class)
     public void invalidSpreadSheetId() {
-        AssignLiteralCell service = new AssignLiteralCell(token, 0, "1;1", VALUE);
+        AssignLiteralCell service = new AssignLiteralCell(token, 0, CELL, VALUE);
+        service.execute();
+    }
+
+    //testa para o caso do argumento correspondente ao token ser invalido
+    @Test(expected = InvalidArgumentException.class)
+    public void emptyToken() {
+        AssignReferenceCell service = new AssignReferenceCell("", id, CELL, VALUE);
+        service.execute();
+    }
+
+    //testa para o caso do argumento correspondente a celula ser invalido
+    @Test(expected = InvalidArgumentException.class)
+    public void emptyCell() {
+        AssignReferenceCell service = new AssignReferenceCell(token, id, "", VALUE);
+        service.execute();
+    }
+
+    //testa para o caso do argumento correspondente ao conteudo ser invalido
+    @Test(expected = InvalidArgumentException.class)
+    public void emptyReferencedCell() {
+        AssignReferenceCell service = new AssignReferenceCell(token, id, CELL, "");
+        service.execute();
+    }
+
+    //testa para o caso do token ter expirado
+    @Test(expected = TokenExpiredException.class)
+    public void expiredToken() {
+        expireToken(token);
+        AssignReferenceCell service = new AssignReferenceCell(token, id, CELL, VALUE);
         service.execute();
     }
 }
