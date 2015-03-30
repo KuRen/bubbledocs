@@ -42,7 +42,7 @@ public class LoginUser extends BubbleDocsService {
                 }
             }
             userToken = username + new Random().nextInt(10);
-            sm.addSession(new Session(getUsername(), getUserToken(), new LocalTime()));
+            sm.addSession(new Session(getBubbleDocs().getUserByUsername(getUsername()), getUserToken(), new LocalTime()));
         } else
             throw new WrongPasswordException();
     }

@@ -10,7 +10,6 @@ class SessionManager;
 
 class Session {
 	LocalTime lastActivity;
-	String username;
 	String token;
 }
 
@@ -80,6 +79,15 @@ relation SessionManagerHasSession {
 	}
 	Session playsRole session {
 		multiplicity *;
+	}
+}
+
+relation SessionHasUser {
+	Session playsRole session {
+		multiplicity 0..1;
+	}
+	User playsRole user {
+		multiplicity 1..1;
 	}
 }
 

@@ -10,12 +10,12 @@ import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
 public class CreateUser extends BubbleDocsService {
-	
-	private String userToken;
-	private String newUsername;
-	private String password;
-	private String name;
-	
+
+    private String userToken;
+    private String newUsername;
+    private String password;
+    private String name;
+
     public CreateUser(String userToken, String newUsername, String password, String name) {
         this.userToken = userToken;
         this.newUsername = newUsername;
@@ -25,38 +25,43 @@ public class CreateUser extends BubbleDocsService {
 
     @Override
     protected void dispatch() throws BubbleDocsException {
-    	
-    	if(getNewUsername().equals("")) throw new EmptyUsernameException();
-    	
-    	BubbleDocs bd = BubbleDocs.getInstance();
-    	SessionManager sm = bd.getManager();
-    	sm.cleanOldSessions();
-    	String username = sm.findUserByToken(getUserToken());
-    	if(username == null) throw new UserNotInSessionException();
-        if(username.equals("root")) {
-        	for(User u : bd.getUsersSet()) {
-        		if(getNewUsername().equals(u.getUsername())) {
-        			throw new DuplicateUsernameException();
-        		}
-        	}
-        	User user = new User(getNewUsername(),getPassword(), getName());
-        	bd.addUsers(user);
-        }
-        else throw new UnauthorizedOperationException();
+
+        if (newUsername.isEmpty())
+            throw new EmptyUsernameException();
+
+        BubbleDocs bubbleDocs = getBubbleDocs();
+        SessionManager sessionManager = bubbleDocs.getManager();
+
+        sessionManager.cleanOldSessions();
+
+        String username = sessionManager.findUserByToken(userToken);
+
+        if (username == null)
+            throw new UserNotInSessionException();
+
+        if (!username.equals("root"))
+            throw new UnauthorizedOperationException();
+
+        if (bubbleDocs.getUserByUsername(newUsername) != null)
+            throw new DuplicateUsernameException();
+
+        User user = new User(newUsername, password, name);
+        bubbleDocs.addUsers(user);
+
     }
-    
+
     public final String getUserToken() {
         return userToken;
     }
-    
+
     public final String getNewUsername() {
         return newUsername;
     }
-    
+
     public final String getPassword() {
         return password;
     }
-    
+
     public final String getName() {
         return name;
     }

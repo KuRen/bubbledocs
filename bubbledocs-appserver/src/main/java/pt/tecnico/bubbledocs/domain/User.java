@@ -42,6 +42,9 @@ public class User extends User_Base {
 
     public void delete() {
         setBubbledocs(null);
+        if (getSession() != null)
+            getSession().delete();
+        setSession(null);
         for (Permission permission : getPermissionsSet()) {
             removePermissions(permission);
         }

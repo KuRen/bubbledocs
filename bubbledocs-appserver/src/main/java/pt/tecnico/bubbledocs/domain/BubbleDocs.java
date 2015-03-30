@@ -19,6 +19,7 @@ public class BubbleDocs extends BubbleDocs_Base {
     private BubbleDocs() {
         FenixFramework.getDomainRoot().setBubbleDocs(this);
         setSheetsID(1);
+        addUsers(Root.getInstance());
         setManager(new SessionManager());
     }
 

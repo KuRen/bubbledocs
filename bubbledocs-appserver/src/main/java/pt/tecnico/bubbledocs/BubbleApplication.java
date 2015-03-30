@@ -94,7 +94,7 @@ public class BubbleApplication {
         byte[] docSS = null;
         for (Spreadsheet s : bd.getUserByUsername(username).getSpreadsheetsSet()) {
             try {
-                ExportSpreadsheetService expSS = new ExportSpreadsheetService(s);
+                ExportSpreadsheetService expSS = new ExportSpreadsheetService(s.getId(), "");
                 expSS.execute();
                 docSS = expSS.getResult();
                 printDomainInXML(docSS);

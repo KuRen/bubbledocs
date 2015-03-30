@@ -90,7 +90,8 @@ public class BubbleDocsServiceTest {
         BubbleDocs bd = BubbleDocs.getInstance();
         SessionManager sm = bd.getManager();
         String token = username + new Random().nextInt(10);
-        sm.addSession(new Session(username, token, new LocalTime()));
+        User user = getUserFromUsername(username);
+        sm.addSession(new Session(user, token, new LocalTime()));
         return token;
 
     }
