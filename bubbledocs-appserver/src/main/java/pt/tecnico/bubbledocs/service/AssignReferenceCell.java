@@ -9,7 +9,6 @@ import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
-import pt.tecnico.bubbledocs.exception.EmptyValueException;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.InvalidSpreadSheetIdException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
@@ -83,11 +82,7 @@ public class AssignReferenceCell extends BubbleDocsService {
         Reference ref = new Reference(cr);
         c.setContent(ref);
 
-        try {
-            result = c.asString();
-        } catch (EmptyValueException eve) {
-            result = "#VALUE";
-        }
+        result = c.asString();
     }
 
     public final String getResult() {

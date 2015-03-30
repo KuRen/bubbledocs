@@ -2,6 +2,7 @@ package pt.tecnico.bubbledocs.domain;
 
 import org.jdom2.Element;
 
+import pt.tecnico.bubbledocs.exception.EmptyValueException;
 import pt.tecnico.bubbledocs.xml.XMLable;
 
 public abstract class Content extends Content_Base implements XMLable {
@@ -50,9 +51,15 @@ public abstract class Content extends Content_Base implements XMLable {
     public abstract Integer getValue();
 
     public String asString() {
-        Integer value = getValue();
+        Integer value;
+        try {
+            value = getValue();
+        } catch (EmptyValueException e) {
+            return "#VALUE";
+        }
         if (value != null)
             return value.toString();
+
         return "#VALUE";
     }
 }

@@ -2,6 +2,7 @@ package pt.tecnico.bubbledocs.domain;
 
 import org.jdom2.Element;
 
+import pt.tecnico.bubbledocs.exception.EmptyValueException;
 import pt.tecnico.bubbledocs.xml.XMLWriter;
 import pt.tecnico.bubbledocs.xml.XMLable;
 
@@ -34,6 +35,8 @@ public class Cell extends Cell_Base implements XMLable {
     }
 
     public String asString() {
+        if (getContent() == null)
+            throw new EmptyValueException();
         return getContent().asString();
     }
 
