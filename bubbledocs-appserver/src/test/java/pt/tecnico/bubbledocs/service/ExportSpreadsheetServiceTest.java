@@ -1,6 +1,7 @@
 package pt.tecnico.bubbledocs.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -105,7 +106,6 @@ public class ExportSpreadsheetServiceTest extends BubbleDocsServiceTest {
         try {
             doc = builder.build(new ByteArrayInputStream(result));
         } catch (JDOMException | IOException e) {
-            e.printStackTrace();
             throw new ImportDocumentException();
         }
 
@@ -146,7 +146,10 @@ public class ExportSpreadsheetServiceTest extends BubbleDocsServiceTest {
                 assertEquals("Literal", arg2Element.getName());
                 assertEquals(VALUE, Integer.parseInt(arg2Element.getAttribute("literal").getValue()));
             }
-            //TODO: ASSERT FAIL IN OTHER CASES
+
+            else {
+                fail("Non existing cells created during export");
+            }
         }
     }
 

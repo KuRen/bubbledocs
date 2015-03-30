@@ -30,15 +30,6 @@ public class ExportSpreadsheetService extends BubbleDocsService {
         this(Id, new BaseXMLWriter(), token);
     }
 
-    public ExportSpreadsheetService(Spreadsheet ss) {
-        this(ss, new BaseXMLWriter());
-    }
-
-    public ExportSpreadsheetService(Spreadsheet ss, XMLWriter xmlWriter) {
-        spreadsheet = ss;
-        writer = xmlWriter;
-    }
-
     public ExportSpreadsheetService(int Id, XMLWriter xmlWriter, String token) {
         spreadsheetId = Id;
         writer = xmlWriter;
