@@ -11,7 +11,6 @@ import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.InvalidSpreadSheetIdException;
-import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
@@ -32,6 +31,10 @@ public class AssignReferenceCell extends BubbleDocsService {
 
     @Override
     protected void dispatch() throws BubbleDocsException {
+        if (tokenUser == null || tokenUser.isEmpty() || cellId == null || cellId.isEmpty() || reference == null
+                || reference.isEmpty())
+            throw new InvalidArgumentException();
+
         BubbleDocs bd = getBubbleDocs();
         Spreadsheet ss = bd.getSpreadsheetById(docId);
 
@@ -40,11 +43,8 @@ public class AssignReferenceCell extends BubbleDocsService {
 
         SessionManager sm = bd.getManager();
         String username;
-        try {
-            username = sm.findUserByToken(tokenUser);
-        } catch (TokenExpiredException e) {
-            throw new UnauthorizedOperationException();
-        }
+
+        username = sm.findUserByToken(tokenUser);
 
         if (username == null)
             throw new UserNotInSessionException();

@@ -13,6 +13,7 @@ import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.InvalidSpreadSheetIdException;
+import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
@@ -27,6 +28,8 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
     private static final String NOT_OWNER_USERNAME = "src";
     private static final String NOT_OWNER_PASSWORD = "src";
     private static final String SPREADSHEET_NAME = "ss-name";
+    private static final String CELL = "2;2";
+    private static final String REFERENCED_CELL = "1;1";
     private static final int COLUMNS = 5;
     private static final int ROWS = 5;
     private static final Integer VALUE = 42;
@@ -50,7 +53,7 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
 
     @Test
     public void success() {
-        AssignReferenceCell service = new AssignReferenceCell(token, id, "2;2", "1;1");
+        AssignReferenceCell service = new AssignReferenceCell(token, id, CELL, REFERENCED_CELL);
         service.execute();
 
         Cell c1 = getSpreadSheet(SPREADSHEET_NAME).findCell(1, 1);
@@ -64,37 +67,68 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
 
     @Test(expected = UnauthorizedOperationException.class)
     public void unauthorizedToken() {
-        AssignReferenceCell service = new AssignReferenceCell(notOwnerToken, id, "2;2", "1;1");
+        AssignReferenceCell service = new AssignReferenceCell(notOwnerToken, id, CELL, REFERENCED_CELL);
         service.execute();
     }
 
     @Test(expected = UserNotInSessionException.class)
     public void absentUser() {
-        AssignReferenceCell service = new AssignReferenceCell("invalid", id, "2;2", "1;1");
+        AssignReferenceCell service = new AssignReferenceCell("invalid", id, CELL, REFERENCED_CELL);
         service.execute();
     }
 
     @Test(expected = CellOutOfRangeException.class)
     public void invalidCell() {
-        AssignReferenceCell service = new AssignReferenceCell(token, id, "9;9", "1;1");
+        AssignReferenceCell service = new AssignReferenceCell(token, id, "9;9", REFERENCED_CELL);
         service.execute();
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void invalidArgumentCell() {
-        AssignReferenceCell service = new AssignReferenceCell(token, id, "qwerty", "asdf");
+        AssignReferenceCell service = new AssignReferenceCell(token, id, "qwerty", REFERENCED_CELL);
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void invalidArgumentReferencedCell() {
+        AssignReferenceCell service = new AssignReferenceCell(token, id, CELL, "qwerty");
         service.execute();
     }
 
     @Test(expected = CellOutOfRangeException.class)
-    public void invalidReferencedCell() {
-        AssignReferenceCell service = new AssignReferenceCell(token, id, "2;2", "9;9");
+    public void referencedCellOutOfRange() {
+        AssignReferenceCell service = new AssignReferenceCell(token, id, CELL, "9;9");
         service.execute();
     }
 
     @Test(expected = InvalidSpreadSheetIdException.class)
     public void invalidSpreadSheetId() {
-        AssignReferenceCell service = new AssignReferenceCell(token, 0, "2;2", "1;1");
+        AssignReferenceCell service = new AssignReferenceCell(token, -1, CELL, REFERENCED_CELL);
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void emptyToken() {
+        AssignReferenceCell service = new AssignReferenceCell("", id, CELL, REFERENCED_CELL);
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void emptyCell() {
+        AssignReferenceCell service = new AssignReferenceCell(token, id, "", REFERENCED_CELL);
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void emptyReferencedCell() {
+        AssignReferenceCell service = new AssignReferenceCell(token, id, CELL, "");
+        service.execute();
+    }
+
+    @Test(expected = TokenExpiredException.class)
+    public void expiredToken() {
+        expireToken(token);
+        AssignReferenceCell service = new AssignReferenceCell(token, id, CELL, REFERENCED_CELL);
         service.execute();
     }
 }
