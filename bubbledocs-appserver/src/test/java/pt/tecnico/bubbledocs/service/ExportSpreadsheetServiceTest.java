@@ -92,6 +92,7 @@ public class ExportSpreadsheetServiceTest extends BubbleDocsServiceTest {
     }
 
     @Test
+    //This is not extensive, the extensive tests should be done in the units who can convert themselves to XML
     public void success() {
         ExportSpreadsheetService service = new ExportSpreadsheetService(validId, authorizedToken);
         service.execute();
