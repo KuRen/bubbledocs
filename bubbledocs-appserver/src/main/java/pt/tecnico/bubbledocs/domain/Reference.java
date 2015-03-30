@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.jdom2.Element;
 
+import pt.tecnico.bubbledocs.exception.EmptyValueException;
 import pt.tecnico.bubbledocs.xml.XMLWriter;
 import pt.tecnico.bubbledocs.xml.XMLable;
 
@@ -56,7 +57,11 @@ public class Reference extends Reference_Base implements XMLable {
 
     @Override
     public Integer getValue() {
-        return getReferencedCell().getContent().getValue();
+        try {
+            return getReferencedCell().getContent().getValue();
+        } catch (NullPointerException npe) {
+            throw new EmptyValueException();
+        }
     }
 
     @Override

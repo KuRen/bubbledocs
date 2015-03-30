@@ -4,9 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.Test;
 import org.joda.time.LocalTime;
 import org.joda.time.Seconds;
+import org.junit.Test;
 
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Session;
@@ -33,30 +33,30 @@ public class LoginUserTest extends BubbleDocsServiceTest {
     // returns the time of the last access for the user with token userToken.
     // It must get this data from the session object of the application
     private LocalTime getLastAccessTimeInSession(String userToken) {
-		BubbleDocs bd = BubbleDocs.getInstance();
-		SessionManager sm = bd.getManager();
-		for(Session session : sm.getSessionSet()) {
-			if(session.getToken().equals(userToken))
-				return session.getLastActivity();
-		}
-    	return null;
+        BubbleDocs bd = BubbleDocs.getInstance();
+        SessionManager sm = bd.getManager();
+        for (Session session : sm.getSessionSet()) {
+            if (session.getToken().equals(userToken))
+                return session.getLastActivity();
+        }
+        return null;
     }
 
     @Test
     public void success() {
         LoginUser service = new LoginUser(USERNAME, PASSWORD);
         service.execute();
-	LocalTime currentTime = new LocalTime();
-	
-	String token = service.getUserToken();
+        LocalTime currentTime = new LocalTime();
+
+        String token = service.getUserToken();
 
         User user = getUserFromSession(service.getUserToken());
         assertEquals(USERNAME, user.getUsername());
 
-	int difference = Seconds.secondsBetween(getLastAccessTimeInSession(token), currentTime).getSeconds();
+        int difference = Seconds.secondsBetween(getLastAccessTimeInSession(token), currentTime).getSeconds();
 
-	assertTrue("Access time in session not correctly set", difference >= 0);
-	assertTrue("diference in seconds greater than expected", difference < 2);
+        assertTrue("Access time in session not correctly set", difference >= 0);
+        assertTrue("diference in seconds greater than expected", difference < 2);
     }
 
     @Test

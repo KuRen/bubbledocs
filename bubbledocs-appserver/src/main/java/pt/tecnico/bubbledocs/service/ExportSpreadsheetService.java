@@ -20,7 +20,6 @@ import pt.tecnico.bubbledocs.xml.XMLWriter;
 
 public class ExportSpreadsheetService extends BubbleDocsService {
 
-    private Spreadsheet spreadsheet;
     private int spreadsheetId;
     private XMLWriter writer;
     private byte[] document;

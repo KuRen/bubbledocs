@@ -94,7 +94,8 @@ public class BubbleApplication {
         byte[] docSS = null;
         for (Spreadsheet s : bd.getUserByUsername(username).getSpreadsheetsSet()) {
             try {
-                ExportSpreadsheetService expSS = new ExportSpreadsheetService(s.getId(), "");
+                ExportSpreadsheetService expSS =
+                        new ExportSpreadsheetService(s.getId(), bd.getUserByUsername(username).getSession().getToken());
                 expSS.execute();
                 docSS = expSS.getResult();
                 printDomainInXML(docSS);
@@ -127,7 +128,7 @@ public class BubbleApplication {
     @Atomic
     private static void populateDomain() {
         log("Setting up domain");
-        if (bd.getUsersSet().isEmpty()) {
+        if (bd.getUsersSet().size() == 1) {
             SetupDomain.populateDomain();
             System.out.println("Domain populated.");
         } else {

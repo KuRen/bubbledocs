@@ -47,6 +47,7 @@ public class CreateSpreadSheet extends BubbleDocsService {
         User user = getBubbleDocs().getUserByUsername(username);
 
         Spreadsheet spreadsheet = new Spreadsheet(rows, columns, name, user);
+        spreadsheet.setOwner(getBubbleDocs().getUserByUsername(username));
 
         this.sheetId = spreadsheet.getId();
     }
