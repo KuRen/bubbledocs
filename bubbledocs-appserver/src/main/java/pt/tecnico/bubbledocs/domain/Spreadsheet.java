@@ -49,6 +49,10 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
         BubbleDocs bd = BubbleDocs.getInstance();
         User owner = bd.getUserByUsername(username);
         setOwner(owner);
+        Permission permission = new Permission();
+        permission.setPermission(PermissionType.WRITE);
+        permission.setUser(owner);
+        addPermissions(permission);
         setId(bd.getSheetsID());
         bd.setSheetsID(bd.getSheetsID() + 1);
 
