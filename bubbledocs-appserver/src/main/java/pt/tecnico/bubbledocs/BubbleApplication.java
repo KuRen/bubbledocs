@@ -92,6 +92,7 @@ public class BubbleApplication {
     @Atomic
     private static byte[] exportUserSpreadsheetsToXML(String username) {
         byte[] docSS = null;
+        System.out.println("\n\n>>>>>>>>>>>>>>>>>>>>>>>>> Username: " + username);
         for (Spreadsheet s : bd.getUserByUsername(username).getSpreadsheetsSet()) {
             try {
                 ExportSpreadsheetService expSS =
@@ -99,7 +100,7 @@ public class BubbleApplication {
                 expSS.execute();
                 docSS = expSS.getResult();
                 printDomainInXML(docSS);
-            } catch (ExportDocumentException ex) {
+            } catch (ExportDocumentException | UnauthorizedUserException ex) {
                 System.err.println("Error while exporting to XML: " + ex.getMessage());
             }
         }
