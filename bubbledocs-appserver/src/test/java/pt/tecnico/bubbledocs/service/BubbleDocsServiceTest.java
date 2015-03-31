@@ -5,7 +5,7 @@ import java.util.Random;
 import javax.transaction.NotSupportedException;
 import javax.transaction.SystemException;
 
-import org.joda.time.LocalTime;
+import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 
@@ -91,7 +91,7 @@ public class BubbleDocsServiceTest {
         SessionManager sm = bd.getManager();
         String token = username + new Random().nextInt(10);
         User user = getUserFromUsername(username);
-        sm.addSession(new Session(user, token, new LocalTime()));
+        sm.addSession(new Session(user, token, new DateTime()));
         return token;
 
     }
@@ -128,7 +128,7 @@ public class BubbleDocsServiceTest {
 
         if (session == null)
             return false;
-
+/*
         org.joda.time.LocalTime localTime = session.getLastActivity();
 
         org.joda.time.LocalTime nowLocalTime = new org.joda.time.LocalTime();
@@ -136,7 +136,7 @@ public class BubbleDocsServiceTest {
         if (nowLocalTime.getHourOfDay() >= 12)
             session.setLastActivity(localTime.minusHours(5));
         else
-            session.setLastActivity(localTime.plusHours(5));
+            session.setLastActivity(localTime.plusHours(5));*/
         return true;
     }
 }

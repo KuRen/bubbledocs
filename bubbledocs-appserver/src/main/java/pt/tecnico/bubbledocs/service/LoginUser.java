@@ -2,7 +2,7 @@ package pt.tecnico.bubbledocs.service;
 
 import java.util.Random;
 
-import org.joda.time.LocalTime;
+import org.joda.time.DateTime;
 
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Session;
@@ -42,7 +42,7 @@ public class LoginUser extends BubbleDocsService {
                 }
             }
             userToken = username + new Random().nextInt(10);
-            sm.addSession(new Session(getBubbleDocs().getUserByUsername(getUsername()), getUserToken(), new LocalTime()));
+            sm.addSession(new Session(getBubbleDocs().getUserByUsername(getUsername()), getUserToken(), new DateTime()));
         } else
             throw new WrongPasswordException();
     }

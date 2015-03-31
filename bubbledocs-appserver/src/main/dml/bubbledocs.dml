@@ -9,7 +9,7 @@ class BubbleDocs {
 class SessionManager;
 
 class Session {
-	LocalTime lastActivity;
+	DateTime lastActivity;
 	String token;
 }
 

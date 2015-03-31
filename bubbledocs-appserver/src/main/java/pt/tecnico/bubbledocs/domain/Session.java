@@ -1,6 +1,6 @@
 package pt.tecnico.bubbledocs.domain;
 
-import org.joda.time.LocalTime;
+import org.joda.time.DateTime;
 
 public class Session extends Session_Base {
 
@@ -8,7 +8,7 @@ public class Session extends Session_Base {
         super();
     }
 
-    public Session(User user, String token, LocalTime lastActivity) {
+    public Session(User user, String token, DateTime lastActivity) {
         super();
         setUser(user);
         setToken(token);

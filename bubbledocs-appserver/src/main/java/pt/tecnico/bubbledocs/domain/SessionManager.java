@@ -1,14 +1,14 @@
 package pt.tecnico.bubbledocs.domain;
 
-import org.joda.time.Hours;
-import org.joda.time.LocalTime;
+import org.joda.time.DateTime;
 
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
 public class SessionManager extends SessionManager_Base {
 
-    private static final int TIMEDIFFERENCE = 2;
+    // In milliseconds
+    private static final int EXPIRATION_TIME = 2 * 60 * 60 * 1000;
 
     public SessionManager() {
         super();
@@ -16,7 +16,7 @@ public class SessionManager extends SessionManager_Base {
 
     public void cleanOldSessions() {
         for (Session session : this.getSessionSet()) {
-            if (Hours.hoursBetween(session.getLastActivity(), new LocalTime()).getHours() >= TIMEDIFFERENCE) {
+            if (isExpired(session)) {
                 this.removeSession(session);
                 session.delete();
             }
@@ -34,11 +34,10 @@ public class SessionManager extends SessionManager_Base {
     public User findUserByToken(String token) {
         for (Session session : this.getSessionSet()) {
             if (session.getToken().equals(token)) {
-                if (Hours.hoursBetween(session.getLastActivity(), new LocalTime()).getHours() < TIMEDIFFERENCE) {
-                    return session.getUser();
-                } else {
+                if (isExpired(session))
                     throw new TokenExpiredException();
-                }
+
+                return session.getUser();
             }
         }
         return null;
@@ -47,11 +46,15 @@ public class SessionManager extends SessionManager_Base {
     public void refreshSession(String token) {
         for (Session session : this.getSessionSet()) {
             if (session.getToken().equals(token)) {
-                session.setLastActivity(new LocalTime());
+                session.setLastActivity(new DateTime());
                 return;
             }
         }
         throw new UserNotInSessionException();
     }
 
+    private boolean isExpired(Session session) {
+        DateTime nowDateTime = new DateTime();
+        return (nowDateTime.getMillis() - session.getLastActivity().getMillis()) >= EXPIRATION_TIME;
+    }
 }
