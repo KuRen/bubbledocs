@@ -76,6 +76,8 @@ public class ExportSpreadsheetService extends BubbleDocsService {
             throw new ExportDocumentException();
         }
 
+        refreshToken(userToken);
+
     }
 
     public byte[] getResult() {

@@ -44,9 +44,9 @@ public class SessionManager extends SessionManager_Base {
         return null;
     }
 
-    public void refreshSession(String username) {
+    public void refreshSession(String token) {
         for (Session session : this.getSessionSet()) {
-            if (session.getUsername().equals(username)) {
+            if (session.getToken().equals(token)) {
                 session.setLastActivity(new LocalTime());
                 return;
             }

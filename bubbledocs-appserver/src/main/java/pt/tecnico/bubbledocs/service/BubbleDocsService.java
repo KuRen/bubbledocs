@@ -3,6 +3,7 @@ package pt.tecnico.bubbledocs.service;
 import jvstm.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
+import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 
 public abstract class BubbleDocsService {
@@ -18,4 +19,8 @@ public abstract class BubbleDocsService {
 
     protected abstract void dispatch() throws BubbleDocsException;
 
+    protected void refreshToken(String token) {
+        SessionManager sessionManager = getBubbleDocs().getManager();
+        sessionManager.refreshSession(token);
+    }
 }

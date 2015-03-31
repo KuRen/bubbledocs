@@ -87,6 +87,8 @@ public class AssignReferenceCell extends BubbleDocsService {
         c.setContent(ref);
 
         result = c.asString();
+
+        refreshToken(tokenUser);
     }
 
     public final String getResult() {

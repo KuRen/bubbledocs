@@ -48,5 +48,6 @@ public class CreateSpreadSheet extends BubbleDocsService {
         spreadsheet.setOwner(user);
 
         this.sheetId = spreadsheet.getId();
+        refreshToken(userToken);
     }
 }

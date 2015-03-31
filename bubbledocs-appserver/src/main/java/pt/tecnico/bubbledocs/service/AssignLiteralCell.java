@@ -91,6 +91,8 @@ public class AssignLiteralCell extends BubbleDocsService {
         c.setContent(lit);
 
         result = c.asString();
+
+        refreshToken(token);
     }
 
     public String getResult() {
