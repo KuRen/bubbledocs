@@ -46,4 +46,16 @@ public class BubbleDocs extends BubbleDocs_Base {
         return null;
     }
 
+    public User findUserByToken(String token) {
+        return getManager().findUserByToken(token);
+    }
+
+    String addUserToSession(String username) {
+        return addUserToSession(getUserByUsername(username));
+    }
+
+    String addUserToSession(User user) {
+        return getManager().addUserToSession(user);
+    }
+
 }

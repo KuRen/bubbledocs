@@ -25,4 +25,7 @@ public class Session extends Session_Base {
         return this.getUser().getUsername();
     }
 
+    public void refresh() {
+        setLastActivity(new DateTime());
+    }
 }

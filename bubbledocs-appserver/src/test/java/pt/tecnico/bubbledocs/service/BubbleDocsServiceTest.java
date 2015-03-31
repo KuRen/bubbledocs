@@ -73,16 +73,8 @@ public class BubbleDocsServiceTest {
         return null;
     }
 
-    // returns the user registered in the application whose username is equal to username
     User getUserFromUsername(String username) {
-        BubbleDocs bd = BubbleDocs.getInstance();
-
-        for (User user : bd.getUsersSet())
-            if (user.getUsername().equals(username))
-                return user;
-
-        return null;
-
+        return getBubbleDocs().getUserByUsername(username);
     }
 
     // put a user into session and returns the token associated to it
@@ -113,6 +105,10 @@ public class BubbleDocsServiceTest {
         BubbleDocs bd = BubbleDocs.getInstance();
         SessionManager sm = bd.getManager();
         return sm.findUserByToken(token);
+    }
+
+    BubbleDocs getBubbleDocs() {
+        return BubbleDocs.getInstance();
     }
 
     boolean expireToken(String token) {

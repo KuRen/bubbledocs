@@ -1,5 +1,7 @@
 package pt.tecnico.bubbledocs.domain;
 
+import java.util.Random;
+
 import org.joda.time.DateTime;
 
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
@@ -32,29 +34,39 @@ public class SessionManager extends SessionManager_Base {
     }
 
     public User findUserByToken(String token) {
+        Session session = findSessionByToken(token);
+        if (session == null)
+            return null;
+        if (isExpired(session))
+            throw new TokenExpiredException();
+        return session.getUser();
+    }
+
+    public void refreshSession(String token) {
+        Session session = findSessionByToken(token);
+        if (session == null)
+            throw new UserNotInSessionException();
+        session.refresh();
+    }
+
+    public Session findSessionByToken(String token) {
         for (Session session : this.getSessionSet()) {
             if (session.getToken().equals(token)) {
-                if (isExpired(session))
-                    throw new TokenExpiredException();
-
-                return session.getUser();
+                return session;
             }
         }
         return null;
     }
 
-    public void refreshSession(String token) {
-        for (Session session : this.getSessionSet()) {
-            if (session.getToken().equals(token)) {
-                session.setLastActivity(new DateTime());
-                return;
-            }
-        }
-        throw new UserNotInSessionException();
-    }
-
     private boolean isExpired(Session session) {
         DateTime nowDateTime = new DateTime();
         return (nowDateTime.getMillis() - session.getLastActivity().getMillis()) >= EXPIRATION_TIME;
+    }
+
+    public String addUserToSession(User user) {
+        String token = user.getUsername() + new Random().nextInt(10);
+        Session session = new Session(user, token, new DateTime());
+        addSession(session);
+        return token;
     }
 }
