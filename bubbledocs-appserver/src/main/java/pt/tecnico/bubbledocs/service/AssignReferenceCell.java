@@ -7,6 +7,7 @@ import pt.tecnico.bubbledocs.domain.PermissionType;
 import pt.tecnico.bubbledocs.domain.Reference;
 import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
+import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
@@ -31,8 +32,13 @@ public class AssignReferenceCell extends BubbleDocsService {
 
     @Override
     protected void dispatch() throws BubbleDocsException {
-        if (tokenUser == null || tokenUser.isEmpty() || cellId == null || cellId.isEmpty() || reference == null
-                || reference.isEmpty())
+        if (tokenUser == null || tokenUser.isEmpty())
+            throw new InvalidArgumentException();
+
+        if (cellId == null || cellId.isEmpty())
+            throw new InvalidArgumentException();
+
+        if (reference == null || reference.isEmpty())
             throw new InvalidArgumentException();
 
         BubbleDocs bd = getBubbleDocs();
@@ -42,14 +48,12 @@ public class AssignReferenceCell extends BubbleDocsService {
             throw new InvalidSpreadSheetIdException();
 
         SessionManager sm = bd.getManager();
-        String username;
+        User user = sm.findUserByToken(tokenUser);
 
-        username = sm.findUserByToken(tokenUser);
-
-        if (username == null)
+        if (user == null)
             throw new UserNotInSessionException();
 
-        Permission permission = ss.findPermissionsForUser(username);
+        Permission permission = ss.findPermissionsForUser(user);
 
         if (permission == null || permission.getPermission() != PermissionType.WRITE)
             throw new UnauthorizedOperationException();

@@ -41,8 +41,7 @@ public class DeleteUserTest extends BubbleDocsServiceTest {
 
         assertTrue("user was not deleted", deleted);
 
-        assertNull("Spreadsheet was not deleted",
-                getSpreadSheet(SPREADSHEET_NAME));
+        assertNull("Spreadsheet was not deleted", getSpreadSheet(SPREADSHEET_NAME));
     }
 
     /*
@@ -62,7 +61,7 @@ public class DeleteUserTest extends BubbleDocsServiceTest {
     public void successToDeleteIsInSession() {
         String token = addUserToSession(USERNAME_TO_DELETE);
         success();
-	assertNull("Removed user but not removed from session", getUserFromSession(token));
+        assertNull("Removed user but not removed from session", getUserFromSession(token));
     }
 
     @Test(expected = UnknownBubbleDocsUserException.class)

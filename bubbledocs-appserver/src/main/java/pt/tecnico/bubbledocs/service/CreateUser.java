@@ -34,19 +34,19 @@ public class CreateUser extends BubbleDocsService {
 
         sessionManager.cleanOldSessions();
 
-        String username = sessionManager.findUserByToken(userToken);
+        User user = sessionManager.findUserByToken(userToken);
 
-        if (username == null)
+        if (user == null)
             throw new UserNotInSessionException();
 
-        if (!username.equals("root"))
+        if (!user.isRoot())
             throw new UnauthorizedOperationException();
 
         if (bubbleDocs.getUserByUsername(newUsername) != null)
             throw new DuplicateUsernameException();
 
-        User user = new User(newUsername, password, name);
-        bubbleDocs.addUsers(user);
+        User newUser = new User(newUsername, password, name);
+        bubbleDocs.addUsers(newUser);
 
     }
 

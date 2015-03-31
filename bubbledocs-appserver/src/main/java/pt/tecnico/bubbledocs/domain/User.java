@@ -54,4 +54,8 @@ public class User extends User_Base {
         }
         deleteDomainObject();
     }
+
+    public boolean isRoot() {
+        return false;
+    }
 }

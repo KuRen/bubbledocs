@@ -21,4 +21,9 @@ public class Root extends Root_Base {
         return root;
     }
 
+    @Override
+    public boolean isRoot() {
+        return true;
+    }
+
 }

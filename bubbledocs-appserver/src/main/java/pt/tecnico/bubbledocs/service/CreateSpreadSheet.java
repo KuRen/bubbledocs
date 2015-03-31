@@ -38,16 +38,14 @@ public class CreateSpreadSheet extends BubbleDocsService {
             throw new InvalidArgumentException("The auth token can't be empty");
         }
 
-        String username = getBubbleDocs().getManager().findUserByToken(userToken);
+        User user = getBubbleDocs().getManager().findUserByToken(userToken);
 
-        if (username == null) {
+        if (user == null) {
             throw new UserNotInSessionException();
         }
 
-        User user = getBubbleDocs().getUserByUsername(username);
-
         Spreadsheet spreadsheet = new Spreadsheet(rows, columns, name, user);
-        spreadsheet.setOwner(getBubbleDocs().getUserByUsername(username));
+        spreadsheet.setOwner(user);
 
         this.sheetId = spreadsheet.getId();
     }

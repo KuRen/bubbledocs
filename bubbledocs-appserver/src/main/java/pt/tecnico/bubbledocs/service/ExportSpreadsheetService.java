@@ -8,6 +8,7 @@ import org.jdom2.output.XMLOutputter;
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Permission;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
+import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.ExportDocumentException;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
@@ -52,15 +53,15 @@ public class ExportSpreadsheetService extends BubbleDocsService {
             throw new InvalidArgumentException("The auth token can't be empty");
         }
 
-        String username = getBubbleDocs().getManager().findUserByToken(userToken);
+        User user = getBubbleDocs().getManager().findUserByToken(userToken);
 
-        if (username == null) {
+        if (user == null) {
             throw new UserNotInSessionException();
         }
 
-        Permission permission = ss.findPermissionsForUser(username);
+        Permission permission = ss.findPermissionsForUser(user);
 
-        if (permission == null && !(ss.getOwner().getUsername().equals(username)))
+        if (permission == null && !(ss.getOwner().getUsername().equals(user)))
             throw new UnauthorizedUserException();
 
         Document jdomDoc = new Document();

@@ -112,26 +112,31 @@ public class BubbleDocsServiceTest {
     User getUserFromSession(String token) {
         BubbleDocs bd = BubbleDocs.getInstance();
         SessionManager sm = bd.getManager();
-        String username = sm.findUserByToken(token);
-        return bd.getUserByUsername(username);
+        return sm.findUserByToken(token);
     }
 
     boolean expireToken(String token) {
         // very very ugly. but there is no relationship between User and Session
-        User user = getUserFromSession(token);
         SessionManager sessionManager = FenixFramework.getDomainRoot().getBubbleDocs().getManager();
         Session session = null;
         for (Session s : sessionManager.getSessionSet()) {
-            if (s.getUsername().equals(user.getUsername())) {
+            if (s.getToken().equals(token)) {
                 session = s;
                 break;
             }
         }
+
         if (session == null)
             return false;
 
         org.joda.time.LocalTime localTime = session.getLastActivity();
-        session.setLastActivity(localTime.minusHours(5));
+
+        org.joda.time.LocalTime nowLocalTime = new org.joda.time.LocalTime();
+
+        if (nowLocalTime.getHourOfDay() >= 12)
+            session.setLastActivity(localTime.minusHours(5));
+        else
+            session.setLastActivity(localTime.plusHours(5));
         return true;
     }
 }

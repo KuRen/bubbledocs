@@ -31,11 +31,11 @@ public class SessionManager extends SessionManager_Base {
         return false;
     }
 
-    public String findUserByToken(String token) {
+    public User findUserByToken(String token) {
         for (Session session : this.getSessionSet()) {
             if (session.getToken().equals(token)) {
                 if (Hours.hoursBetween(session.getLastActivity(), new LocalTime()).getHours() < TIMEDIFFERENCE) {
-                    return session.getUsername();
+                    return session.getUser();
                 } else {
                     throw new TokenExpiredException();
                 }
