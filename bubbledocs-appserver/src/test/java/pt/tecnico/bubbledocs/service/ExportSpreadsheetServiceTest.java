@@ -78,7 +78,6 @@ public class ExportSpreadsheetServiceTest extends BubbleDocsServiceTest {
         service.execute();
     }
 
-    @Ignore("Impossible to test with LocalTime")
     @Test(expected = TokenExpiredException.class)
     public void expiredToken() {
         expireToken(authorizedToken);

@@ -128,15 +128,10 @@ public class BubbleDocsServiceTest {
 
         if (session == null)
             return false;
-/*
-        org.joda.time.LocalTime localTime = session.getLastActivity();
 
-        org.joda.time.LocalTime nowLocalTime = new org.joda.time.LocalTime();
+        DateTime lastActivity = session.getLastActivity();
+        session.setLastActivity(lastActivity.minusMillis(SessionManager.EXPIRATION_TIME * 2));
 
-        if (nowLocalTime.getHourOfDay() >= 12)
-            session.setLastActivity(localTime.minusHours(5));
-        else
-            session.setLastActivity(localTime.plusHours(5));*/
         return true;
     }
 }

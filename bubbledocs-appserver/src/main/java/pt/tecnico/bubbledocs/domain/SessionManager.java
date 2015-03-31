@@ -8,7 +8,7 @@ import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 public class SessionManager extends SessionManager_Base {
 
     // In milliseconds
-    private static final int EXPIRATION_TIME = 2 * 60 * 60 * 1000;
+    public static final int EXPIRATION_TIME = 2 * 60 * 60 * 1000;
 
     public SessionManager() {
         super();
