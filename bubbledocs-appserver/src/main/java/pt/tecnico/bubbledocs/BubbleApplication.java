@@ -92,7 +92,6 @@ public class BubbleApplication {
     @Atomic
     private static byte[] exportUserSpreadsheetsToXML(String username) {
         byte[] docSS = null;
-        System.out.println("\n\n>>>>>>>>>>>>>>>>>>>>>>>>> Username: " + username);
         for (Spreadsheet s : bd.getUserByUsername(username).getSpreadsheetsSet()) {
             try {
                 ExportSpreadsheetService expSS =
