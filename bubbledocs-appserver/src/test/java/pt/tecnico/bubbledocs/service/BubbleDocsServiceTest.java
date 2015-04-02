@@ -80,7 +80,7 @@ public class BubbleDocsServiceTest {
     // put a user into session and returns the token associated to it
     String addUserToSession(String username) {
         BubbleDocs bd = BubbleDocs.getInstance();
-        SessionManager sm = bd.getManager();
+        SessionManager sm = bd.getSessionManager();
         String token = username + new Random().nextInt(10);
         User user = getUserFromUsername(username);
         sm.addSession(new Session(user, token, new DateTime()));
@@ -91,7 +91,7 @@ public class BubbleDocsServiceTest {
     // remove a user from session given its token
     void removeUserFromSession(String token) {
         BubbleDocs bd = BubbleDocs.getInstance();
-        SessionManager sm = bd.getManager();
+        SessionManager sm = bd.getSessionManager();
         for (Session session : sm.getSessionSet()) {
             if (session.getToken().equals(token)) {
                 sm.removeSession(session);
@@ -103,7 +103,7 @@ public class BubbleDocsServiceTest {
     // return the user registered in session whose token is equal to token
     User getUserFromSession(String token) {
         BubbleDocs bd = BubbleDocs.getInstance();
-        SessionManager sm = bd.getManager();
+        SessionManager sm = bd.getSessionManager();
         return sm.findUserByToken(token);
     }
 
@@ -113,7 +113,7 @@ public class BubbleDocsServiceTest {
 
     boolean expireToken(String token) {
         // very very ugly. but there is no relationship between User and Session
-        SessionManager sessionManager = FenixFramework.getDomainRoot().getBubbleDocs().getManager();
+        SessionManager sessionManager = FenixFramework.getDomainRoot().getBubbleDocs().getSessionManager();
         Session session = null;
         for (Session s : sessionManager.getSessionSet()) {
             if (s.getToken().equals(token)) {

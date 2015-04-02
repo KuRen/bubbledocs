@@ -30,7 +30,7 @@ public class CreateUser extends BubbleDocsService {
             throw new EmptyUsernameException();
 
         BubbleDocs bubbleDocs = getBubbleDocs();
-        SessionManager sessionManager = bubbleDocs.getManager();
+        SessionManager sessionManager = bubbleDocs.getSessionManager();
 
         sessionManager.cleanOldSessions();
 

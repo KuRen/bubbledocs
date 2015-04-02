@@ -38,7 +38,7 @@ public class CreateSpreadSheet extends BubbleDocsService {
             throw new InvalidArgumentException("The auth token can't be empty");
         }
 
-        User user = getBubbleDocs().getManager().findUserByToken(userToken);
+        User user = getBubbleDocs().getSessionManager().findUserByToken(userToken);
 
         if (user == null) {
             throw new UserNotInSessionException();

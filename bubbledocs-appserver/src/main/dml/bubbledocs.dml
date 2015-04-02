@@ -68,13 +68,13 @@ relation BubbleDocsHasSessionManager {
 	BubbleDocs playsRole bubbledocs {
 		multiplicity 1..1;
 	}
-	SessionManager playsRole manager {
+	SessionManager playsRole sessionManager {
 		multiplicity 1..1;
 	}
 }
 
 relation SessionManagerHasSession {
-	SessionManager playsRole manager {
+	SessionManager playsRole sessionManager {
 		multiplicity 1..1;
 	}
 	Session playsRole session {

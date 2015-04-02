@@ -32,7 +32,7 @@ public class LoginUserTest extends BubbleDocsServiceTest {
     // It must get this data from the session object of the application
     private DateTime getLastAccessTimeInSession(String userToken) {
         BubbleDocs bd = BubbleDocs.getInstance();
-        SessionManager sm = bd.getManager();
+        SessionManager sm = bd.getSessionManager();
         for (Session session : sm.getSessionSet()) {
             if (session.getToken().equals(userToken))
                 return session.getLastActivity();

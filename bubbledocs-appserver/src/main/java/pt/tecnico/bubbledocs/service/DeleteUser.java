@@ -21,7 +21,7 @@ public class DeleteUser extends BubbleDocsService {
     @Override
     protected void dispatch() throws BubbleDocsException {
         BubbleDocs bd = BubbleDocs.getInstance();
-        SessionManager sm = bd.getManager();
+        SessionManager sm = bd.getSessionManager();
         sm.cleanOldSessions();
 
         User user = sm.findUserByToken(userToken);

@@ -53,7 +53,7 @@ public class AssignLiteralCell extends BubbleDocsService {
             throw new InvalidArgumentException();
         }
 
-        SessionManager sm = bd.getManager();
+        SessionManager sm = bd.getSessionManager();
         User user = sm.findUserByToken(token);
 
         if (user == null)

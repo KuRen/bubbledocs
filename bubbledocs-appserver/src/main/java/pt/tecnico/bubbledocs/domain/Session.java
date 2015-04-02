@@ -16,7 +16,7 @@ public class Session extends Session_Base {
     }
 
     public void delete() {
-        this.setManager(null);
+        this.setSessionManager(null);
         this.setUser(null);
         this.deleteDomainObject();
     }

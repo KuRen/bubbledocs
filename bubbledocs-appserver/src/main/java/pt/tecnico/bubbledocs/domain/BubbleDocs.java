@@ -20,7 +20,7 @@ public class BubbleDocs extends BubbleDocs_Base {
         FenixFramework.getDomainRoot().setBubbleDocs(this);
         setSheetsID(1);
         addUsers(Root.getInstance());
-        setManager(new SessionManager());
+        setSessionManager(new SessionManager());
     }
 
     public Spreadsheet getSpreadsheetById(Integer id) {
@@ -47,7 +47,7 @@ public class BubbleDocs extends BubbleDocs_Base {
     }
 
     public User findUserByToken(String token) {
-        return getManager().findUserByToken(token);
+        return getSessionManager().findUserByToken(token);
     }
 
     String addUserToSession(String username) {
@@ -55,7 +55,7 @@ public class BubbleDocs extends BubbleDocs_Base {
     }
 
     String addUserToSession(User user) {
-        return getManager().addUserToSession(user);
+        return getSessionManager().addUserToSession(user);
     }
 
 }

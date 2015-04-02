@@ -20,7 +20,7 @@ public abstract class BubbleDocsService {
     protected abstract void dispatch() throws BubbleDocsException;
 
     protected void refreshToken(String token) {
-        SessionManager sessionManager = getBubbleDocs().getManager();
+        SessionManager sessionManager = getBubbleDocs().getSessionManager();
         sessionManager.refreshSession(token);
     }
 }

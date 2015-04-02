@@ -47,7 +47,7 @@ public class AssignReferenceCell extends BubbleDocsService {
         if (ss == null)
             throw new InvalidSpreadSheetIdException();
 
-        SessionManager sm = bd.getManager();
+        SessionManager sm = bd.getSessionManager();
         User user = sm.findUserByToken(tokenUser);
 
         if (user == null)
