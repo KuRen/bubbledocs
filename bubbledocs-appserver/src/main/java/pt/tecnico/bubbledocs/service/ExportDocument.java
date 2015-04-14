@@ -26,7 +26,7 @@ public class ExportDocument extends BubbleDocsService {
     protected void dispatch() throws BubbleDocsException {
     	
     	ExportSpreadsheetService service = new ExportSpreadsheetService(docId,userToken);
-        service.dispatch();
+        service.execute();
         docXML = service.getResult();
         
         Spreadsheet ss = BubbleDocs.getInstance().getSpreadsheetById(docId);
