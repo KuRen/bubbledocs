@@ -6,6 +6,7 @@ import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.DuplicateUsernameException;
 import pt.tecnico.bubbledocs.exception.EmptyUsernameException;
+import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
@@ -44,6 +45,11 @@ public class CreateUser extends BubbleDocsService {
 
         if (bubbleDocs.getUserByUsername(newUsername) != null)
             throw new DuplicateUsernameException();
+
+        int length = newUsername.length();
+        if (length > 8 || length < 3) {
+            throw new InvalidArgumentException("Username must have between 3 and 8 characters");
+        }
 
         User newUser = new User(newUsername, password, name);
         bubbleDocs.addUsers(newUser);

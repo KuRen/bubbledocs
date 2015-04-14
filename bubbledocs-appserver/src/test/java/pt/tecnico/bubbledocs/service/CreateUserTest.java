@@ -7,6 +7,7 @@ import org.junit.Test;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.DuplicateUsernameException;
 import pt.tecnico.bubbledocs.exception.EmptyUsernameException;
+import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
@@ -20,8 +21,11 @@ public class CreateUserTest extends BubbleDocsServiceTest {
 
     private static final String USERNAME = "ars";
     private static final String PASSWORD = "ars";
+    private static final String NAME = "John Doe";
     private static final String ROOT_USERNAME = "root";
     private static final String USERNAME_DOES_NOT_EXIST = "no-one";
+    private static final String SMALL_USERNAME = "ab";
+    private static final String LONG_USERNAME = "nineChars";
 
     @Override
     public void populate4Test() {
@@ -68,4 +72,13 @@ public class CreateUserTest extends BubbleDocsServiceTest {
         service.execute();
     }
 
+    @Test(expected = InvalidArgumentException.class)
+    public void shortUsername() {
+        new CreateUser(root, SMALL_USERNAME, PASSWORD, NAME).execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void longUsername() {
+        new CreateUser(root, LONG_USERNAME, PASSWORD, NAME).execute();
+    }
 }
