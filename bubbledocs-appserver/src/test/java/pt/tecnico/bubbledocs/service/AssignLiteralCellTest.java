@@ -92,8 +92,14 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
     }
 
     @Test(expected = CellOutOfRangeException.class)
-    public void outOfRange() {
-        AssignLiteralCell service = new AssignLiteralCell(token, id, "8;8", VALUE);
+    public void rowOutOfRange() {
+        AssignLiteralCell service = new AssignLiteralCell(token, id, (ROWS + 1) + ";" + COLUMNS, VALUE);
+        service.execute();
+    }
+
+    @Test(expected = CellOutOfRangeException.class)
+    public void columnOutOfRange() {
+        AssignLiteralCell service = new AssignLiteralCell(token, id, ROWS + ";" + (COLUMNS + 1), VALUE);
         service.execute();
     }
 
