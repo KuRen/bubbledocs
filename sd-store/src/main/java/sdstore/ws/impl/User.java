@@ -15,7 +15,7 @@ import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 
 public class User {
 
-    private static final int MAX_CAPACITY = 10485760;
+    private static final int MAX_CAPACITY = 1024 * 10;
     private Map<String, Document> docs = new HashMap<String, Document>();
     private int capacity = 0;
 

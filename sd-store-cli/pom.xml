@@ -4,7 +4,7 @@
   <!-- http://maven.apache.org/pom.html#Quick_Overview -->
 
   <groupId>pt.tecnico.ulisboa.essd</groupId>
-  <artifactId>sd-store</artifactId>
+  <artifactId>sd-store-cli</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
@@ -13,9 +13,9 @@
   <dependencies>
     <!-- JAX-R API -->
     <dependency>
-      <groupId>javax.xml.registry</groupId>
-      <artifactId>javax.xml.registry-api</artifactId>
-      <version>1.0.5</version>
+      <groupId>org.jboss.spec.javax.xml.registry</groupId>
+      <artifactId>jboss-jaxr-api_1.0_spec</artifactId>
+      <version>1.0.2.Final</version>
     </dependency>
     <!-- UDDI Web Services -->
     <dependency>
@@ -98,12 +98,12 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <mainclass>sdstore.ws.impl.StoreMain</mainclass>
+    <mainclass>sdstorecli.StoreClient</mainclass>
     <uddi.url>http://localhost:8081</uddi.url>
     <ws.name>sd-store</ws.name>
     <ws.url>http://localhost:8080/store-ws/endpoint</ws.url>
   </properties>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -146,7 +146,6 @@
           <arguments>
             <argument>${uddi.url}</argument>
             <argument>${ws.name}</argument>
-            <argument>${ws.url}</argument>
           </arguments>
         </configuration>
       </plugin>
@@ -158,7 +157,7 @@
           <programs>
             <program>
               <mainClass>${mainclass}</mainClass>
-              <id>store-ws</id>
+              <id>sd-store-cli</id>
             </program>
           </programs>
         </configuration>

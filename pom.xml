@@ -11,6 +11,7 @@
     <modules>
         <module>bubbledocs-appserver</module>
         <module>sd-store</module>
+        <module>sd-store-cli</module>
         <!-- Add modules here... -->
     </modules>
 

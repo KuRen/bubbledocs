@@ -15,7 +15,7 @@ import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
         portName = "SDStoreImplPort", targetNamespace = "urn:pt:ulisboa:tecnico:sdis:store:ws", serviceName = "SDStore")
 public class StoreImpl implements SDStore {
 
-    private UserManager userManager;
+    private UserManager userManager = new UserManager();
 
     public void createDoc(DocUserPair docUserPair) throws DocAlreadyExists_Exception {
         userManager.addDocument(docUserPair.getUserId(), docUserPair.getDocumentId());
