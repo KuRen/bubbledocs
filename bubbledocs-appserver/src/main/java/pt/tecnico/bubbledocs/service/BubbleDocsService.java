@@ -4,7 +4,10 @@ import jvstm.Atomic;
 import pt.ist.fenixframework.FenixFramework;
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.SessionManager;
+import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
+import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
+import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
 public abstract class BubbleDocsService {
 
@@ -22,5 +25,19 @@ public abstract class BubbleDocsService {
     protected void refreshToken(String token) {
         SessionManager sessionManager = getBubbleDocs().getSessionManager();
         sessionManager.refreshSession(token);
+    }
+
+    protected User getLoggedInUser(String token) {
+        if (token.isEmpty()) {
+            throw new InvalidArgumentException();
+        }
+
+        SessionManager sm = getBubbleDocs().getSessionManager();
+        User user = sm.findUserByToken(token);
+
+        if (user == null)
+            throw new UserNotInSessionException();
+
+        return user;
     }
 }

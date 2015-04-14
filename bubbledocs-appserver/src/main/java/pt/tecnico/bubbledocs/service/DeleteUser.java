@@ -8,7 +8,6 @@ import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.exception.UnknownBubbleDocsUserException;
-import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class DeleteUser extends BubbleDocsService {
@@ -27,10 +26,7 @@ public class DeleteUser extends BubbleDocsService {
         SessionManager sm = bd.getSessionManager();
         sm.cleanOldSessions();
 
-        User user = sm.findUserByToken(userToken);
-
-        if (user == null)
-            throw new UserNotInSessionException();
+        User user = getLoggedInUser(userToken);
 
         if (!user.isRoot()) {
             throw new UnauthorizedOperationException();
