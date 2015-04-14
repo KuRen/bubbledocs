@@ -2,13 +2,18 @@ package pt.tecnico.bubbledocs.service;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import mockit.Mocked;
+import mockit.NonStrictExpectations;
 
 import org.junit.Test;
 
 import pt.tecnico.bubbledocs.domain.User;
+import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
+import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.exception.UnknownBubbleDocsUserException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
+import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 // add needed import declarations
 
@@ -20,6 +25,9 @@ public class DeleteUserTest extends BubbleDocsServiceTest {
     private static final String ROOT_USERNAME = "root";
     private static final String USERNAME_DOES_NOT_EXIST = "no-one";
     private static final String SPREADSHEET_NAME = "spread";
+
+    @Mocked
+    IDRemoteServices idRemoteServices;
 
     // the tokens for user root
     private String root;
@@ -34,6 +42,7 @@ public class DeleteUserTest extends BubbleDocsServiceTest {
     };
 
     public void success() {
+        mockRemoteRemoveUserMethod();
         DeleteUser service = new DeleteUser(root, USERNAME_TO_DELETE);
         service.execute();
 
@@ -66,32 +75,55 @@ public class DeleteUserTest extends BubbleDocsServiceTest {
 
     @Test(expected = UnknownBubbleDocsUserException.class)
     public void userToDeleteDoesNotExist() {
+        mockRemoteRemoveUserMethod();
         new DeleteUser(root, USERNAME_DOES_NOT_EXIST).execute();
     }
 
     @Test(expected = UnauthorizedOperationException.class)
     public void notRootUser() {
+        mockRemoteRemoveUserMethod();
         String ars = addUserToSession(USERNAME);
         new DeleteUser(ars, USERNAME_TO_DELETE).execute();
     }
 
     @Test(expected = UserNotInSessionException.class)
     public void rootNotInSession() {
+        mockRemoteRemoveUserMethod();
         removeUserFromSession(root);
-
         new DeleteUser(root, USERNAME_TO_DELETE).execute();
     }
 
     @Test(expected = UserNotInSessionException.class)
     public void notInSessionAndNotRoot() {
+        mockRemoteRemoveUserMethod();
         String ars = addUserToSession(USERNAME);
         removeUserFromSession(ars);
-
         new DeleteUser(ars, USERNAME_TO_DELETE).execute();
     }
 
     @Test(expected = UserNotInSessionException.class)
     public void accessUserDoesNotExist() {
+        mockRemoteRemoveUserMethod();
         new DeleteUser(USERNAME_DOES_NOT_EXIST, USERNAME_TO_DELETE).execute();
+    }
+
+    @Test(expected = UnavailableServiceException.class)
+    public void remoteException() {
+        new NonStrictExpectations() {
+            {
+                idRemoteServices.removeUser(USERNAME_TO_DELETE);
+                result = new RemoteInvocationException();
+            }
+        };
+
+        new DeleteUser(root, USERNAME_TO_DELETE).execute();
+    }
+
+    private void mockRemoteRemoveUserMethod() {
+        new NonStrictExpectations() {
+            {
+                idRemoteServices.removeUser(USERNAME_TO_DELETE);
+            }
+        };
     }
 }
