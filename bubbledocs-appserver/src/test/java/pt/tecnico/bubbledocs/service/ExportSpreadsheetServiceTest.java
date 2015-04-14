@@ -17,6 +17,8 @@ import pt.tecnico.bubbledocs.domain.Addition;
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Cell;
 import pt.tecnico.bubbledocs.domain.Literal;
+import pt.tecnico.bubbledocs.domain.Permission;
+import pt.tecnico.bubbledocs.domain.PermissionType;
 import pt.tecnico.bubbledocs.domain.Reference;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.exception.ImportDocumentException;
@@ -31,6 +33,8 @@ public class ExportSpreadsheetServiceTest extends BubbleDocsServiceTest {
 
     private String authorizedToken;
     private String unauthorizedToken;
+    private String writeToken;
+    private String readToken;
     private int validId;
 
     private static final int VALUE = 2;
@@ -47,6 +51,8 @@ public class ExportSpreadsheetServiceTest extends BubbleDocsServiceTest {
     private static final String NOT_IN_SESSION_TOKEN = "not in session!!!";
     private static final String USER = "userName";
     private static final String SS_NAME = "A SS Name";
+    private static final String WRITER_USER = "wUser";
+    private static final String READER_USER = "rUser";
 
     @Test(expected = InvalidSpreadSheetIdException.class)
     public void invalidSpreadsheet() {
@@ -154,13 +160,145 @@ public class ExportSpreadsheetServiceTest extends BubbleDocsServiceTest {
         }
     }
 
+    @Test
+    //This is not extensive, the extensive tests should be done in the units who can convert themselves to XML
+    public void readOnlysuccess() {
+        ExportSpreadsheetService service = new ExportSpreadsheetService(validId, readToken);
+        service.execute();
+
+        byte[] result = service.getResult();
+
+        Document doc;
+
+        SAXBuilder builder = new SAXBuilder();
+        builder.setIgnoringElementContentWhitespace(true);
+
+        try {
+            doc = builder.build(new ByteArrayInputStream(result));
+        } catch (JDOMException | IOException e) {
+            throw new ImportDocumentException();
+        }
+
+        Element rootElement = doc.getRootElement();
+
+        assertEquals(USER, rootElement.getAttribute("owner").getValue());
+        assertEquals(ROWS, Integer.parseInt(rootElement.getAttribute("rows").getValue()));
+        assertEquals(COLS, Integer.parseInt(rootElement.getAttribute("columns").getValue()));
+        assertEquals(SS_NAME, rootElement.getAttribute("name").getValue());
+
+        Element cells = rootElement.getChild("Cells");
+
+        assertEquals(cells.getChildren("Cell").size(), 2);
+
+        for (Element cellElement : cells.getChildren("Cell")) {
+            Integer row = Integer.parseInt(cellElement.getAttribute("row").getValue());
+            Integer column = Integer.parseInt(cellElement.getAttribute("column").getValue());
+
+            if (row == CELL_1_ROW && column == CELL_1_COL) {
+                assertEquals("Literal", cellElement.getChildren().get(0).getName());
+                assertEquals(VALUE, Integer.parseInt(cellElement.getChildren().get(0).getAttribute("literal").getValue()));
+            }
+
+            else if (row == CELL_2_ROW && column == CELL_2_COL) {
+                assertEquals("Addition", cellElement.getChildren().get(0).getName());
+
+                Element arg1Element = cellElement.getChildren().get(0).getChildren().get(0);
+                Element arg2Element = cellElement.getChildren().get(0).getChildren().get(1);
+
+                assertEquals("Reference", arg1Element.getName());
+                assertEquals("Literal", arg2Element.getName());
+
+                Element arg1CellElement = arg1Element.getChildren().get(0);
+
+                assertEquals(CELL_1_ROW, Integer.parseInt(arg1CellElement.getAttribute("row").getValue()));
+                assertEquals(CELL_1_COL, Integer.parseInt(arg1CellElement.getAttribute("column").getValue()));
+
+                assertEquals("Literal", arg2Element.getName());
+                assertEquals(VALUE, Integer.parseInt(arg2Element.getAttribute("literal").getValue()));
+            }
+
+            else {
+                fail("Non existing cells created during export");
+            }
+        }
+    }
+
+    @Test
+    //This is not extensive, the extensive tests should be done in the units who can convert themselves to XML
+    public void writeSuccess() {
+        ExportSpreadsheetService service = new ExportSpreadsheetService(validId, writeToken);
+        service.execute();
+
+        byte[] result = service.getResult();
+
+        Document doc;
+
+        SAXBuilder builder = new SAXBuilder();
+        builder.setIgnoringElementContentWhitespace(true);
+
+        try {
+            doc = builder.build(new ByteArrayInputStream(result));
+        } catch (JDOMException | IOException e) {
+            throw new ImportDocumentException();
+        }
+
+        Element rootElement = doc.getRootElement();
+
+        assertEquals(USER, rootElement.getAttribute("owner").getValue());
+        assertEquals(ROWS, Integer.parseInt(rootElement.getAttribute("rows").getValue()));
+        assertEquals(COLS, Integer.parseInt(rootElement.getAttribute("columns").getValue()));
+        assertEquals(SS_NAME, rootElement.getAttribute("name").getValue());
+
+        Element cells = rootElement.getChild("Cells");
+
+        assertEquals(cells.getChildren("Cell").size(), 2);
+
+        for (Element cellElement : cells.getChildren("Cell")) {
+            Integer row = Integer.parseInt(cellElement.getAttribute("row").getValue());
+            Integer column = Integer.parseInt(cellElement.getAttribute("column").getValue());
+
+            if (row == CELL_1_ROW && column == CELL_1_COL) {
+                assertEquals("Literal", cellElement.getChildren().get(0).getName());
+                assertEquals(VALUE, Integer.parseInt(cellElement.getChildren().get(0).getAttribute("literal").getValue()));
+            }
+
+            else if (row == CELL_2_ROW && column == CELL_2_COL) {
+                assertEquals("Addition", cellElement.getChildren().get(0).getName());
+
+                Element arg1Element = cellElement.getChildren().get(0).getChildren().get(0);
+                Element arg2Element = cellElement.getChildren().get(0).getChildren().get(1);
+
+                assertEquals("Reference", arg1Element.getName());
+                assertEquals("Literal", arg2Element.getName());
+
+                Element arg1CellElement = arg1Element.getChildren().get(0);
+
+                assertEquals(CELL_1_ROW, Integer.parseInt(arg1CellElement.getAttribute("row").getValue()));
+                assertEquals(CELL_1_COL, Integer.parseInt(arg1CellElement.getAttribute("column").getValue()));
+
+                assertEquals("Literal", arg2Element.getName());
+                assertEquals(VALUE, Integer.parseInt(arg2Element.getAttribute("literal").getValue()));
+            }
+
+            else {
+                fail("Non existing cells created during export");
+            }
+        }
+    }
+
     @Override
     public void populate4Test() {
         createUser(USER, "password", "big complete name");
         authorizedToken = addUserToSession(USER);
 
-        createUser("otherUser", "password", "yet a bigger name");
-        unauthorizedToken = addUserToSession("otherUser");
+        createUser("noobUser", "password", "yet a bigger name");
+        unauthorizedToken = addUserToSession("noobUser");
+
+        createUser(WRITER_USER, "password", "a bigger bigger name");
+        writeToken = addUserToSession(WRITER_USER);
+
+        createUser(READER_USER, "password", "yet a bigger bigger name");
+        readToken = addUserToSession(READER_USER);
 
         BubbleDocs bd = BubbleDocs.getInstance();
 
@@ -173,5 +311,16 @@ public class ExportSpreadsheetServiceTest extends BubbleDocsServiceTest {
 
         ss.addCells(c1);
         ss.addCells(c2);
+
+        Permission writePermission = new Permission();
+        writePermission.setPermission(PermissionType.WRITE);
+        writePermission.setUser(bd.getUserByUsername(WRITER_USER));
+        ss.addPermissions(writePermission, bd.getUserByUsername(USER));
+
+        Permission readPermission = new Permission();
+        readPermission.setPermission(PermissionType.READ);
+        readPermission.setUser(bd.getUserByUsername(READER_USER));
+        ss.addPermissions(readPermission, bd.getUserByUsername(USER));
+
     }
 }
