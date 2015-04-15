@@ -18,12 +18,14 @@ public class CreateUser extends BubbleDocsService {
     private String newUsername;
     private String email;
     private String name;
+    private IDRemoteServices idServices = new IDRemoteServices();
 
     public CreateUser(String userToken, String newUsername, String email, String name) {
         this.userToken = userToken;
         this.newUsername = newUsername;
         this.email = email;
         this.name = name;
+        this.idServices = new IDRemoteServices();
     }
 
     @Override
@@ -47,8 +49,6 @@ public class CreateUser extends BubbleDocsService {
 
         if (!user.isRoot())
             throw new UnauthorizedOperationException();
-
-        IDRemoteServices idServices = new IDRemoteServices();
 
         try {
             idServices.createUser(newUsername, email);

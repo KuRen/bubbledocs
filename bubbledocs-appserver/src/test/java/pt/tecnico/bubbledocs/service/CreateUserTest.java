@@ -1,8 +1,8 @@
 package pt.tecnico.bubbledocs.service;
 
 import static org.junit.Assert.assertEquals;
+import mockit.Expectations;
 import mockit.Mocked;
-import mockit.NonStrictExpectations;
 
 import org.junit.Test;
 
@@ -47,7 +47,7 @@ public class CreateUserTest extends BubbleDocsServiceTest {
     @Test
     public void success() {
         CreateUser service = new CreateUser(root, USERNAME_DOES_NOT_EXIST, EMAIL_DOES_NOT_EXIST, "José Ferreira");
-        new NonStrictExpectations() {
+        new Expectations() {
             {
                 idRemoteServices.createUser(USERNAME_DOES_NOT_EXIST, EMAIL_DOES_NOT_EXIST);
             }
@@ -66,7 +66,7 @@ public class CreateUserTest extends BubbleDocsServiceTest {
     @Test(expected = DuplicateUsernameException.class)
     public void usernameExists() {
         CreateUser service = new CreateUser(root, USERNAME, EMAIL_DOES_NOT_EXIST, "José Ferreira");
-        new NonStrictExpectations() {
+        new Expectations() {
             {
                 idRemoteServices.createUser(USERNAME, EMAIL_DOES_NOT_EXIST);
                 result = new DuplicateUsernameException();
@@ -101,7 +101,7 @@ public class CreateUserTest extends BubbleDocsServiceTest {
     @Test(expected = InvalidUsernameException.class)
     public void shortUsername() {
         CreateUser service = new CreateUser(root, SMALL_USERNAME, EMAIL_DOES_NOT_EXIST, NAME);
-        new NonStrictExpectations() {
+        new Expectations() {
             {
                 idRemoteServices.createUser(SMALL_USERNAME, EMAIL_DOES_NOT_EXIST);
                 result = new InvalidUsernameException();
@@ -114,7 +114,7 @@ public class CreateUserTest extends BubbleDocsServiceTest {
     @Test(expected = InvalidUsernameException.class)
     public void longUsername() {
         CreateUser service = new CreateUser(root, LONG_USERNAME, EMAIL_DOES_NOT_EXIST, NAME);
-        new NonStrictExpectations() {
+        new Expectations() {
             {
                 idRemoteServices.createUser(LONG_USERNAME, EMAIL_DOES_NOT_EXIST);
                 result = new InvalidUsernameException();
@@ -127,7 +127,7 @@ public class CreateUserTest extends BubbleDocsServiceTest {
     @Test(expected = DuplicateEmailException.class)
     public void emailExists() {
         CreateUser service = new CreateUser(root, USERNAME_DOES_NOT_EXIST, EMAIL, NAME);
-        new NonStrictExpectations() {
+        new Expectations() {
             {
                 idRemoteServices.createUser(USERNAME_DOES_NOT_EXIST, EMAIL);
                 result = new DuplicateEmailException();
@@ -148,7 +148,7 @@ public class CreateUserTest extends BubbleDocsServiceTest {
     @Test(expected = InvalidEmailException.class)
     public void invalidEmail() {
         CreateUser service = new CreateUser(root, USERNAME_DOES_NOT_EXIST, "$$aa@x%.com", NAME);
-        new NonStrictExpectations() {
+        new Expectations() {
             {
                 idRemoteServices.createUser(USERNAME_DOES_NOT_EXIST, "$$aa@x%.com");
                 result = new InvalidEmailException();
