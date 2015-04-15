@@ -13,20 +13,18 @@ public class StoreImplTest {
 
     // static members
 
-	private static DocUserPair pair; // pair being used
 	private static String userId = "Maria";
 	private static String documentId = "Ficheiro1";
 	private static byte[] content; // content being used
 	private static String contentString = "Ficheiro da Maria";
+	private static int testNumber;
 	
     // one-time initialization and clean-up
 
     @BeforeClass
     public static void oneTimeSetUp() {
-    	pair = new DocUserPair();
-    	pair.setDocumentId(documentId);
-    	pair.setUserId(userId);
     	content = contentString.getBytes();
+    	testNumber = 0;
     }
 
     @AfterClass
@@ -37,16 +35,22 @@ public class StoreImplTest {
     // members
 
     private StoreImpl store; // class being tested
+    private DocUserPair pair;
 
     // initialization and clean-up for each test
 
     @Before
     public void setUp() {
     	store = new StoreImpl();
+    	pair = new DocUserPair();
+    	pair.setDocumentId(documentId+testNumber);
+    	pair.setUserId(userId+testNumber);
+    	
     }
 
     @After
     public void tearDown() {
+    	testNumber++;
     }
 
 
@@ -77,8 +81,8 @@ public class StoreImplTest {
     public void testList() throws Exception {
     	store.createDoc(pair);
     	List<String> correctList = new ArrayList<String>();
-    	correctList.add(documentId);
-    	List<String> resultList = store.listDocs(userId);
+    	correctList.add(pair.getDocumentId());
+    	List<String> resultList = store.listDocs(pair.getUserId());
     	Assert.assertEquals(correctList, resultList);
     	
     }
@@ -106,10 +110,8 @@ public class StoreImplTest {
     @Test(expected = DocDoesNotExist_Exception.class)
     public void testStoreUnknownDoc() throws Exception {
     	store.createDoc(pair);
-    	DocUserPair pair2 = new DocUserPair();
-    	pair2.setUserId(userId);
-    	pair2.setDocumentId("Ficheiro2");
-    	store.store(pair2,content);
+    	pair.setDocumentId("fail");
+    	store.store(pair,content);
     }
     
     // Fail storing more content than the repository capacity
@@ -129,10 +131,8 @@ public class StoreImplTest {
     @Test(expected = DocDoesNotExist_Exception.class)
     public void testLoadUnknownDoc() throws Exception {
     	store.createDoc(pair);
-    	DocUserPair pair2 = new DocUserPair();
-    	pair2.setUserId(userId);
-    	pair2.setDocumentId("Ficheiro2");
-    	store.load(pair2);
+    	pair.setDocumentId("fail");
+    	store.load(pair);
     }
     
 }
