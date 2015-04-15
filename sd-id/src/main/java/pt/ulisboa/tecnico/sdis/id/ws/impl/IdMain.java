@@ -2,6 +2,10 @@ package pt.ulisboa.tecnico.sdis.id.ws.impl;
 
 import javax.xml.ws.Endpoint;
 
+import pt.ulisboa.tecnico.sdis.id.ws.EmailAlreadyExists_Exception;
+import pt.ulisboa.tecnico.sdis.id.ws.InvalidEmail_Exception;
+import pt.ulisboa.tecnico.sdis.id.ws.InvalidUser_Exception;
+import pt.ulisboa.tecnico.sdis.id.ws.UserAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.impl.uddi.UDDINaming;
 
 public class IdMain {
@@ -21,6 +25,8 @@ public class IdMain {
         Endpoint endpoint = null;
         UDDINaming uddiNaming = null;
         try {
+            populate();
+
             endpoint = Endpoint.create(new IdImpl());
 
             // publish endpoint
@@ -62,6 +68,27 @@ public class IdMain {
             }
         }
 
+    }
+
+    private static void populate() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
+            UserAlreadyExists_Exception {
+        System.out.println("Populating initial state of SD-ID");
+        UserManager userManager = UserManager.getInstance();
+
+        userManager.create("alice", "alice@tecnico.pt", "Aaa1");
+        System.out.printf("Added user <%s>, with email <%s> and password <%s>%n", "alice", "alice@tecnico.pt", "Aaa1");
+
+        userManager.create("bruno", "bruno@tecnico.pt", "Bbb2");
+        System.out.printf("Added user <%s>, with email <%s> and password <%s>%n", "bruno", "bruno@tecnico.pt", "Bbb2");
+
+        userManager.create("carla", "carla@tecnico.pt", "Ccc3");
+        System.out.printf("Added user <%s>, with email <%s> and password <%s>%n", "carla", "carla@tecnico.pt", "Ccc3");
+
+        userManager.create("duarte", "duarte@tecnico.pt", "Ddd4");
+        System.out.printf("Added user <%s>, with email <%s> and password <%s>%n", "duarte", "duarte@tecnico.pt", "Ddd4");
+
+        userManager.create("eduardo", "eduardo@tecnico.pt", "Eee5");
+        System.out.printf("Added user <%s>, with email <%s> and password <%s>%n", "eduardo", "eduardo@tecnico.pt", "Eee5");
     }
 
 }
