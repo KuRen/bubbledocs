@@ -41,7 +41,7 @@ public class IdClient implements SDId {
      * 
      * @throws JAXRException
      */
-    public IdClient(String uddiURL, String serviceName) throws IdClientException, JAXRException {
+    public IdClient(String uddiURL, String serviceName) throws JAXRException {
 
         //if (verbose)
         System.out.printf("Contacting UDDI at %s%n", uddiURL);
