@@ -4,7 +4,7 @@ public class Root extends Root_Base {
 
     public Root() {
         super();
-        super.init("root", "root", "Super User");
+        super.init("root", "root", "root@root.root", "Super User");
     }
 
     public static User getInstance() {

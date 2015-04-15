@@ -17,7 +17,7 @@ import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
 public class ExportDocumentTest extends BubbleDocsServiceTest {
-	
+
     private String authorizedToken;
     private int validId;
 
@@ -28,51 +28,51 @@ public class ExportDocumentTest extends BubbleDocsServiceTest {
     private static final int CELL_1_ROW = 1;
     private static final int CELL_2_COL = 2;
     private static final int CELL_2_ROW = 2;
-    
+
     private static final String USER = "userName";
     private static final String SS_NAME = "A SS Name";
-	
-	@Test(expected= UnavailableServiceException.class)
-	public void testRemoteInvocationException() {
-		new MockUp<StoreRemoteServices>() {
-			@Mock
-			public void storeDocument(String username, String docName, byte[] document){
-				throw new RemoteInvocationException();
-			}
-		};
-		
-		ExportDocument service = new ExportDocument(authorizedToken, validId);
-		service.execute();
-		
-	}
-	
-	@Test(expected=CannotStoreDocumentException.class)
-	public void testCannotStoreDocumentException() {
-		new MockUp<StoreRemoteServices>() {
-			@Mock
-			public void storeDocument(String username, String docName, byte[] document){
-				throw new CannotStoreDocumentException();
-			}
-		};
-		
-		ExportDocument service = new ExportDocument(authorizedToken, validId);
-		service.execute();
-	}
-	
-	@Test
-	public void testStoreDocument() {
-		new MockUp<StoreRemoteServices>() {
-			@Mock
-			public void storeDocument(String username, String docName, byte[] document){
-			}
-		};
-		ExportDocument service = new ExportDocument(authorizedToken, validId);
-		service.execute();
-	}
-	
+
+    @Test(expected = UnavailableServiceException.class)
+    public void testRemoteInvocationException() {
+        new MockUp<StoreRemoteServices>() {
+            @Mock
+            public void storeDocument(String username, String docName, byte[] document) {
+                throw new RemoteInvocationException();
+            }
+        };
+
+        ExportDocument service = new ExportDocument(authorizedToken, validId);
+        service.execute();
+
+    }
+
+    @Test(expected = CannotStoreDocumentException.class)
+    public void testCannotStoreDocumentException() {
+        new MockUp<StoreRemoteServices>() {
+            @Mock
+            public void storeDocument(String username, String docName, byte[] document) {
+                throw new CannotStoreDocumentException();
+            }
+        };
+
+        ExportDocument service = new ExportDocument(authorizedToken, validId);
+        service.execute();
+    }
+
+    @Test
+    public void testStoreDocument() {
+        new MockUp<StoreRemoteServices>() {
+            @Mock
+            public void storeDocument(String username, String docName, byte[] document) {
+            }
+        };
+        ExportDocument service = new ExportDocument(authorizedToken, validId);
+        service.execute();
+    }
+
     @Override
     public void populate4Test() {
-        createUser(USER, "password", "big complete name");
+        createUser(USER, "password", "email", "big complete name");
         authorizedToken = addUserToSession(USER);
 
         BubbleDocs bd = BubbleDocs.getInstance();

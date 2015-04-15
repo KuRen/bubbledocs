@@ -288,16 +288,16 @@ public class ExportSpreadsheetServiceTest extends BubbleDocsServiceTest {
 
     @Override
     public void populate4Test() {
-        createUser(USER, "password", "big complete name");
+        createUser(USER, "password", "gmail", "big complete name");
         authorizedToken = addUserToSession(USER);
 
-        createUser("noobUser", "password", "yet a bigger name");
+        createUser("noobUser", "password", "hotmail", "yet a bigger name");
         unauthorizedToken = addUserToSession("noobUser");
 
-        createUser(WRITER_USER, "password", "a bigger bigger name");
+        createUser(WRITER_USER, "password", "megamail", "a bigger bigger name");
         writeToken = addUserToSession(WRITER_USER);
 
-        createUser(READER_USER, "password", "yet a bigger bigger name");
+        createUser(READER_USER, "password", "yahoo", "yet a bigger bigger name");
         readToken = addUserToSession(READER_USER);
 
         BubbleDocs bd = BubbleDocs.getInstance();

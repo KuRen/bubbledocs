@@ -26,13 +26,14 @@ public class LoginUserTest extends BubbleDocsServiceTest {
     private static final String PASSWORD = "jp#";
     private static final String WRONG_PASSWORD = "wrongpsswd";
     private static final String DIFF_FROM_LOCAL_PASSWORD = "diffFromLocal";
+    private static final String EMAIL = "joao.pereira@tecnico.ulisboa.pt";
 
     @Mocked
     IDRemoteServices idRemoteServices;
 
     @Override
     public void populate4Test() {
-        createUser(USERNAME, PASSWORD, "João Pereira");
+        createUser(USERNAME, PASSWORD, EMAIL, "João Pereira");
     }
 
     // returns the time of the last access for the user with token userToken.

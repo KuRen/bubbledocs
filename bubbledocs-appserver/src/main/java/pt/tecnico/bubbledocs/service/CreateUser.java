@@ -1,12 +1,18 @@
 package pt.tecnico.bubbledocs.service;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
+import pt.tecnico.bubbledocs.exception.DuplicateEmailException;
 import pt.tecnico.bubbledocs.exception.DuplicateUsernameException;
 import pt.tecnico.bubbledocs.exception.EmptyUsernameException;
-import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
+import pt.tecnico.bubbledocs.exception.EmptyValueException;
+import pt.tecnico.bubbledocs.exception.InvalidEmailException;
+import pt.tecnico.bubbledocs.exception.InvalidUsernameException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
@@ -14,13 +20,13 @@ public class CreateUser extends BubbleDocsService {
 
     private String userToken;
     private String newUsername;
-    private String password;
+    private String email;
     private String name;
 
-    public CreateUser(String userToken, String newUsername, String password, String name) {
+    public CreateUser(String userToken, String newUsername, String email, String name) {
         this.userToken = userToken;
         this.newUsername = newUsername;
-        this.password = password;
+        this.email = email;
         this.name = name;
     }
 
@@ -29,6 +35,9 @@ public class CreateUser extends BubbleDocsService {
 
         if (newUsername.isEmpty())
             throw new EmptyUsernameException();
+
+        if (email.isEmpty())
+            throw new EmptyValueException();
 
         BubbleDocs bubbleDocs = getBubbleDocs();
         SessionManager sessionManager = bubbleDocs.getSessionManager();
@@ -48,10 +57,21 @@ public class CreateUser extends BubbleDocsService {
 
         int length = newUsername.length();
         if (length > 8 || length < 3) {
-            throw new InvalidArgumentException("Username must have between 3 and 8 characters");
+            throw new InvalidUsernameException("Username must have between 3 and 8 characters");
         }
 
-        User newUser = new User(newUsername, password, name);
+        if (bubbleDocs.getUserByEmail(email) != null)
+            throw new DuplicateEmailException();
+
+        Pattern pattern = Pattern.compile(".+@.+\\.[a-z]+");
+        Matcher matcher = pattern.matcher(email);
+        if (!matcher.matches()) {
+            throw new InvalidEmailException("Email doesn't have the desired structure");
+        } else {
+            email.toLowerCase();
+        }
+
+        User newUser = new User(newUsername, null, email, name);
         bubbleDocs.addUsers(newUser);
 
     }
@@ -64,8 +84,8 @@ public class CreateUser extends BubbleDocsService {
         return newUsername;
     }
 
-    public final String getPassword() {
-        return password;
+    public final String getEmail() {
+        return email;
     }
 
     public final String getName() {

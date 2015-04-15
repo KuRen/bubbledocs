@@ -46,6 +46,14 @@ public class BubbleDocs extends BubbleDocs_Base {
         return null;
     }
 
+    @Atomic(mode = TxMode.READ)
+    public User getUserByEmail(String email) {
+        for (User user : getUsersSet())
+            if (user.getEmail().equals(email))
+                return user;
+        return null;
+    }
+
     public User findUserByToken(String token) {
         return getSessionManager().findUserByToken(token);
     }

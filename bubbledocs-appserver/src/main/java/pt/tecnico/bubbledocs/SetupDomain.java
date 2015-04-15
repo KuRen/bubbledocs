@@ -23,9 +23,11 @@ public class SetupDomain {
         bd.addUsers(Root.getInstance());
         LoginUser rootLogin = new LoginUser("root", "root");
         rootLogin.execute();
-        CreateUser pfCreate = new CreateUser(Root.getInstance().getSession().getToken(), "pf", "sub", "Paul Door");
+        CreateUser pfCreate =
+                new CreateUser(Root.getInstance().getSession().getToken(), "pf", "paul.door@gmail.com", "Paul Door");
         pfCreate.execute();
-        CreateUser raCreate = new CreateUser(Root.getInstance().getSession().getToken(), "ra", "cor", "Step Rabbit");
+        CreateUser raCreate =
+                new CreateUser(Root.getInstance().getSession().getToken(), "ra", "st3pr4bb1t@tuga.pt", "Step Rabbit");
         raCreate.execute();
         LoginUser pfLogin = new LoginUser("pf", "sub");
         pfLogin.execute();

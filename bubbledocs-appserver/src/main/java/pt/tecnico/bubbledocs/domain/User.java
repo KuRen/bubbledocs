@@ -12,19 +12,21 @@ public class User extends User_Base {
         super();
     }
 
-    public User(String username, String password, String name) {
+    public User(String username, String password, String email, String name) {
         super();
         BubbleDocs bd = BubbleDocs.getInstance();
         setUsername(username);
         setPassword(password);
+        setEmail(email);
         setName(name);
         setBubbledocs(bd);
     }
 
-    public void init(String username, String password, String name) {
+    public void init(String username, String password, String email, String name) {
         setUsername(username);
         setPassword(password);
         setName(name);
+        setEmail(email);
     }
 
     @Atomic(mode = TxMode.READ)

@@ -25,6 +25,8 @@ public class DeleteUserTest extends BubbleDocsServiceTest {
     private static final String ROOT_USERNAME = "root";
     private static final String USERNAME_DOES_NOT_EXIST = "no-one";
     private static final String SPREADSHEET_NAME = "spread";
+    private static final String EMAIL = "rito.silva@tecnico.ulisboa.pt";
+    private static final String EMAIL_ALREADY_TAKEN = "sergio.fernandes@tecnico.ulisboa.pt";
 
     @Mocked
     IDRemoteServices idRemoteServices;
@@ -34,8 +36,8 @@ public class DeleteUserTest extends BubbleDocsServiceTest {
 
     @Override
     public void populate4Test() {
-        createUser(USERNAME, PASSWORD, "António Rito Silva");
-        User smf = createUser(USERNAME_TO_DELETE, "smf", "Sérgio Fernandes");
+        createUser(USERNAME, PASSWORD, EMAIL, "António Rito Silva");
+        User smf = createUser(USERNAME_TO_DELETE, "smf", EMAIL_ALREADY_TAKEN, "Sérgio Fernandes");
         createSpreadSheet(smf, USERNAME_TO_DELETE, 20, 20);
 
         root = addUserToSession(ROOT_USERNAME);

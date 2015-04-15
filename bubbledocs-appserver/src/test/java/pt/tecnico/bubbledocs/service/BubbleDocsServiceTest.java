@@ -48,9 +48,9 @@ public class BubbleDocsServiceTest {
 
     // auxiliary methods that access the domain layer and are needed in the test classes
     // for defining the initial state and checking that the service has the expected behavior
-    User createUser(String username, String password, String name) {
+    User createUser(String username, String password, String email, String name) {
         BubbleDocs bd = BubbleDocs.getInstance();
-        User user = new User(username, password, name);
+        User user = new User(username, email, password, name);
         bd.addUsers(user);
         return user;
     }

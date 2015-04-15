@@ -111,7 +111,7 @@ public class CreateSpeadsheetTest extends BubbleDocsServiceTest {
 
     @Override
     public void populate4Test() {
-        createUser("username", "password", "name");
+        createUser("username", "password", "email", "name");
         this.token = addUserToSession("username");
     }
 }

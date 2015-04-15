@@ -25,6 +25,7 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
 
     private static final String USERNAME = "ars";
     private static final String PASSWORD = "ars";
+    private static final String EMAIL = "rito.silva@tecnico.ulisboa.pt";
     private static final String NOT_OWNER_USERNAME = "src";
     private static final String NOT_OWNER_PASSWORD = "src";
     private static final String SPREADSHEET_NAME = "ss-name";
@@ -36,10 +37,10 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
 
     @Override
     public void populate4Test() {
-        createUser(NOT_OWNER_USERNAME, NOT_OWNER_PASSWORD, "António Rito Silva");
+        createUser(NOT_OWNER_USERNAME, NOT_OWNER_PASSWORD, EMAIL, "António Rito Silva");
         notOwnerToken = addUserToSession(NOT_OWNER_USERNAME);
 
-        User ars = createUser(USERNAME, PASSWORD, "António Rito Silva");
+        User ars = createUser(USERNAME, PASSWORD, EMAIL, "António Rito Silva");
         token = addUserToSession(USERNAME);
 
         Spreadsheet ss = createSpreadSheet(ars, SPREADSHEET_NAME, ROWS, COLUMNS);
