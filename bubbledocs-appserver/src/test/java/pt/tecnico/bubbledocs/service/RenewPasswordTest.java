@@ -17,6 +17,7 @@ import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class RenewPasswordTest extends BubbleDocsServiceTest {
     private final String NAME = "the name";
+    private final String EMAIL = "email@example.com";
     private final String USERNAME = "user25";
     private final String PASSWORD = "thepassword";
     private final String NOT_IN_SESSION_TOKEN = "notinsession";
@@ -27,7 +28,7 @@ public class RenewPasswordTest extends BubbleDocsServiceTest {
 
     @Override
     public void populate4Test() {
-        createUser(USERNAME, "", NAME);
+        createUser(USERNAME, PASSWORD, EMAIL, NAME);
         USER_TOKEN = addUserToSession(USERNAME);
     }
 
