@@ -1,4 +1,4 @@
-package sdstore.ws.impl;
+package pt.ulisboa.tecnico.sdis.store.ws.impl;
 
 import java.util.ArrayList;
 import java.util.Collections;

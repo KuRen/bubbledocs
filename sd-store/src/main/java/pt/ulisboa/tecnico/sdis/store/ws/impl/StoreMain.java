@@ -1,8 +1,8 @@
-package sdstore.ws.impl;
+package pt.ulisboa.tecnico.sdis.store.ws.impl;
 
 import javax.xml.ws.Endpoint;
 
-import sdstore.ws.impl.uddi.UDDINaming;
+import pt.ulisboa.tecnico.sdis.store.ws.impl.uddi.UDDINaming;
 
 
 public class StoreMain {

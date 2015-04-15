@@ -1,4 +1,4 @@
-package sdstore.ws.impl.uddi;
+package pt.ulisboa.tecnico.sdis.store.ws.impl.uddi;
 
 import java.net.PasswordAuthentication;
 import java.util.*;

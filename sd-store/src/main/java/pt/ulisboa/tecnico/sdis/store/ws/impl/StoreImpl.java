@@ -1,4 +1,4 @@
-package sdstore.ws.impl;
+package pt.ulisboa.tecnico.sdis.store.ws.impl;
 
 import java.util.List;
 
@@ -15,22 +15,20 @@ import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
         portName = "SDStoreImplPort", targetNamespace = "urn:pt:ulisboa:tecnico:sdis:store:ws", serviceName = "SDStore")
 public class StoreImpl implements SDStore {
 
-    private UserManager userManager = new UserManager();
-
     public void createDoc(DocUserPair docUserPair) throws DocAlreadyExists_Exception {
-        userManager.addDocument(docUserPair.getUserId(), docUserPair.getDocumentId());
+        UserManager.getInstance().addDocument(docUserPair.getUserId(), docUserPair.getDocumentId());
     }
 
     public List<String> listDocs(String userId) throws UserDoesNotExist_Exception {
-        return userManager.listDocs(userId);
+        return UserManager.getInstance().listDocs(userId);
     }
 
     public void store(DocUserPair docUserPair, byte[] contents) throws CapacityExceeded_Exception, DocDoesNotExist_Exception,
             UserDoesNotExist_Exception {
-        userManager.store(docUserPair.getUserId(), docUserPair.getDocumentId(), contents);
+    	UserManager.getInstance().store(docUserPair.getUserId(), docUserPair.getDocumentId(), contents);
     }
 
     public byte[] load(DocUserPair docUserPair) throws DocDoesNotExist_Exception, UserDoesNotExist_Exception {
-        return userManager.load(docUserPair.getUserId(), docUserPair.getDocumentId());
+        return UserManager.getInstance().load(docUserPair.getUserId(), docUserPair.getDocumentId());
     }
 }

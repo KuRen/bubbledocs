@@ -1,4 +1,4 @@
-package sdstore.ws.impl;
+package pt.ulisboa.tecnico.sdis.store.ws.impl;
 
 public class Document {
 

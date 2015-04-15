@@ -1,15 +1,6 @@
 package sdstorecli;
 
-import static javax.xml.ws.BindingProvider.ENDPOINT_ADDRESS_PROPERTY;
-
-import java.util.Map;
-
-import javax.xml.ws.BindingProvider;
-
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
-import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
-import pt.ulisboa.tecnico.sdis.store.ws.SDStore_Service; // classes generated from WSDL
-import sdstorecli.uddi.UDDINaming;
 
 public class StoreClientMain {
 
@@ -24,37 +15,17 @@ public class StoreClientMain {
         String uddiURL = args[0];
         String name = args[1];
 
-        System.out.printf("Contacting UDDI at %s%n", uddiURL);
-        UDDINaming uddiNaming = new UDDINaming(uddiURL);
-
-        System.out.printf("Looking for '%s'%n", name);
-        String endpointAddress = uddiNaming.lookup(name);
-
-        if (endpointAddress == null) {
-            System.out.println("Not found!");
-            return;
-        } else {
-            System.out.printf("Found %s%n", endpointAddress);
-        }
-
-        System.out.println("Creating stub ...");
-        SDStore_Service service = new SDStore_Service();
-        SDStore port = service.getSDStoreImplPort();
-
-        System.out.println("Setting endpoint address ...");
-        BindingProvider bindingProvider = (BindingProvider) port;
-        Map<String, Object> requestContext = bindingProvider.getRequestContext();
-        requestContext.put(ENDPOINT_ADDRESS_PROPERTY, endpointAddress);
+        StoreClient client = new StoreClient(uddiURL,name);
 
         DocUserPair pair = new DocUserPair();
         pair.setDocumentId("HelloDoc");
         pair.setUserId("MrHello");
         System.out.println("Creating file HelloDoc by MrHello ...");
-        port.createDoc(pair);
+        client.createDoc(pair);
         System.out.println("Storing string Hello in file HelloDoc by MrHello ...");
-        port.store(pair, new String("Hello").getBytes());
+        client.store(pair, new String("Hello").getBytes());
         System.out.println("Loading file HelloDoc by MrHello ...");
-        byte[] result = port.load(pair);
+        byte[] result = client.load(pair);
         System.out.println("File Content: " + new String(result));
     }
 

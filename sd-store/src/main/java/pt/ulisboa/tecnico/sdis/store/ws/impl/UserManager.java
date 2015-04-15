@@ -1,4 +1,4 @@
-package sdstore.ws.impl;
+package pt.ulisboa.tecnico.sdis.store.ws.impl;
 
 import java.util.HashMap;
 import java.util.List;
@@ -13,6 +13,18 @@ import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 public class UserManager {
 
     private Map<String, User> users = new HashMap<String, User>();
+    private static UserManager instance = null;
+    
+    private UserManager() {
+    	
+    }
+    
+    public static UserManager getInstance() {
+        if (instance == null)
+            instance = new UserManager();
+        return instance;
+    }
+
 
     public void addDocument(String userId, String documentId) throws DocAlreadyExists_Exception {
         if (users.get(userId) == null)
