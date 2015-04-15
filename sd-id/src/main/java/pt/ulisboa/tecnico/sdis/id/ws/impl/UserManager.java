@@ -85,7 +85,7 @@ public class UserManager {
     }
 
     private void validateUsername(String username) throws InvalidUser_Exception, UserAlreadyExists_Exception {
-        if (!username.matches(".+")) {
+        if (username == null || !username.matches(".+")) {
             InvalidUser faultInfo = new InvalidUser();
             faultInfo.setUserId(username);
             throw new InvalidUser_Exception("Invalid username: " + username, faultInfo);
@@ -125,7 +125,7 @@ public class UserManager {
         users.remove(username);
     }
 
-    public boolean authenticate(String username, byte[] reserved) throws AuthReqFailed_Exception {
+    public void authenticate(String username, byte[] reserved) throws AuthReqFailed_Exception {
         User user = users.get(username);
         if (user == null) {
             AuthReqFailed faultInfo = new AuthReqFailed();
@@ -133,6 +133,10 @@ public class UserManager {
             throw new AuthReqFailed_Exception("Authentication failed", faultInfo);
         }
         String password = new String(reserved);
-        return user.getPassword().equals(password);
+        if (!user.getPassword().equals(password)) {
+            AuthReqFailed faultInfo = new AuthReqFailed();
+            faultInfo.setReserved(reserved);
+            throw new AuthReqFailed_Exception("Authentication failed.", faultInfo);
+        }
     }
 }

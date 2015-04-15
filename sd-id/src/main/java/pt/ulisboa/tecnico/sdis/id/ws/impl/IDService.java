@@ -35,12 +35,7 @@ public class IDService implements SDId {
 
     public byte[] requestAuthentication(String userId, byte[] reserved) throws AuthReqFailed_Exception {
         UserManager userManager = UserManager.getInstance();
-        boolean success = userManager.authenticate(userId, reserved);
-        if (success == true)
-            return new byte[] { 1 };
-        else {
-            return new byte[] { 0 };
-        }
+        userManager.authenticate(userId, reserved);
+        return new byte[] { 1 };
     }
-
 }
