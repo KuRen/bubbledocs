@@ -18,10 +18,12 @@ public class LoginUser extends BubbleDocsService {
     private String userToken;
     private String username;
     private String password;
+    private IDRemoteServices idRemoteServices;
 
     public LoginUser(String username, String password) {
         this.username = username;
         this.password = password;
+        idRemoteServices = new IDRemoteServices();
     }
 
     @Override
@@ -34,7 +36,6 @@ public class LoginUser extends BubbleDocsService {
             throw new LoginBubbleDocsException();
 
         BubbleDocs bd = BubbleDocs.getInstance();
-        IDRemoteServices idRemoteServices = new IDRemoteServices();
         SessionManager sm = bd.getSessionManager();
         sm.cleanOldSessions();
         User user = bd.getUserByUsername(getUsername());
