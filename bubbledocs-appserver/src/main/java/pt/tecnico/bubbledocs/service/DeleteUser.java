@@ -7,17 +7,18 @@ import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
-import pt.tecnico.bubbledocs.exception.UnknownBubbleDocsUserException;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class DeleteUser extends BubbleDocsService {
 
     private String userToken;
     private String toDeleteUsername;
+    private IDRemoteServices idServices;
 
     public DeleteUser(String userToken, String toDeleteUsername) {
         this.userToken = userToken;
         this.toDeleteUsername = toDeleteUsername;
+        this.idServices = new IDRemoteServices();
     }
 
     @Override
@@ -32,8 +33,6 @@ public class DeleteUser extends BubbleDocsService {
             throw new UnauthorizedOperationException();
         }
 
-        IDRemoteServices idServices = new IDRemoteServices();
-
         try {
             idServices.removeUser(toDeleteUsername);
         } catch (RemoteInvocationException rie) {
@@ -43,7 +42,7 @@ public class DeleteUser extends BubbleDocsService {
         User userToDelete = bd.getUserByUsername(getToDeleteUsername());
 
         if (userToDelete == null)
-            throw new UnknownBubbleDocsUserException();
+            return;
 
         bd.removeUsers(userToDelete);
         userToDelete.delete();
