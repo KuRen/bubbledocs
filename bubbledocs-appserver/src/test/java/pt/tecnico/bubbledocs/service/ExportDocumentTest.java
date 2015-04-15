@@ -61,6 +61,11 @@ public class ExportDocumentTest extends BubbleDocsServiceTest {
 	
 	@Test
 	public void testStoreDocument() {
+		new MockUp<StoreRemoteServices>() {
+			@Mock
+			public void storeDocument(String username, String docName, byte[] document){
+			}
+		};
 		ExportDocument service = new ExportDocument(authorizedToken, validId);
 		service.execute();
 	}
