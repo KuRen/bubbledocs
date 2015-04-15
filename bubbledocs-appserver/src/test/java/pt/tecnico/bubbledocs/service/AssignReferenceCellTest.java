@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Cell;
 import pt.tecnico.bubbledocs.domain.Literal;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
@@ -22,6 +23,7 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
     private String token;
     private String notOwnerToken;
     private int id;
+    private String readToken;
 
     private static final String USERNAME = "ars";
     private static final String PASSWORD = "ars";
@@ -34,11 +36,17 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
     private static final int COLUMNS = 5;
     private static final int ROWS = 5;
     private static final Integer VALUE = 42;
+    private static final String READER_USER = "rUser";
 
     @Override
     public void populate4Test() {
+        BubbleDocs bd = BubbleDocs.getInstance();
+
         createUser(NOT_OWNER_USERNAME, NOT_OWNER_PASSWORD, EMAIL, "António Rito Silva");
         notOwnerToken = addUserToSession(NOT_OWNER_USERNAME);
+
+        createUser(READER_USER, "password", "olo@yahoo.fr", "yet a bigger bigger name");
+        readToken = addUserToSession(READER_USER);
 
         User ars = createUser(USERNAME, PASSWORD, EMAIL, "António Rito Silva");
         token = addUserToSession(USERNAME);
@@ -72,6 +80,12 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
         service.execute();
     }
 
+    @Test(expected = UnauthorizedOperationException.class)
+    public void readOnlyUser() {
+        AssignLiteralCell service = new AssignLiteralCell(readToken, id, CELL, REFERENCED_CELL);
+        service.execute();
+    }
+
     @Test(expected = UserNotInSessionException.class)
     public void absentUser() {
         AssignReferenceCell service = new AssignReferenceCell("invalid", id, CELL, REFERENCED_CELL);
@@ -79,8 +93,14 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
     }
 
     @Test(expected = CellOutOfRangeException.class)
-    public void invalidCell() {
-        AssignReferenceCell service = new AssignReferenceCell(token, id, "9;9", REFERENCED_CELL);
+    public void invalidCellRow() {
+        AssignReferenceCell service = new AssignReferenceCell(token, id, (ROWS + 1) + ";" + COLUMNS, REFERENCED_CELL);
+        service.execute();
+    }
+
+    @Test(expected = CellOutOfRangeException.class)
+    public void invalidCellColumn() {
+        AssignReferenceCell service = new AssignReferenceCell(token, id, ROWS + ";" + (COLUMNS + 1), REFERENCED_CELL);
         service.execute();
     }
 
@@ -97,8 +117,14 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
     }
 
     @Test(expected = CellOutOfRangeException.class)
-    public void referencedCellOutOfRange() {
-        AssignReferenceCell service = new AssignReferenceCell(token, id, CELL, "9;9");
+    public void invalidReferencedCellRow() {
+        AssignReferenceCell service = new AssignReferenceCell(token, id, CELL, (ROWS + 1) + ";" + COLUMNS);
+        service.execute();
+    }
+
+    @Test(expected = CellOutOfRangeException.class)
+    public void invalidReferencedCellColumn() {
+        AssignReferenceCell service = new AssignReferenceCell(token, id, CELL, ROWS + ";" + (COLUMNS + 1));
         service.execute();
     }
 

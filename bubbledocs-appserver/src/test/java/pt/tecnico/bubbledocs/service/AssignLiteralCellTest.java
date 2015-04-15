@@ -6,7 +6,10 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Cell;
+import pt.tecnico.bubbledocs.domain.Permission;
+import pt.tecnico.bubbledocs.domain.PermissionType;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
@@ -22,6 +25,7 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
     private String token;
     private String notOwnerToken;
     private int id;
+    private String readToken;
 
     private static final String USERNAME = "ars";
     private static final String PASSWORD = "ars";
@@ -33,11 +37,17 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
     private static final int ROWS = 5;
     private static final String CELL = "1;1";
     private static final String VALUE = "42";
+    private static final String READER_USER = "rUser";
 
     @Override
     public void populate4Test() {
+        BubbleDocs bd = BubbleDocs.getInstance();
+
         createUser(NOT_OWNER_USERNAME, NOT_OWNER_PASSWORD, EMAIL, "António Rito Silva");
         notOwnerToken = addUserToSession(NOT_OWNER_USERNAME);
+
+        createUser(READER_USER, "password", "olo@yahoo.fr", "yet a bigger bigger name");
+        readToken = addUserToSession(READER_USER);
 
         User ars = createUser(USERNAME, PASSWORD, EMAIL, "António Rito Silva");
         token = addUserToSession(USERNAME);
@@ -48,6 +58,11 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
         Cell c1 = new Cell(ss, 1, 1);
 
         ss.addCells(c1);
+
+        Permission readPermission = new Permission();
+        readPermission.setPermission(PermissionType.READ);
+        readPermission.setUser(bd.getUserByUsername(READER_USER));
+        ss.addPermissions(readPermission, bd.getUserByUsername(USERNAME));
     }
 
     @Test
@@ -65,6 +80,12 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
     @Test(expected = UnauthorizedOperationException.class)
     public void unauthorizedToken() {
         AssignLiteralCell service = new AssignLiteralCell(notOwnerToken, id, CELL, VALUE);
+        service.execute();
+    }
+
+    @Test(expected = UnauthorizedOperationException.class)
+    public void readOnlyUser() {
+        AssignLiteralCell service = new AssignLiteralCell(readToken, id, CELL, VALUE);
         service.execute();
     }
 
