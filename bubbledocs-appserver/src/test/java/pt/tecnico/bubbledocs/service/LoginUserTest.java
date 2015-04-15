@@ -3,6 +3,8 @@ package pt.tecnico.bubbledocs.service;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import mockit.Mocked;
+import mockit.NonStrictExpectations;
 
 import org.joda.time.DateTime;
 import org.joda.time.Seconds;
@@ -12,16 +14,21 @@ import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Session;
 import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.User;
-import pt.tecnico.bubbledocs.exception.UnknownBubbleDocsUserException;
-import pt.tecnico.bubbledocs.exception.WrongPasswordException;
+import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
+import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
+import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
+import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class LoginUserTest extends BubbleDocsServiceTest {
 
-    private String jp; // the token for user jp
-    private String root; // the token for user root
-
     private static final String USERNAME = "jp";
+    private static final String NON_EXISTING_USERNAME = "otherone";
     private static final String PASSWORD = "jp#";
+    private static final String WRONG_PASSWORD = "wrongpsswd";
+    private static final String DIFF_FROM_LOCAL_PASSWORD = "diffFromLocal";
+
+    @Mocked
+    IDRemoteServices idRemoteServices;
 
     @Override
     public void populate4Test() {
@@ -43,6 +50,13 @@ public class LoginUserTest extends BubbleDocsServiceTest {
     @Test
     public void success() {
         LoginUser service = new LoginUser(USERNAME, PASSWORD);
+
+        new NonStrictExpectations() {
+            {
+                idRemoteServices.loginUser(USERNAME, PASSWORD);
+            }
+        };
+
         service.execute();
         DateTime currentTime = new DateTime();
 
@@ -61,6 +75,12 @@ public class LoginUserTest extends BubbleDocsServiceTest {
     public void successLoginTwice() {
         LoginUser service = new LoginUser(USERNAME, PASSWORD);
 
+        new NonStrictExpectations() {
+            {
+                idRemoteServices.loginUser(USERNAME, PASSWORD);
+            }
+        };
+
         service.execute();
         String token1 = service.getUserToken();
 
@@ -73,15 +93,85 @@ public class LoginUserTest extends BubbleDocsServiceTest {
         assertEquals(USERNAME, user.getUsername());
     }
 
-    @Test(expected = UnknownBubbleDocsUserException.class)
-    public void loginUnknownUser() {
-        LoginUser service = new LoginUser("jp2", "jp");
+    @Test
+    public void refreshLocalPassword() {
+        LoginUser service = new LoginUser(USERNAME, DIFF_FROM_LOCAL_PASSWORD);
+
+        new NonStrictExpectations() {
+            {
+                idRemoteServices.loginUser(USERNAME, DIFF_FROM_LOCAL_PASSWORD);
+            }
+        };
+
+        service.execute();
+
+        BubbleDocs bDocs = BubbleDocs.getInstance();
+        assertEquals(DIFF_FROM_LOCAL_PASSWORD, bDocs.getUserByUsername(USERNAME).getPassword());
+    }
+
+    @Test(expected = LoginBubbleDocsException.class)
+    public void nullUser() {
+        LoginUser service = new LoginUser(null, PASSWORD);
         service.execute();
     }
 
-    @Test(expected = WrongPasswordException.class)
-    public void loginUserWithinWrongPassword() {
-        LoginUser service = new LoginUser(USERNAME, "jp2");
+    @Test(expected = LoginBubbleDocsException.class)
+    public void nullPasswordr() {
+        LoginUser service = new LoginUser(USERNAME, null);
+        service.execute();
+    }
+
+    @Test(expected = LoginBubbleDocsException.class)
+    public void remoteLoginUnknownUser() {
+        LoginUser service = new LoginUser(NON_EXISTING_USERNAME, PASSWORD);
+
+        new NonStrictExpectations() {
+            {
+                idRemoteServices.loginUser(NON_EXISTING_USERNAME, PASSWORD);
+                result = new LoginBubbleDocsException();
+            }
+        };
+
+        service.execute();
+    }
+
+    @Test(expected = UnavailableServiceException.class)
+    public void localLoginUnknownUser() {
+        LoginUser service = new LoginUser(NON_EXISTING_USERNAME, PASSWORD);
+
+        new NonStrictExpectations() {
+            {
+                idRemoteServices.loginUser(NON_EXISTING_USERNAME, PASSWORD);
+                result = new RemoteInvocationException();
+            }
+        };
+
+        service.execute();
+    }
+
+    @Test(expected = LoginBubbleDocsException.class)
+    public void remoteLoginUserWithWrongPassword() {
+        LoginUser service = new LoginUser(USERNAME, WRONG_PASSWORD);
+
+        new NonStrictExpectations() {
+            {
+                idRemoteServices.loginUser(USERNAME, WRONG_PASSWORD);
+                result = new LoginBubbleDocsException();
+            }
+        };
+
+        service.execute();
+    }
+
+    @Test(expected = UnavailableServiceException.class)
+    public void localLoginUserWithWrongPassword() {
+        LoginUser service = new LoginUser(USERNAME, WRONG_PASSWORD);
+        new NonStrictExpectations() {
+            {
+                idRemoteServices.loginUser(USERNAME, WRONG_PASSWORD);
+                result = new RemoteInvocationException();
+            }
+        };
         service.execute();
     }
 }

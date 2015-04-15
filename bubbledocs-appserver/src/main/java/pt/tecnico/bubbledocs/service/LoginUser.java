@@ -9,8 +9,10 @@ import pt.tecnico.bubbledocs.domain.Session;
 import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
-import pt.tecnico.bubbledocs.exception.UnknownBubbleDocsUserException;
-import pt.tecnico.bubbledocs.exception.WrongPasswordException;
+import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
+import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
+import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
+import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class LoginUser extends BubbleDocsService {
     private String userToken;
@@ -24,27 +26,43 @@ public class LoginUser extends BubbleDocsService {
 
     @Override
     protected void dispatch() throws BubbleDocsException {
+
+        if (getUsername() == null)
+            throw new LoginBubbleDocsException();
+
+        if (getPassword() == null)
+            throw new LoginBubbleDocsException();
+
         BubbleDocs bd = BubbleDocs.getInstance();
+        IDRemoteServices idRemoteServices = new IDRemoteServices();
         SessionManager sm = bd.getSessionManager();
         sm.cleanOldSessions();
         User user = bd.getUserByUsername(getUsername());
 
-        if (user == null)
-            throw new UnknownBubbleDocsUserException();
-
-        if (user.getPassword().equals(getPassword())) {
-            if (sm.userIsInSession(getUsername())) {
-                for (Session session : sm.getSessionSet()) {
-                    if (session.getUsername().equals(getUsername())) {
-                        sm.removeSession(session);
-                        session.delete();
+        try {
+            idRemoteServices.loginUser(username, password);
+            if (!user.getPassword().equals(password))
+                user.setPassword(password);
+        } catch (RemoteInvocationException e) {
+            if (user == null)
+                throw new UnavailableServiceException();
+            if (user.getPassword().equals(getPassword())) {
+                if (sm.userIsInSession(getUsername())) {
+                    for (Session session : sm.getSessionSet()) {
+                        if (session.getUsername().equals(getUsername())) {
+                            sm.removeSession(session);
+                            session.delete();
+                        }
                     }
                 }
-            }
-            userToken = username + new Random().nextInt(10);
-            sm.addSession(new Session(getBubbleDocs().getUserByUsername(getUsername()), getUserToken(), new DateTime()));
-        } else
-            throw new WrongPasswordException();
+
+            } else
+                throw new UnavailableServiceException();
+        }
+
+        userToken = username + new Random().nextInt(10);
+        sm.addSession(new Session(getBubbleDocs().getUserByUsername(getUsername()), getUserToken(), new DateTime()));
+
     }
 
     public final String getUserToken() {
