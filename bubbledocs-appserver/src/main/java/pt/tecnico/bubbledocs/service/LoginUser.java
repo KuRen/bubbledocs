@@ -41,10 +41,12 @@ public class LoginUser extends BubbleDocsService {
 
         try {
             idRemoteServices.loginUser(username, password);
-            if (!user.getPassword().equals(password))
+            if (user.getPassword() == null || !user.getPassword().equals(password))
                 user.setPassword(password);
         } catch (RemoteInvocationException e) {
             if (user == null)
+                throw new UnavailableServiceException();
+            if (user.getPassword() == null)
                 throw new UnavailableServiceException();
             if (user.getPassword().equals(getPassword())) {
                 if (sm.userIsInSession(getUsername())) {

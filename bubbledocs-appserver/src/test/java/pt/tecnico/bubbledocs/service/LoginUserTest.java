@@ -28,12 +28,14 @@ public class LoginUserTest extends BubbleDocsServiceTest {
     private static final String DIFF_FROM_LOCAL_PASSWORD = "diffFromLocal";
     private static final String EMAIL = "joao.pereira@tecnico.ulisboa.pt";
 
+    User user;
+
     @Mocked
     IDRemoteServices idRemoteServices;
 
     @Override
     public void populate4Test() {
-        createUser(USERNAME, PASSWORD, EMAIL, "João Pereira");
+        user = createUser(USERNAME, PASSWORD, EMAIL, "João Pereira");
     }
 
     // returns the time of the last access for the user with token userToken.
@@ -106,8 +108,7 @@ public class LoginUserTest extends BubbleDocsServiceTest {
 
         service.execute();
 
-        BubbleDocs bDocs = BubbleDocs.getInstance();
-        assertEquals(DIFF_FROM_LOCAL_PASSWORD, bDocs.getUserByUsername(USERNAME).getPassword());
+        assertEquals(DIFF_FROM_LOCAL_PASSWORD, user.getPassword());
     }
 
     @Test(expected = LoginBubbleDocsException.class)
@@ -170,6 +171,19 @@ public class LoginUserTest extends BubbleDocsServiceTest {
         new NonStrictExpectations() {
             {
                 idRemoteServices.loginUser(USERNAME, WRONG_PASSWORD);
+                result = new RemoteInvocationException();
+            }
+        };
+        service.execute();
+    }
+
+    @Test(expected = UnavailableServiceException.class)
+    public void localLoginUserWithVoidedPassword() {
+        LoginUser service = new LoginUser(USERNAME, PASSWORD);
+        user.setPassword(null);
+        new NonStrictExpectations() {
+            {
+                idRemoteServices.loginUser(USERNAME, PASSWORD);
                 result = new RemoteInvocationException();
             }
         };
