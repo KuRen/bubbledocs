@@ -164,7 +164,6 @@ public class CreateUserTest extends BubbleDocsServiceTest {
 
     // email structure: [a-z0-9]+@[a-z0-9]+.[a-z]+
     @Test(expected = InvalidEmailException.class)
-    @Ignore
     public void invalidEmail() {
         CreateUser service = new CreateUser(root, USERNAME_DOES_NOT_EXIST, "$$aa@x%.com", NAME);
         new NonStrictExpectations() {

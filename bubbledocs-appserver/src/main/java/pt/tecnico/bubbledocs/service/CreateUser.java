@@ -1,8 +1,5 @@
 package pt.tecnico.bubbledocs.service;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.User;
@@ -63,9 +60,7 @@ public class CreateUser extends BubbleDocsService {
         if (bubbleDocs.getUserByEmail(email) != null)
             throw new DuplicateEmailException();
 
-        Pattern pattern = Pattern.compile(".+@.+\\.[a-z]+");
-        Matcher matcher = pattern.matcher(email);
-        if (!matcher.matches()) {
+        if (!email.matches("[\\w\\._]+@(\\w+\\.)*\\w+\\.\\w+")) {
             throw new InvalidEmailException("Email doesn't have the desired structure");
         } else {
             email.toLowerCase();
