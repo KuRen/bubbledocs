@@ -12,7 +12,7 @@ import pt.ulisboa.tecnico.sdis.id.ws.UserDoesNotExist_Exception;
 
 @SuppressWarnings("restriction")
 @WebService(endpointInterface = "pt.ulisboa.tecnico.sdis.id.ws.SDId", wsdlLocation = "SD-ID.1_1.wsdl", name = "SdId",
-        portName = "SDIDImplPort", targetNamespace = "urn:pt:ulisboa:tecnico:sdis:id:ws", serviceName = "SDId")
+        portName = "SDIdImplPort", targetNamespace = "urn:pt:ulisboa:tecnico:sdis:id:ws", serviceName = "SDId")
 public class IDService implements SDId {
 
     public void createUser(String userId, String emailAddress) throws EmailAlreadyExists_Exception, InvalidEmail_Exception,
