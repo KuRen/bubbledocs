@@ -53,7 +53,7 @@ public class UserManager {
         return randomString(characters, 8);
     }
 
-    public String randomString(char[] characterSet, int length) {
+    private String randomString(char[] characterSet, int length) {
         Random random = new SecureRandom();
         char[] result = new char[length];
         for (int i = 0; i < result.length; i++) {
@@ -70,7 +70,7 @@ public class UserManager {
     }
 
     private void validateEmail(String email) throws InvalidEmail_Exception, EmailAlreadyExists_Exception {
-        if (!email.matches("[\\w\\._]+@(\\w+\\.)*\\w+\\.\\w+")) {
+        if (email == null || !email.matches("[\\w\\._]+@(\\w+\\.)*\\w+\\.\\w+")) {
             InvalidEmail faultInfo = new InvalidEmail();
             faultInfo.setEmailAddress(email);
             throw new InvalidEmail_Exception("Invalid email: " + email, faultInfo);
@@ -126,17 +126,30 @@ public class UserManager {
     }
 
     public void authenticate(String username, byte[] reserved) throws AuthReqFailed_Exception {
+        if (username == null || username.isEmpty() || reserved == null) {
+            throwAuthFailedException(reserved);
+        }
+
         User user = users.get(username);
+
         if (user == null) {
-            AuthReqFailed faultInfo = new AuthReqFailed();
-            faultInfo.setReserved(reserved);
-            throw new AuthReqFailed_Exception("Authentication failed", faultInfo);
+            throwAuthFailedException(reserved);
         }
+
         String password = new String(reserved);
+
         if (!user.getPassword().equals(password)) {
-            AuthReqFailed faultInfo = new AuthReqFailed();
-            faultInfo.setReserved(reserved);
-            throw new AuthReqFailed_Exception("Authentication failed.", faultInfo);
+            throwAuthFailedException(reserved);
         }
+    }
+
+    private void throwAuthFailedException(byte[] reserved) throws AuthReqFailed_Exception {
+        AuthReqFailed faultInfo = new AuthReqFailed();
+        faultInfo.setReserved(reserved);
+        throw new AuthReqFailed_Exception("Authentication failed.", faultInfo);
+    }
+
+    public int size() {
+        return users.size();
     }
 }

@@ -4,14 +4,13 @@ import javax.xml.ws.Endpoint;
 
 import pt.ulisboa.tecnico.sdis.id.ws.impl.uddi.UDDINaming;
 
-public class Application {
+public class IdMain {
 
-    @SuppressWarnings("restriction")
     public static void main(String[] args) {
-
+        // Check arguments
         if (args.length < 3) {
             System.err.println("Argument(s) missing!");
-            System.err.printf("Usage: java %s <uddiURL> <wsName> <wsURL> %n", Application.class.getName());
+            System.err.printf("Usage: java %s uddiURL wsName wsURL%n", IdMain.class.getName());
             return;
         }
 
@@ -22,7 +21,7 @@ public class Application {
         Endpoint endpoint = null;
         UDDINaming uddiNaming = null;
         try {
-            endpoint = Endpoint.create(new IDService());
+            endpoint = Endpoint.create(new IdImpl());
 
             // publish endpoint
             System.out.printf("Starting %s%n", url);
@@ -64,4 +63,5 @@ public class Application {
         }
 
     }
+
 }

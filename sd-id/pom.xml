@@ -4,13 +4,24 @@
   <!-- http://maven.apache.org/pom.html#Quick_Overview -->
 
   <groupId>pt.tecnico.ulisboa.essd</groupId>
-  <artifactId>sd-id</artifactId>
+  <artifactId>sd-id2</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>${project.artifactId}</name>
 
   <dependencies>
+    <dependency>
+	  <groupId>com.googlecode.jmockit</groupId>
+	  <artifactId>jmockit</artifactId>
+	  <version>1.7</version>
+	</dependency>
+	<dependency>
+	  <groupId>junit</groupId>
+	  <artifactId>junit</artifactId>
+	  <version>${version.junit}</version>
+	  <scope>test</scope>
+	</dependency>
     <!-- JAX-R API -->
     <dependency>
       <groupId>javax.xml.registry</groupId>
@@ -80,11 +91,25 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <!-- JMockit - must appear before JUnit -->
+    <dependency>
+        <groupId>org.jmockit</groupId>
+        <artifactId>jmockit</artifactId>
+        <version>1.16</version>
+        <scope>test</scope>
+    </dependency>
+    <!-- JUnit -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <mainclass>pt.ulisboa.tecnico.sdis.id.ws.impl.Application</mainclass>
+    <mainclass>pt.ulisboa.tecnico.sdis.id.ws.impl.IdMain</mainclass>
     <uddi.url>http://localhost:8081</uddi.url>
     <ws.name>SD-ID</ws.name>
     <ws.url>http://localhost:8080/id-ws/endpoint</ws.url>
@@ -149,6 +174,17 @@
           </programs>
         </configuration>
       </plugin>
+      <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-compiler-plugin</artifactId>
+		<version>3.1</version>
+		<configuration>
+		  <source>1.8</source>
+		  <target>1.8</target>
+	      <verbose>true</verbose>
+		  <fork>true</fork>
+		</configuration>
+	  </plugin>
     </plugins>
   </build>
 

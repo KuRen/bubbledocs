@@ -86,7 +86,9 @@ public class UDDINaming {
                 System.out.println("Caught " + e);
                 e.printStackTrace(System.out);
             }
-            // try factory method
+
+            // try factory method from scout
+            System.setProperty("javax.xml.registry.ConnectionFactoryClass", "org.apache.ws.scout.registry.ConnectionFactoryImpl");
             connFactory = ConnectionFactory.newInstance();
         }
 
