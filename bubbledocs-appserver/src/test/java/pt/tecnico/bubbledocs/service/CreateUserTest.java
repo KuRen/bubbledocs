@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import pt.tecnico.bubbledocs.domain.User;
@@ -70,46 +69,32 @@ public class CreateUserTest extends BubbleDocsServiceTest {
         new NonStrictExpectations() {
             {
                 idRemoteServices.createUser(USERNAME, EMAIL_DOES_NOT_EXIST);
+                result = new DuplicateUsernameException();
             }
         };
 
         service.execute();
     }
 
+    // appserver
     @Test(expected = EmptyUsernameException.class)
     public void emptyUsername() {
         CreateUser service = new CreateUser(root, "", EMAIL_DOES_NOT_EXIST, "José Ferreira");
-        new NonStrictExpectations() {
-            {
-                idRemoteServices.createUser("", EMAIL_DOES_NOT_EXIST);
-            }
-        };
-
         service.execute();
     }
 
+    // appserver
     @Test(expected = UnauthorizedOperationException.class)
     public void unauthorizedUserCreation() {
         CreateUser service = new CreateUser(ars, USERNAME_DOES_NOT_EXIST, EMAIL_DOES_NOT_EXIST, "José Ferreira");
-        new NonStrictExpectations() {
-            {
-                idRemoteServices.createUser(USERNAME_DOES_NOT_EXIST, EMAIL_DOES_NOT_EXIST);
-            }
-        };
-
         service.execute();
     }
 
+    // appserver
     @Test(expected = UserNotInSessionException.class)
     public void accessUsernameNotExist() {
         removeUserFromSession(root);
         CreateUser service = new CreateUser(root, USERNAME_DOES_NOT_EXIST, EMAIL_DOES_NOT_EXIST, "José Ferreira");
-        new NonStrictExpectations() {
-            {
-                idRemoteServices.createUser(USERNAME_DOES_NOT_EXIST, EMAIL_DOES_NOT_EXIST);
-            }
-        };
-
         service.execute();
     }
 
@@ -119,6 +104,7 @@ public class CreateUserTest extends BubbleDocsServiceTest {
         new NonStrictExpectations() {
             {
                 idRemoteServices.createUser(SMALL_USERNAME, EMAIL_DOES_NOT_EXIST);
+                result = new InvalidUsernameException();
             }
         };
 
@@ -131,6 +117,7 @@ public class CreateUserTest extends BubbleDocsServiceTest {
         new NonStrictExpectations() {
             {
                 idRemoteServices.createUser(LONG_USERNAME, EMAIL_DOES_NOT_EXIST);
+                result = new InvalidUsernameException();
             }
         };
 
@@ -138,27 +125,22 @@ public class CreateUserTest extends BubbleDocsServiceTest {
     }
 
     @Test(expected = DuplicateEmailException.class)
-    @Ignore
     public void emailExists() {
         CreateUser service = new CreateUser(root, USERNAME_DOES_NOT_EXIST, EMAIL, NAME);
         new NonStrictExpectations() {
             {
                 idRemoteServices.createUser(USERNAME_DOES_NOT_EXIST, EMAIL);
+                result = new DuplicateEmailException();
             }
         };
 
         service.execute();
     }
 
+    // appserver
     @Test(expected = EmptyValueException.class)
     public void emptyEmail() {
         CreateUser service = new CreateUser(root, USERNAME_DOES_NOT_EXIST, "", NAME);
-        new NonStrictExpectations() {
-            {
-                idRemoteServices.createUser(USERNAME_DOES_NOT_EXIST, EMAIL_DOES_NOT_EXIST);
-            }
-        };
-
         service.execute();
     }
 
@@ -168,7 +150,8 @@ public class CreateUserTest extends BubbleDocsServiceTest {
         CreateUser service = new CreateUser(root, USERNAME_DOES_NOT_EXIST, "$$aa@x%.com", NAME);
         new NonStrictExpectations() {
             {
-                idRemoteServices.createUser(USERNAME_DOES_NOT_EXIST, EMAIL_DOES_NOT_EXIST);
+                idRemoteServices.createUser(USERNAME_DOES_NOT_EXIST, "$$aa@x%.com");
+                result = new InvalidEmailException();
             }
         };
 

@@ -4,14 +4,13 @@ import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
-import pt.tecnico.bubbledocs.exception.DuplicateEmailException;
-import pt.tecnico.bubbledocs.exception.DuplicateUsernameException;
 import pt.tecnico.bubbledocs.exception.EmptyUsernameException;
 import pt.tecnico.bubbledocs.exception.EmptyValueException;
-import pt.tecnico.bubbledocs.exception.InvalidEmailException;
-import pt.tecnico.bubbledocs.exception.InvalidUsernameException;
+import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
+import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
+import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class CreateUser extends BubbleDocsService {
 
@@ -49,21 +48,12 @@ public class CreateUser extends BubbleDocsService {
         if (!user.isRoot())
             throw new UnauthorizedOperationException();
 
-        if (bubbleDocs.getUserByUsername(newUsername) != null)
-            throw new DuplicateUsernameException();
+        IDRemoteServices idServices = new IDRemoteServices();
 
-        int length = newUsername.length();
-        if (length > 8 || length < 3) {
-            throw new InvalidUsernameException("Username must have between 3 and 8 characters");
-        }
-
-        if (bubbleDocs.getUserByEmail(email) != null)
-            throw new DuplicateEmailException();
-
-        if (!email.matches("[\\w\\._]+@(\\w+\\.)*\\w+\\.\\w+")) {
-            throw new InvalidEmailException("Email doesn't have the desired structure");
-        } else {
-            email.toLowerCase();
+        try {
+            idServices.createUser(newUsername, email);
+        } catch (RemoteInvocationException rie) {
+            throw new UnavailableServiceException();
         }
 
         User newUser = new User(newUsername, null, email, name);
