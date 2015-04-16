@@ -1,5 +1,3 @@
-# Bubble Docs SD-Store
-
 # Projecto de Sistemas Distribuídos #
 
 ## Primeira entrega ##
