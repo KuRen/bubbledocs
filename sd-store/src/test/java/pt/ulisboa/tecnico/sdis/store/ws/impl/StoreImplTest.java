@@ -18,11 +18,13 @@ public class StoreImplTest {
 	private static byte[] content; // content being used
 	private static String contentString = "Ficheiro da Maria";
 	private static int testNumber;
+	private static StoreImpl store; // class being tested
 	
     // one-time initialization and clean-up
 
     @BeforeClass
     public static void oneTimeSetUp() {
+        store = new StoreImpl();
     	content = contentString.getBytes();
     	testNumber = 0;
     }
@@ -34,14 +36,12 @@ public class StoreImplTest {
 
     // members
 
-    private StoreImpl store; // class being tested
     private DocUserPair pair;
 
     // initialization and clean-up for each test
 
     @Before
     public void setUp() {
-    	store = new StoreImpl();
     	pair = new DocUserPair();
     	pair.setDocumentId(documentId+testNumber);
     	pair.setUserId(userId+testNumber);

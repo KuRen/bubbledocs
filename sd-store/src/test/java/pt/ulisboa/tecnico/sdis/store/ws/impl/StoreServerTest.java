@@ -2,7 +2,6 @@ package pt.ulisboa.tecnico.sdis.store.ws.impl;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.ws.Endpoint;
-
 import mockit.Expectations;
 import mockit.Mocked;
 
@@ -29,7 +28,8 @@ public class StoreServerTest {
 
     // members
     
-    StoreServer server;
+    private StoreServer server;
+    
     @Mocked
     Endpoint endpoint;
     @Mocked
@@ -39,12 +39,12 @@ public class StoreServerTest {
 
     @Before
     public void setUp() {
-    	server = new StoreServer("http://localhost:8081", "sd-store", "http://localhost:8080/store-ws/endpoint");
+        server = new StoreServer("http://localhost:8081", "sd-store", "http://localhost:8080/store-ws/endpoint");
     }
 
     @After
     public void tearDown() {
-    	server = null;
+        server = null;
     }
     
     @Test(expected = JAXRException.class)
@@ -58,6 +58,7 @@ public class StoreServerTest {
         };
         
         server.run();
+        server.stop();
     }
     
     @Test
