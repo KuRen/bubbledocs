@@ -63,7 +63,16 @@ public class LoginUser extends BubbleDocsService {
                 throw new UnavailableServiceException();
         }
 
-        userToken = username + new Random().nextInt(10);
+        String prevToken = "";
+
+        if (user.getSession() != null && user.getSession().getToken() != null) {
+            prevToken = user.getSession().getToken();
+        }
+
+        do {
+            userToken = username + new Random().nextInt(10);
+        } while (userToken.equals(prevToken));
+
         sm.addSession(new Session(getBubbleDocs().getUserByUsername(getUsername()), getUserToken(), new DateTime()));
 
     }

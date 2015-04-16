@@ -1,6 +1,7 @@
 package pt.tecnico.bubbledocs.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import mockit.Expectations;
@@ -91,10 +92,34 @@ public class LoginUserTest extends BubbleDocsServiceTest {
         service.execute();
         String token2 = service.getUserToken();
 
+        assertFalse(token1.equals(token2));
         User user = getUserFromSession(token1);
         assertNull(user);
         user = getUserFromSession(token2);
         assertEquals(USERNAME, user.getUsername());
+    }
+
+    @Test
+    public void successLoginMultipleTimes() {
+        final int N = 15;
+
+        LoginUser service = new LoginUser(USERNAME, PASSWORD);
+
+        new Expectations() {
+            {
+                for (int i = 0; i < N; i++)
+                    idRemoteServices.loginUser(USERNAME, PASSWORD);
+            }
+        };
+
+        String token = null;
+        String prevToken = null;
+
+        for (int i = 0; i < N; i++) {
+            service.execute();
+            token = service.getUserToken();
+            assertFalse(token.equals(prevToken));
+        }
     }
 
     @Test
