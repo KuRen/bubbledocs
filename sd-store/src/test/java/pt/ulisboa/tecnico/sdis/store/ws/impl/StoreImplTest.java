@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.sdis.store.ws.impl;
 
+import static org.junit.Assert.fail;
+
 import java.util.*;
 
 import org.junit.*;
@@ -119,6 +121,20 @@ public class StoreImplTest {
     public void testStoreCapacityExceeded() throws Exception {
     	store.createDoc(pair);
     	store.store(pair,new byte[1024*10+1]);
+    }
+    
+    // Fail storing more content than the repository capacity
+    @Test(expected = CapacityExceeded_Exception.class)
+    public void testStoreCapacityExceededTwo() throws Exception {
+        store.createDoc(pair);
+        try {
+        store.store(pair, content);
+        } catch(CapacityExceeded_Exception ce) {
+            fail();
+        }
+        pair.setDocumentId("fail");
+        store.createDoc(pair);
+        store.store(pair, new byte[1024*10]);
     }
     
     // Fail loading content of unknown user

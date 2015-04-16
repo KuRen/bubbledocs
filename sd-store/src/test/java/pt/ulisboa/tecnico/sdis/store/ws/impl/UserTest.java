@@ -1,5 +1,7 @@
 package pt.ulisboa.tecnico.sdis.store.ws.impl;
 
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,6 +73,19 @@ public class UserTest {
         user.addDocument(documentId);
         byte[] contentFail = new byte[maximumCapacity+1];
         user.store(documentId, contentFail);
+    }
+    
+    @Test(expected = CapacityExceeded_Exception.class)
+    public void testCapacityExceededTwo() throws Exception {
+        user.addDocument(documentId);
+        user.addDocument(documentId+2);
+        try {
+            user.store(documentId, content);
+        } catch(CapacityExceeded_Exception ce) {
+            fail();
+        }
+        byte[] contentFail = new byte[maximumCapacity];
+        user.store(documentId+2, contentFail);
     }
     
     @Test

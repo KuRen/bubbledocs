@@ -40,13 +40,15 @@ public class User {
             ddne.setDocId(documentId);
             throw new DocDoesNotExist_Exception("This user does not have a document called " + documentId, ddne);
         }
-        if (capacity + contents.length > MAX_CAPACITY) {
+        if (capacity + contents.length - docs.get(documentId).getSize() > MAX_CAPACITY) {
             CapacityExceeded ce = new CapacityExceeded();
             ce.setAllowedCapacity(MAX_CAPACITY);
             ce.setCurrentSize(capacity);
             throw new CapacityExceeded_Exception("This user exceeded the maximum capacity of his repository", ce);
         }
+        capacity -= docs.get(documentId).getSize();
         docs.get(documentId).setContent(contents);
+        capacity += docs.get(documentId).getSize();
     }
 
     public byte[] load(String documentId) throws DocDoesNotExist_Exception {

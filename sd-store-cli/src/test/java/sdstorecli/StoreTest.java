@@ -1,11 +1,14 @@
 package sdstorecli;
 
+import static org.junit.Assert.fail;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import pt.ulisboa.tecnico.sdis.store.ws.CapacityExceeded_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
@@ -73,10 +76,31 @@ public class StoreTest {
 
     // Fail - Unknown DocumentId
     @Test(expected = DocDoesNotExist_Exception.class)
-    public void testLoadDocUnknownDoc() throws Exception {
+    public void testStoreDocUnknownDoc() throws Exception {
         port.createDoc(pair);
         pair.setDocumentId("fail");
         port.store(pair, content);
+    }
+    
+ // Fail - Capacity Exceeded
+    @Test(expected = CapacityExceeded_Exception.class)
+    public void testStoreCapacityExceeded() throws Exception {
+        port.createDoc(pair);
+        port.store(pair, new byte[1024*10+1]);
+    }
+    
+ // Fail - Capacity Exceeded
+    @Test(expected = CapacityExceeded_Exception.class)
+    public void testStoreCapacityExceededTwo() throws Exception {
+        port.createDoc(pair);
+        try {
+        port.store(pair, content);
+        } catch(CapacityExceeded_Exception ce) {
+            fail();
+        }
+        pair.setDocumentId("fail");
+        port.createDoc(pair);
+        port.store(pair, new byte[1024*10+1]);
     }
 
 }
