@@ -70,6 +70,14 @@ public class IdClientMain {
         } catch (UserDoesNotExist_Exception e) {
             System.out.println("Error renewing password of user Hermione");
         }
+
+        try {
+            client.removeUser("Hermione");
+            System.out.println("Deleted Hermione, it does not exist anymore");
+        } catch (UserDoesNotExist_Exception e) {
+            System.out.println("Could not delete Hermione, it does not exist");
+        }
+
     }
 
 }
