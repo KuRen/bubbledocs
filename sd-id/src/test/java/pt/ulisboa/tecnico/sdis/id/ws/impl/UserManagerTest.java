@@ -284,14 +284,14 @@ public class UserManagerTest {
     public void authenticateEmptyPassword() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
             UserAlreadyExists_Exception, AuthReqFailed_Exception {
         userManager.create("user", "email@example.com", "pw");
-        userManager.authenticate("user99", "".getBytes());
+        userManager.authenticate("user", "".getBytes());
     }
 
     @Test(expected = AuthReqFailed_Exception.class)
     public void authenticateWrongPassword() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
             UserAlreadyExists_Exception, AuthReqFailed_Exception {
         userManager.create("user", "email@example.com", "pw");
-        userManager.authenticate("user99", "notpw".getBytes());
+        userManager.authenticate("user", "notpw".getBytes());
     }
 
 }
