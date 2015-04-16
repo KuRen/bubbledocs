@@ -24,7 +24,10 @@ public class IdClientMain {
 
         IdClient client = null;
         try {
-            client = new IdClient(uddiURL, serviceName);
+            client = new IdClient();
+            client.setVerbose(true);
+            client.lookForService(uddiURL, serviceName);
+            client.createStub();
         } catch (JAXRException e) {
             System.out.println("Could not connect to server!");
             e.printStackTrace();

@@ -41,36 +41,41 @@ public class IdClient implements SDId {
      * 
      * @throws JAXRException
      */
-    public IdClient(String uddiURL, String serviceName) throws JAXRException {
+    public IdClient() throws JAXRException {
 
-        //if (verbose)
-        System.out.printf("Contacting UDDI at %s%n", uddiURL);
-        UDDINaming uddiNaming = new UDDINaming(uddiURL);
+    }
 
-        //if (verbose)
-        System.out.printf("Looking for '%s'%n", serviceName);
-        URL = uddiNaming.lookup(serviceName);
-
-        if (URL == null /*&& verbose*/) {
-            System.out.println("Not found!");
-            return;
-        } else {
-            //if (verbose)
-            System.out.printf("Found %s%n", URL);
-        }
-
-        //if (verbose)
-        System.out.println("Creating stub ...");
+    public void createStub() {
+        if (verbose)
+            System.out.println("Creating stub ...");
 
         service = new SDId_Service();
         port = service.getSDIdImplPort();
 
-        //if (verbose)
-        System.out.println("Setting endpoint address ...");
+        if (verbose)
+            System.out.println("Setting endpoint address ...");
 
         BindingProvider bindingProvider = (BindingProvider) port;
         Map<String, Object> requestContext = bindingProvider.getRequestContext();
         requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, URL);
+    }
+
+    public void lookForService(String uddiURL, String serviceName) throws JAXRException {
+        if (verbose)
+            System.out.printf("Contacting UDDI at %s%n", uddiURL);
+        UDDINaming uddiNaming = new UDDINaming(uddiURL);
+
+        if (verbose)
+            System.out.printf("Looking for '%s'%n", serviceName);
+        URL = uddiNaming.lookup(serviceName);
+
+        if (URL == null && verbose) {
+            System.out.println("Not found!");
+            return;
+        } else {
+            if (verbose)
+                System.out.printf("Found %s%n", URL);
+        }
     }
 
     // SDId
