@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pt.ulisboa.tecnico.sdis.id.ws.AuthReqFailed_Exception;
@@ -25,6 +26,12 @@ public class UserManagerTest {
     @Before
     public void setUp() {
         userManager = UserManager.getInstance();
+    }
+
+    @BeforeClass
+    public void prepareClass() throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException,
+            IllegalAccessException {
+        tearDown();
     }
 
     @After
