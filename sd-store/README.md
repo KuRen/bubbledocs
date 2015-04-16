@@ -33,7 +33,7 @@ JUDDI:
 [2] Criar pasta temporária
 
 > mkdir ProjSD1
-> cd ProjSD1
+>> cd ProjSD1
 
 [3] Obter versão entregue
 
@@ -42,14 +42,14 @@ JUDDI:
 [4] Construir e executar **servidor**
 
 > cd A_14_04_52/sd-store
-> mvn clean package 
-> mvn exec:java
+>> mvn clean package 
+>>> mvn exec:java
 
 
 [5] Construir **cliente**
 
 > cd A_14_04_52/sd-store-cli
-> mvn clean package
+>> mvn clean package
 
 -------------------------------------------------------------------------------
 
@@ -58,13 +58,13 @@ JUDDI:
 [1] Executar **cliente de testes**
 
 > cd A_14_04_52/sd-store-cli
-> mvn test
+>> mvn test
 
 
 [2] Executar **testes de servidor**
 
 > cd A_14_04_52/sd-store
-> mvn test
+>> mvn test
 
 -------------------------------------------------------------------------------
 **FIM**
