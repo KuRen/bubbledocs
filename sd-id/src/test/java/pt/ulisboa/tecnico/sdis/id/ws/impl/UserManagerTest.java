@@ -29,9 +29,11 @@ public class UserManagerTest {
     }
 
     @BeforeClass
-    public void prepareClass() throws ClassNotFoundException, NoSuchFieldException, SecurityException, IllegalArgumentException,
-            IllegalAccessException {
-        tearDown();
+    public static void prepareClass() throws ClassNotFoundException, NoSuchFieldException, SecurityException,
+            IllegalArgumentException, IllegalAccessException {
+        Field field = UserManager.class.getDeclaredField("instance");
+        field.setAccessible(true);
+        field.set(null, null);
     }
 
     @After
