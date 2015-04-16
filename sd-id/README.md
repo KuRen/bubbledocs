@@ -15,11 +15,9 @@ Grupo 04
 Repositório:
 [tecnico-softeng-distsys-2015/A_14_04_52-project](https://github.com/tecnico-softeng-distsys-2015/A_14_04_52-project/)
 
--------------------------------------------------------------------------------
+## Serviço: SD-ID ##
 
-## Serviço: SD-ID 
-
-### Instruções de instalação 
+### Instruções de instalação ###
 
 1. Iniciar sistema operativo
   * Linux ou Mac OS X (deveria funcionar em Windows mas não foi testado)
@@ -53,9 +51,7 @@ Repositório:
   mvn exec:java
   ```
   
--------------------------------------------------------------------------------
-
-### Instruções de teste: ###
+### Instruções de teste ###
 
 
 1. Executar **testes do servidor**
