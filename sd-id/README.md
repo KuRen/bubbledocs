@@ -43,7 +43,7 @@ Repositório:
   mvn exec:java
   ```
   
-5. Construir **cliente**
+5. Construir e executar **cliente**
   * A partir da pasta root do projecto
   ```sh
   cd sd-id-cli
