@@ -1,7 +1,5 @@
 package pt.ulisboa.tecnico.sdis.id.client;
 
-import javax.xml.registry.JAXRException;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +17,7 @@ public class IdClientContractTest {
     private IdClient client = null;
 
     @Before
-    public void setUp() throws JAXRException {
+    public void setUp() throws serviceFindException {
         client = new IdClient();
         client.lookForService(uddiURL, serviceName);
         client.createStub();

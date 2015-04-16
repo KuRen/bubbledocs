@@ -41,7 +41,7 @@ public class IdClient implements SDId {
      * 
      * @throws JAXRException
      */
-    public IdClient() throws JAXRException {
+    public IdClient() {
 
     }
 
@@ -60,21 +60,27 @@ public class IdClient implements SDId {
         requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, URL);
     }
 
-    public void lookForService(String uddiURL, String serviceName) throws JAXRException {
+    public void lookForService(String uddiURL, String serviceName) throws serviceFindException {
         if (verbose)
             System.out.printf("Contacting UDDI at %s%n", uddiURL);
-        UDDINaming uddiNaming = new UDDINaming(uddiURL);
+        UDDINaming uddiNaming;
+        try {
+            uddiNaming = new UDDINaming(uddiURL);
 
-        if (verbose)
-            System.out.printf("Looking for '%s'%n", serviceName);
-        URL = uddiNaming.lookup(serviceName);
-
-        if (URL == null && verbose) {
-            System.out.println("Not found!");
-            return;
-        } else {
             if (verbose)
-                System.out.printf("Found %s%n", URL);
+                System.out.printf("Looking for '%s'%n", serviceName);
+            URL = uddiNaming.lookup(serviceName);
+
+            if (URL == null && verbose) {
+                System.out.println("Not found!");
+                return;
+            } else {
+                if (verbose)
+                    System.out.printf("Found %s%n", URL);
+            }
+
+        } catch (JAXRException e) {
+            throw new serviceFindException();
         }
     }
 

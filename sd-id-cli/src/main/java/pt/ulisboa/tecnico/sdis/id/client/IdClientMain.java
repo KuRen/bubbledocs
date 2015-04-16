@@ -1,7 +1,5 @@
 package pt.ulisboa.tecnico.sdis.id.client;
 
-import javax.xml.registry.JAXRException;
-
 import pt.ulisboa.tecnico.sdis.id.ws.AuthReqFailed_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.EmailAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.InvalidEmail_Exception;
@@ -28,7 +26,7 @@ public class IdClientMain {
             client.setVerbose(true);
             client.lookForService(uddiURL, serviceName);
             client.createStub();
-        } catch (JAXRException e) {
+        } catch (serviceFindException e) {
             System.out.println("Could not connect to server!");
             e.printStackTrace();
         }
