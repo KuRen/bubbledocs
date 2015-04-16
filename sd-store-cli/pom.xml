@@ -98,7 +98,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <mainclass>sdstorecli.StoreClient</mainclass>
+    <mainclass>sdstorecli.StoreClientMain</mainclass>
     <uddi.url>http://localhost:8081</uddi.url>
     <ws.name>sd-store</ws.name>
     <ws.url>http://localhost:8080/store-ws/endpoint</ws.url>

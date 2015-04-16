@@ -25,6 +25,9 @@ public class UserManager {
         return instance;
     }
 
+    public void createUser(String username) {
+        users.put(username, new User());
+    }
 
     public void addDocument(String userId, String documentId) throws DocAlreadyExists_Exception {
         if (users.get(userId) == null)

@@ -15,6 +15,8 @@ public class StoreMain {
         String url = args[2];
         
         StoreServer server = new StoreServer(uddiURL, name, url);
+        populate();
+        
         try {
         	server.run();
         } catch(Exception e) {
@@ -27,5 +29,25 @@ public class StoreMain {
         System.out.println("Press enter to shutdown");
         System.in.read();
         server.stop();
+    }
+    
+    private static void populate() {
+        System.out.println("-Populating initial state of SD-STORE-");
+        UserManager userManager = UserManager.getInstance();
+
+        userManager.createUser("alice");
+        System.out.printf("Added user <%s>\n", "alice");
+
+        userManager.createUser("bruno");
+        System.out.printf("Added user <%s>\n", "bruno");
+
+        userManager.createUser("carla");
+        System.out.printf("Added user <%s>\n", "carla");
+
+        userManager.createUser("duarte");
+        System.out.printf("Added user <%s>\n", "duarte");
+
+        userManager.createUser("eduardo");
+        System.out.printf("Added user <%s>\n", "eduardo");
     }
 }

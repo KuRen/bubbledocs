@@ -1,5 +1,8 @@
 package sdstorecli;
 
+import java.util.ArrayList;
+
+import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 
 public class StoreClientMain {
@@ -16,17 +19,20 @@ public class StoreClientMain {
         String name = args[1];
 
         StoreClient client = new StoreClient(uddiURL,name);
-
+        
         DocUserPair pair = new DocUserPair();
-        pair.setDocumentId("HelloDoc");
-        pair.setUserId("MrHello");
-        System.out.println("Creating file HelloDoc by MrHello ...");
-        client.createDoc(pair);
-        System.out.println("Storing string Hello in file HelloDoc by MrHello ...");
-        client.store(pair, new String("Hello").getBytes());
-        System.out.println("Loading file HelloDoc by MrHello ...");
-        byte[] result = client.load(pair);
-        System.out.println("File Content: " + new String(result));
+        pair.setDocumentId("fail");
+        pair.setUserId("carla");
+        
+        if(!client.listDocs("carla").equals(new ArrayList<String>()))
+            System.out.println("Error: carla docs should be null!");
+        try{
+            client.store(pair, new String("fail").getBytes());
+            System.out.println("Error: carla doc shouldnt exist!");
+        }catch(DocDoesNotExist_Exception e) { }
+        try {
+            client.load(pair);
+            System.out.println("Error: carla doc shouldnt exist!");
+        }catch(DocDoesNotExist_Exception e) { }
     }
-
 }
