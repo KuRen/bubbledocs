@@ -19,23 +19,26 @@ public class IdImpl implements SDId {
             InvalidUser_Exception, UserAlreadyExists_Exception {
         UserManager userManager = UserManager.getInstance();
         User user = userManager.create(userId, emailAddress);
-        System.out.printf("User %s created with password: %s%n", user.getUsername(), user.getPassword());
+        System.out.printf("[Create] User: %s | Email: %s | Password: %s%n", user.getUsername(), user.getEmail(),
+                user.getPassword());
     }
 
     public void renewPassword(String userId) throws UserDoesNotExist_Exception {
         UserManager userManager = UserManager.getInstance();
         User user = userManager.renewPassword(userId);
-        System.out.printf("User %s password renewed to: %s%n", user.getUsername(), user.getPassword());
+        System.out.printf("[ Renew] User: %s | Password: %s%n", user.getUsername(), user.getPassword());
     }
 
     public void removeUser(String userId) throws UserDoesNotExist_Exception {
         UserManager userManager = UserManager.getInstance();
         userManager.remove(userId);
+        System.out.printf("[Remove] User: %s%n", userId);
     }
 
     public byte[] requestAuthentication(String userId, byte[] reserved) throws AuthReqFailed_Exception {
         UserManager userManager = UserManager.getInstance();
         userManager.authenticate(userId, reserved);
+        System.out.printf("[  Auth] User: %s%n", userId);
         return new byte[] { 1 };
     }
 }

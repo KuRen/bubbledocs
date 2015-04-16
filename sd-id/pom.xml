@@ -4,7 +4,7 @@
   <!-- http://maven.apache.org/pom.html#Quick_Overview -->
 
   <groupId>pt.tecnico.ulisboa.essd</groupId>
-  <artifactId>sd-id2</artifactId>
+  <artifactId>sd-id</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
