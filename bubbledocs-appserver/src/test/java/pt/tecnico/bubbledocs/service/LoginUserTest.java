@@ -107,8 +107,8 @@ public class LoginUserTest extends BubbleDocsServiceTest {
 
         new Expectations() {
             {
-                for (int i = 0; i < N; i++)
-                    idRemoteServices.loginUser(USERNAME, PASSWORD);
+                idRemoteServices.loginUser(USERNAME, PASSWORD);
+                times = N;
             }
         };
 
