@@ -1,7 +1,6 @@
 package pt.ulisboa.tecnico.sdis.id.client;
 
 import javax.xml.registry.JAXRException;
-import javax.xml.ws.BindingProvider;
 
 import mockit.Expectations;
 import mockit.Mocked;
@@ -13,8 +12,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pt.ulisboa.tecnico.sdis.id.uddi.UDDINaming;
-import pt.ulisboa.tecnico.sdis.id.ws.SDId;
-import pt.ulisboa.tecnico.sdis.id.ws.SDId_Service;
 
 public class IdClientCommTest {
 
@@ -30,7 +27,7 @@ public class IdClientCommTest {
 
     @Before
     public void setUp() {
-        client = new IdClient();
+        client = null;
     }
 
     @After
@@ -55,26 +52,32 @@ public class IdClientCommTest {
             }
         };
 
-        client.lookForService("some.url", "Some-service-name");
+        client = new IdClient("some.url", "Some-service-name");
     }
 
+    /*
     @Test
-    public void success(@Mocked final UDDINaming uddi, @Mocked final SDId_Service service, @Mocked final SDId port,
-            @Mocked final BindingProvider bindingProvider) throws JAXRException, serviceFindException {
-        new Expectations() {
+    public <M extends SDId & BindingProvider & Closeable> void success(@Mocked final UDDINaming uddi,
+            @Mocked final SDId_Service service, @Mocked final M port) throws JAXRException, serviceFindException,
+            EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception, UserAlreadyExists_Exception {
+
+        new NonStrictExpectations() {
             {
                 new UDDINaming(anyString);
                 uddi.lookup(anyString);
+                result = "http://localhost:8080";
                 new SDId_Service();
-                result = service;
                 service.getSDIdImplPort();
                 result = port;
-                bindingProvider.getRequestContext();
+                port.getRequestContext();
+                port.createUser(anyString, anyString);
             }
         };
 
-        client.lookForService("some.url", "Some-service-name");
-        client.createStub();
-    }
+        client = new IdClient("http://localhost:8080", "Some-service-name");
 
+        client.createUser("Someuser", "ajhgdjhg@jsh.com");
+
+    }
+    */
 }

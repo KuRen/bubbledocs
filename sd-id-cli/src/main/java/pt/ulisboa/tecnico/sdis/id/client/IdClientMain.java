@@ -22,10 +22,10 @@ public class IdClientMain {
 
         IdClient client = null;
         try {
-            client = new IdClient();
+            client = new IdClient(uddiURL, serviceName);
             client.setVerbose(true);
-            client.lookForService(uddiURL, serviceName);
-            client.createStub();
+            //client.lookForService(uddiURL, serviceName);
+            //client.createStub();
         } catch (serviceFindException e) {
             System.out.println("Could not connect to server!");
             e.printStackTrace();

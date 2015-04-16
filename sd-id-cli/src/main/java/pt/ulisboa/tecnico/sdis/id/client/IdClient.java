@@ -39,13 +39,18 @@ public class IdClient implements SDId {
     /**
      * constructor with provided web service URL
      * 
+     * @param uddiURL
+     * @param serviceName
+     * @throws serviceFindException
+     * 
      * @throws JAXRException
      */
-    public IdClient() {
-
+    public IdClient(String uddiURL, String serviceName) throws serviceFindException {
+        lookForService(uddiURL, serviceName);
+        createStub();
     }
 
-    public void createStub() {
+    private void createStub() {
         if (verbose)
             System.out.println("Creating stub ...");
 
@@ -60,7 +65,7 @@ public class IdClient implements SDId {
         requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, URL);
     }
 
-    public void lookForService(String uddiURL, String serviceName) throws serviceFindException {
+    private void lookForService(String uddiURL, String serviceName) throws serviceFindException {
         if (verbose)
             System.out.printf("Contacting UDDI at %s%n", uddiURL);
         UDDINaming uddiNaming;
