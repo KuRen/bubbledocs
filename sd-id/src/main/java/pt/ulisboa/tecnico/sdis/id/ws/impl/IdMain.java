@@ -45,7 +45,7 @@ public class IdMain {
 
         } catch (Exception e) {
             System.out.printf("Caught exception: %s%n", e);
-            e.printStackTrace();
+            //e.printStackTrace();
 
         } finally {
             try {
