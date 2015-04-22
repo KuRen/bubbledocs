@@ -13,7 +13,6 @@ import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.InvalidSpreadSheetIdException;
 import pt.tecnico.bubbledocs.exception.NotLiteralException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
-import pt.tecnico.bubbledocs.service.BubbleDocsService;
 
 public class AssignLiteralCell extends BubbleDocsService {
     private String result;

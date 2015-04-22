@@ -10,7 +10,6 @@ import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
-import pt.tecnico.bubbledocs.service.BubbleDocsService;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class CreateUser extends BubbleDocsService {

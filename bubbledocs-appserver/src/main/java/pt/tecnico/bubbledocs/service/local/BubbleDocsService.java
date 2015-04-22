@@ -1,4 +1,4 @@
-package pt.tecnico.bubbledocs.service;
+package pt.tecnico.bubbledocs.service.local;
 
 import jvstm.Atomic;
 import pt.ist.fenixframework.FenixFramework;

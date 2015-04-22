@@ -4,7 +4,6 @@ import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
-import pt.tecnico.bubbledocs.service.BubbleDocsService;
 
 public class CreateSpreadSheet extends BubbleDocsService {
     private int sheetId;  // id of the new sheet

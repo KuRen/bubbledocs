@@ -11,7 +11,6 @@ import org.jdom2.input.SAXBuilder;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.ImportDocumentException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedUserException;
-import pt.tecnico.bubbledocs.service.BubbleDocsService;
 
 public class ImportSpreadsheetService extends BubbleDocsService {
 
