@@ -11,6 +11,7 @@ import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
+import pt.tecnico.bubbledocs.service.local.CreateSpreadSheet;
 
 public class CreateSpeadsheetTest extends BubbleDocsServiceTest {
 

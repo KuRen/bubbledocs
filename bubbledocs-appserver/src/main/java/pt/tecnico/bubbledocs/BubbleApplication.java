@@ -18,8 +18,8 @@ import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.ExportDocumentException;
 import pt.tecnico.bubbledocs.exception.ImportDocumentException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedUserException;
-import pt.tecnico.bubbledocs.service.ExportSpreadsheetService;
-import pt.tecnico.bubbledocs.service.ImportSpreadsheetService;
+import pt.tecnico.bubbledocs.service.local.ExportSpreadsheetService;
+import pt.tecnico.bubbledocs.service.local.ImportSpreadsheetService;
 
 public class BubbleApplication {
 

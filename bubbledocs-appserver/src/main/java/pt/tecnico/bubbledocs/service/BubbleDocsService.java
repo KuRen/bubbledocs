@@ -16,7 +16,7 @@ public abstract class BubbleDocsService {
         dispatch();
     }
 
-    static BubbleDocs getBubbleDocs() {
+    protected static BubbleDocs getBubbleDocs() {
         return FenixFramework.getDomainRoot().getBubbleDocs();
     }
 

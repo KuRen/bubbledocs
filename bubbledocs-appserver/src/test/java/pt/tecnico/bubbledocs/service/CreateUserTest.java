@@ -15,6 +15,7 @@ import pt.tecnico.bubbledocs.exception.InvalidEmailException;
 import pt.tecnico.bubbledocs.exception.InvalidUsernameException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
+import pt.tecnico.bubbledocs.service.local.CreateUser;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 // add needed import declarations

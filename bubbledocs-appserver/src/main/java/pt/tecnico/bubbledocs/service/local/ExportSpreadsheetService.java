@@ -1,4 +1,4 @@
-package pt.tecnico.bubbledocs.service;
+package pt.tecnico.bubbledocs.service.local;
 
 import java.io.UnsupportedEncodingException;
 
@@ -16,6 +16,7 @@ import pt.tecnico.bubbledocs.exception.InvalidSpreadSheetIdException;
 import pt.tecnico.bubbledocs.exception.NonExistingSpreadsheetException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedUserException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
+import pt.tecnico.bubbledocs.service.BubbleDocsService;
 import pt.tecnico.bubbledocs.xml.BaseXMLWriter;
 import pt.tecnico.bubbledocs.xml.XMLWriter;
 

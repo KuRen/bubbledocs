@@ -1,4 +1,4 @@
-package pt.tecnico.bubbledocs.service;
+package pt.tecnico.bubbledocs.service.local;
 
 import java.util.Random;
 
@@ -12,6 +12,7 @@ import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
 import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
+import pt.tecnico.bubbledocs.service.BubbleDocsService;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class LoginUser extends BubbleDocsService {

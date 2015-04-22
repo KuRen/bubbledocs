@@ -28,6 +28,7 @@ import pt.tecnico.bubbledocs.exception.NonExistingSpreadsheetException;
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedUserException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
+import pt.tecnico.bubbledocs.service.local.ExportSpreadsheetService;
 
 public class ExportSpreadsheetServiceTest extends BubbleDocsServiceTest {
 

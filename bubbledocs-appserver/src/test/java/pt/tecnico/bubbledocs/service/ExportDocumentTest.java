@@ -14,6 +14,7 @@ import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.exception.CannotStoreDocumentException;
 import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
+import pt.tecnico.bubbledocs.service.local.ExportDocument;
 import pt.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
 public class ExportDocumentTest extends BubbleDocsServiceTest {

@@ -1,32 +1,32 @@
-package pt.tecnico.bubbledocs.service;
+package pt.tecnico.bubbledocs.service.local;
 
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Cell;
-import pt.tecnico.bubbledocs.domain.Literal;
 import pt.tecnico.bubbledocs.domain.Permission;
 import pt.tecnico.bubbledocs.domain.PermissionType;
+import pt.tecnico.bubbledocs.domain.Reference;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.InvalidSpreadSheetIdException;
-import pt.tecnico.bubbledocs.exception.NotLiteralException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
+import pt.tecnico.bubbledocs.service.BubbleDocsService;
 
-public class AssignLiteralCell extends BubbleDocsService {
+public class AssignReferenceCell extends BubbleDocsService {
     private String result;
 
-    private String token;
+    private String tokenUser;
     private int docId;
     private String cellId;
-    private String literal;
+    private String reference;
 
-    public AssignLiteralCell(String token, int docId, String cellId, String literal) {
-        this.token = token;
+    public AssignReferenceCell(String tokenUser, int docId, String cellId, String reference) {
+        this.tokenUser = tokenUser;
         this.docId = docId;
         this.cellId = cellId;
-        this.literal = literal;
+        this.reference = reference;
     }
 
     @Override
@@ -34,17 +34,16 @@ public class AssignLiteralCell extends BubbleDocsService {
         if (cellId == null || cellId.isEmpty())
             throw new InvalidArgumentException();
 
-        if (literal == null || literal.isEmpty())
+        if (reference == null || reference.isEmpty())
             throw new InvalidArgumentException();
 
         BubbleDocs bd = getBubbleDocs();
         Spreadsheet ss = bd.getSpreadsheetById(docId);
 
-        if (ss == null) {
+        if (ss == null)
             throw new InvalidSpreadSheetIdException();
-        }
 
-        User user = getLoggedInUser(token);
+        User user = getLoggedInUser(tokenUser);
 
         Permission permission = ss.findPermissionsForUser(user);
 
@@ -53,36 +52,38 @@ public class AssignLiteralCell extends BubbleDocsService {
 
         Integer cellRow;
         Integer cellColumn;
+        Integer refereceColumn;
+        Integer referenceRow;
 
         try {
             String[] cell = this.cellId.split(";");
             cellRow = Integer.parseInt(cell[0]);
             cellColumn = Integer.parseInt(cell[1]);
+
+            String[] reference = this.reference.split(";");
+            referenceRow = Integer.parseInt(reference[0]);
+            refereceColumn = Integer.parseInt(reference[1]);
+
         } catch (NumberFormatException e) {
             throw new InvalidArgumentException();
         }
 
-        if (cellRow > ss.getRows() || cellColumn > ss.getColumns()) {
+        if (cellRow > ss.getRows() || referenceRow > ss.getRows() || cellColumn > ss.getColumns()
+                || refereceColumn > ss.getColumns())
             throw new CellOutOfRangeException();
-        }
-
-        try {
-            Integer.parseInt(literal);
-        } catch (NumberFormatException e) {
-            throw new NotLiteralException();
-        }
 
         Cell c = ss.findCell(cellRow, cellColumn);
-        Integer valor = Integer.parseInt(literal);
-        Literal lit = new Literal(valor);
-        c.setContent(lit);
+        Cell cr = ss.findCell(referenceRow, refereceColumn);
+
+        Reference ref = new Reference(cr);
+        c.setContent(ref);
 
         result = c.asString();
 
-        refreshToken(token);
+        refreshToken(tokenUser);
     }
 
-    public String getResult() {
+    public final String getResult() {
         return result;
     }
 }

@@ -7,11 +7,11 @@ import pt.tecnico.bubbledocs.domain.Division;
 import pt.tecnico.bubbledocs.domain.Literal;
 import pt.tecnico.bubbledocs.domain.Reference;
 import pt.tecnico.bubbledocs.domain.Root;
-import pt.tecnico.bubbledocs.service.AssignLiteralCell;
-import pt.tecnico.bubbledocs.service.AssignReferenceCell;
-import pt.tecnico.bubbledocs.service.CreateSpreadSheet;
-import pt.tecnico.bubbledocs.service.CreateUser;
-import pt.tecnico.bubbledocs.service.LoginUser;
+import pt.tecnico.bubbledocs.service.local.AssignLiteralCell;
+import pt.tecnico.bubbledocs.service.local.AssignReferenceCell;
+import pt.tecnico.bubbledocs.service.local.CreateSpreadSheet;
+import pt.tecnico.bubbledocs.service.local.CreateUser;
+import pt.tecnico.bubbledocs.service.local.LoginUser;
 
 public class SetupDomain {
 

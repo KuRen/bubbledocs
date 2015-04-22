@@ -13,6 +13,7 @@ import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
+import pt.tecnico.bubbledocs.service.local.DeleteUser;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 // add needed import declarations

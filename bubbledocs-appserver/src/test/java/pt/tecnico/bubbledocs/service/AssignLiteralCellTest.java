@@ -19,6 +19,7 @@ import pt.tecnico.bubbledocs.exception.NotLiteralException;
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
+import pt.tecnico.bubbledocs.service.local.AssignLiteralCell;
 
 public class AssignLiteralCellTest extends BubbleDocsServiceTest {
 

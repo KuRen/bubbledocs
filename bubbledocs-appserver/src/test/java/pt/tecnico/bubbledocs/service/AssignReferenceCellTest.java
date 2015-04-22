@@ -17,6 +17,8 @@ import pt.tecnico.bubbledocs.exception.InvalidSpreadSheetIdException;
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
+import pt.tecnico.bubbledocs.service.local.AssignLiteralCell;
+import pt.tecnico.bubbledocs.service.local.AssignReferenceCell;
 
 public class AssignReferenceCellTest extends BubbleDocsServiceTest {
 
