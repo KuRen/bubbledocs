@@ -9,6 +9,7 @@ import org.junit.Test;
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Cell;
 import pt.tecnico.bubbledocs.domain.Literal;
+import pt.tecnico.bubbledocs.domain.Reference;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
@@ -71,7 +72,7 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
         Cell c2 = getSpreadSheet(SPREADSHEET_NAME).findCell(2, 2);
 
         assertNotNull(c2.getContent());
-        assertEquals(c2.getContent().getClass().getSimpleName(), "Reference");
+        assertEquals(Reference.class, c2.getContent().getClass());
         assertEquals(c1.getContent().getValue(), c2.getContent().getValue());
         assertTrue(c2.getContent().getValue() == VALUE);
     }
@@ -143,14 +144,32 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
     }
 
     @Test(expected = InvalidArgumentException.class)
+    public void nullToken() {
+        AssignReferenceCell service = new AssignReferenceCell(null, id, CELL, REFERENCED_CELL);
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
     public void emptyCell() {
         AssignReferenceCell service = new AssignReferenceCell(token, id, "", REFERENCED_CELL);
         service.execute();
     }
 
     @Test(expected = InvalidArgumentException.class)
+    public void nullCell() {
+        AssignReferenceCell service = new AssignReferenceCell(token, id, null, REFERENCED_CELL);
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
     public void emptyReferencedCell() {
         AssignReferenceCell service = new AssignReferenceCell(token, id, CELL, "");
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void nullReferencedCell() {
+        AssignReferenceCell service = new AssignReferenceCell(token, id, CELL, null);
         service.execute();
     }
 

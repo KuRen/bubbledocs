@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Cell;
+import pt.tecnico.bubbledocs.domain.Literal;
 import pt.tecnico.bubbledocs.domain.Permission;
 import pt.tecnico.bubbledocs.domain.PermissionType;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
@@ -74,7 +75,7 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
         Cell c1 = getSpreadSheet(SPREADSHEET_NAME).findCell(1, 1);
 
         assertNotNull(c1.getContent());
-        assertEquals(c1.getContent().getClass().getSimpleName(), "Literal");
+        assertEquals(Literal.class, c1.getContent().getClass());
         assertTrue(Integer.parseInt(VALUE) == c1.getContent().getValue());
     }
 
@@ -108,9 +109,21 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
         service.execute();
     }
 
+    @Test(expected = InvalidArgumentException.class)
+    public void nullArgumentCell() {
+        AssignLiteralCell service = new AssignLiteralCell(token, id, null, VALUE);
+        service.execute();
+    }
+
     @Test(expected = NotLiteralException.class)
     public void invalidType() {
         AssignLiteralCell service = new AssignLiteralCell(token, id, CELL, "qwerty");
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void nullLiteral() {
+        AssignLiteralCell service = new AssignLiteralCell(token, id, CELL, null);
         service.execute();
     }
 
@@ -135,6 +148,12 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
     @Test(expected = InvalidArgumentException.class)
     public void emptyToken() {
         AssignLiteralCell service = new AssignLiteralCell("", id, CELL, VALUE);
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void nullToken() {
+        AssignLiteralCell service = new AssignLiteralCell(null, id, CELL, VALUE);
         service.execute();
     }
 

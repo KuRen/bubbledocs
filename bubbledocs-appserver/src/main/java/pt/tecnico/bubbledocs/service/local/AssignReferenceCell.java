@@ -36,6 +36,9 @@ public class AssignReferenceCell extends BubbleDocsService {
         if (reference == null || reference.isEmpty())
             throw new InvalidArgumentException();
 
+        if (tokenUser == null || tokenUser.isEmpty())
+            throw new InvalidArgumentException();
+
         BubbleDocs bd = getBubbleDocs();
         Spreadsheet ss = bd.getSpreadsheetById(docId);
 

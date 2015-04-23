@@ -37,6 +37,9 @@ public class AssignLiteralCell extends BubbleDocsService {
         if (literal == null || literal.isEmpty())
             throw new InvalidArgumentException();
 
+        if (token == null || token.isEmpty())
+            throw new InvalidArgumentException();
+
         BubbleDocs bd = getBubbleDocs();
         Spreadsheet ss = bd.getSpreadsheetById(docId);
 
