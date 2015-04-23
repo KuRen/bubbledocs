@@ -28,7 +28,7 @@ public abstract class BubbleDocsService {
     }
 
     protected User getLoggedInUser(String token) {
-        if (token.isEmpty()) {
+        if (token == null || token.isEmpty()) {
             throw new InvalidArgumentException();
         }
 

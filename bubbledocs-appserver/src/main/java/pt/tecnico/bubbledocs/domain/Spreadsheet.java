@@ -144,4 +144,14 @@ public class Spreadsheet extends Spreadsheet_Base implements XMLable {
 
         deleteDomainObject();
     }
+
+    public boolean hasReadPermission(User user) {
+        return findPermissionsForUser(user) != null && findPermissionsForUser(user).canRead() || user.isRoot()
+                || user.equals(getOwner());
+    }
+
+    public boolean hasWritePermission(User user) {
+        return findPermissionsForUser(user) != null && findPermissionsForUser(user).canWrite() || user.isRoot()
+                || user.equals(getOwner());
+    }
 }

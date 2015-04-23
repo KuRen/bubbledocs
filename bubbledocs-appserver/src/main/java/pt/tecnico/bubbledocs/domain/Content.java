@@ -54,12 +54,12 @@ public abstract class Content extends Content_Base implements XMLable {
         Integer value;
         try {
             value = getValue();
-        } catch (EmptyValueException e) {
+        } catch (EmptyValueException | ArithmeticException e) {
             return "#VALUE";
         }
-        if (value != null)
-            return value.toString();
+        if (value == null)
+            return "#VALUE";
 
-        return "#VALUE";
+        return value.toString();
     }
 }
