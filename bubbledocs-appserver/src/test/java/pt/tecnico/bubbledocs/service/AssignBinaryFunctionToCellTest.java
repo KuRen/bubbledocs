@@ -146,21 +146,25 @@ public class AssignBinaryFunctionToCellTest extends BubbleDocsServiceTest {
 
     @Test(expected = CellOutOfRangeException.class)
     public void invalidRow() {
-        AssignBinaryFunctionToCell service =
-                new AssignBinaryFunctionToCell(notOwnerToken, id, (ROWS + 1) + ";" + COLUMNS, "ADD(1,2)");
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, (ROWS + 1) + ";" + COLUMNS, "ADD(1,2)");
         service.execute();
     }
 
     @Test(expected = CellOutOfRangeException.class)
     public void invalidColumn() {
-        AssignBinaryFunctionToCell service =
-                new AssignBinaryFunctionToCell(notOwnerToken, id, ROWS + ";" + (COLUMNS + 1), "ADD(1,2)");
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, ROWS + ";" + (COLUMNS + 1), "ADD(1,2)");
         service.execute();
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void invalidExpression() {
         AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "qwerty");
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void invalidFunction() {
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "QWR(1,2)");
         service.execute();
     }
 
