@@ -13,12 +13,10 @@ import pt.tecnico.bubbledocs.domain.Reference;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
-import pt.tecnico.bubbledocs.exception.DivisionByZeroException;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
-import pt.tecnico.bubbledocs.service.local.AssignBinaryFunctionToCell;
 
 public class AssignBinaryFunctionToCellTest extends BubbleDocsServiceTest {
 
@@ -34,7 +32,6 @@ public class AssignBinaryFunctionToCellTest extends BubbleDocsServiceTest {
     private static final String NOT_OWNER_PASSWORD = "src";
     private static final String SPREADSHEET_NAME = "ss-name";
     private static final String REFERENCE_CELL = "2;2";
-    private static final String REFERENCE_ZERO_CELL = "4;4";
     private static final String EMPTY_CELL = "1;2";
     private static final String FUNCTION_CELL = "3;3";
     private static final int COLUMNS = 5;
@@ -111,19 +108,6 @@ public class AssignBinaryFunctionToCellTest extends BubbleDocsServiceTest {
         assertNotNull(c.getContent());
         assertEquals(Addition.class, c.getContent().getClass());
         assertEquals(42 / 42, c.getContent().getValue().intValue());
-    }
-
-    @Test(expected = DivisionByZeroException.class)
-    public void divisionByZeroTest() {
-        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "DIV(2,0)");
-        service.execute();
-    }
-
-    @Test(expected = DivisionByZeroException.class)
-    public void divisionByZeroReferenceTest() {
-        AssignBinaryFunctionToCell service =
-                new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "DIV(2," + REFERENCE_ZERO_CELL + ")");
-        service.execute();
     }
 
     @Test(expected = UnauthorizedOperationException.class)
