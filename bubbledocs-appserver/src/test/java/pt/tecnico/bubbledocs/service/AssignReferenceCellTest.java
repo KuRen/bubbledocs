@@ -83,6 +83,11 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
         service.execute();
     }
 
+    @Test
+    public void unexistingCell() {
+        new AssignReferenceCell(token, id, CELL, "1;2").execute();
+    }
+
     @Test(expected = UnauthorizedOperationException.class)
     public void readOnlyUser() {
         AssignLiteralCell service = new AssignLiteralCell(readToken, id, CELL, REFERENCED_CELL);
