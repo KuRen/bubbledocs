@@ -8,9 +8,11 @@ import org.junit.Test;
 import pt.tecnico.bubbledocs.domain.Addition;
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Cell;
+import pt.tecnico.bubbledocs.domain.Division;
 import pt.tecnico.bubbledocs.domain.Literal;
 import pt.tecnico.bubbledocs.domain.Reference;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
+import pt.tecnico.bubbledocs.domain.Subtraction;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.CellOutOfRangeException;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
@@ -63,7 +65,7 @@ public class AssignBinaryFunctionToCellTest extends BubbleDocsServiceTest {
         ss.addCells(c6);
         c1.setContent(new Literal(VALUE));
         ss.addCells(c1);
-        c2.setContent(new Reference(c2));
+        c2.setContent(new Reference(c1));
         ss.addCells(c2);
         c4.setContent(new Literal(0));
         ss.addCells(c4);
@@ -93,7 +95,7 @@ public class AssignBinaryFunctionToCellTest extends BubbleDocsServiceTest {
         Cell c = getSpreadSheet(SPREADSHEET_NAME).findCell(3, 3);
 
         assertNotNull(c.getContent());
-        assertEquals(Addition.class, c.getContent().getClass());
+        assertEquals(Subtraction.class, c.getContent().getClass());
         assertEquals(50 - 42, c.getContent().getValue().intValue());
     }
 
@@ -106,7 +108,7 @@ public class AssignBinaryFunctionToCellTest extends BubbleDocsServiceTest {
         Cell c = getSpreadSheet(SPREADSHEET_NAME).findCell(3, 3);
 
         assertNotNull(c.getContent());
-        assertEquals(Addition.class, c.getContent().getClass());
+        assertEquals(Division.class, c.getContent().getClass());
         assertEquals(42 / 42, c.getContent().getValue().intValue());
     }
 
@@ -149,6 +151,54 @@ public class AssignBinaryFunctionToCellTest extends BubbleDocsServiceTest {
     @Test(expected = InvalidArgumentException.class)
     public void invalidFunction() {
         AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "QWR(1,2)");
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void invalidFunctionCall() {
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "MUL(1,2");
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void invalidFunctionCall2() {
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "MUL1,2");
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void invalidFunctionCall3() {
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "MUL(ola)");
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void invalidFunctionCall4() {
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "MUL(ola, adeus)");
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void invalidFunctionCall5() {
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "MUL()");
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void invalidFunctionCall6() {
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "MUL(1,ola)");
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void invalidFunctionCall7() {
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "MUL(ola,2)");
+        service.execute();
+    }
+
+    @Test(expected = InvalidArgumentException.class)
+    public void invalidFunctionArgs() {
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "ADD(12)");
         service.execute();
     }
 
