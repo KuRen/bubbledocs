@@ -66,7 +66,7 @@ public class BubbleApplication {
     @Atomic
     private static void importFromXMLGivenUser(byte[] docSS, String username) {
         try {
-            ImportSpreadsheetService importService = new ImportSpreadsheetService(docSS, username);
+            ImportSpreadsheetService importService = new ImportSpreadsheetService(docSS, bd.getUserByUsername(username).getSession().getToken());
             importService.execute();
             System.out.println("[Import] Spreadsheet successfully imported!");
         } catch (ImportDocumentException ide) {
