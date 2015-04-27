@@ -1,0 +1,7 @@
+Group Member    Mon Tue Wed Thu Fri Sat Sun Planned Tasks
+Rodrigo         0   0   0   0   4   0   0   #51 #52 #53
+Teresa          0   0   0   0   0   2   1   #43 
+Daniel          0   0   0   2   2   0   1   #48 #47 #54 
+Miguel          0   1   2   1   0   0   0   #37 #38 #39 #40 #45 #46 #49 #50 #55 
+Carlos          0   0   0   2   0   1   0   #56 #57 #58 #59 
+Francisco       0   0   0   0   0   2   2   #42 #44 

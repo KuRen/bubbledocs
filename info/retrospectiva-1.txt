@@ -1,0 +1,30 @@
+Retrospetiva individual:
+
+Rodrigo:
+
+
+Teresa:
+
+
+Daniel:
+Todas as tarefas planeadas foram cumpridas, no tempo estimado.
+
+
+Miguel:
+
+
+Carlos:
+
+
+Francisco:
+
+
+
+
+Group Member    Mon Tue Wed Thu Fri Sat Sun Planned Tasks
+Rodrigo         0   0   4   0   0   0   0       
+Teresa          2   0   1   2                   
+Daniel          0   0   2   2   2   0   2       
+Miguel          0   0   2   1   0   0   0       
+Carlos                                  
+Francisco       0   0   0   2   2   1   0   #60 #61 #62
