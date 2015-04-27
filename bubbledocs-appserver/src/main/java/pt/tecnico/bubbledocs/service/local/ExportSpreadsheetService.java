@@ -69,6 +69,7 @@ public class ExportSpreadsheetService extends BubbleDocsService {
         jdomDoc.setRootElement(ss.accept(writer));
 
         XMLOutputter xml = new XMLOutputter();
+
         try {
             document = xml.outputString(jdomDoc).getBytes("UTF-8");
         } catch (UnsupportedEncodingException e) {

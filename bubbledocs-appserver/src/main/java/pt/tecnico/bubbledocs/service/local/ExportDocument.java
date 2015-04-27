@@ -9,6 +9,7 @@ import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
 public class ExportDocument extends BubbleDocsService {
+
     private byte[] docXML;
     private String userToken;
     private int docId;
@@ -24,23 +25,21 @@ public class ExportDocument extends BubbleDocsService {
 
     @Override
     protected void dispatch() throws BubbleDocsException {
-    	
-    	ExportSpreadsheetService service = new ExportSpreadsheetService(docId,userToken);
+
+        ExportSpreadsheetService service = new ExportSpreadsheetService(docId, userToken);
         service.execute();
         docXML = service.getResult();
-        
+
         Spreadsheet ss = BubbleDocs.getInstance().getSpreadsheetById(docId);
-        
         User user = getBubbleDocs().getSessionManager().findUserByToken(userToken);
-        
         StoreRemoteServices remote = new StoreRemoteServices();
-        
+
         try {
-        	remote.storeDocument(user.getName(), ss.getName(), docXML);
-        } catch(RemoteInvocationException rie) {
-        	throw new UnavailableServiceException();
+            remote.storeDocument(user.getName(), ss.getName(), docXML);
+        } catch (RemoteInvocationException rie) {
+            throw new UnavailableServiceException();
         }
-        
+
         refreshToken(userToken);
     }
 }
