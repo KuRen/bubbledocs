@@ -14,7 +14,15 @@ Todas as tarefas planeadas foram cumpridas, no tempo estimado.
 Miguel:
 
 
-Carlos:
+Carlos: 
+Quanto às tarefas #56 #57 #58 #59, correspondentes à concretização dos Remote Services apenas foi concluida a #58,
+correspondente ao IDRemoteServices. O restante ficou incompleto, apesar de terem sido trabalahadas mais horas do que o previsto, 
+devido a dois motivos: 
+  * O tempo estimado para a conclusão foi abaixo do tempo real necessário.
+  * Estive a procurar a solução para um outro problema que encontrei, do lado dos servidores
+     remotos, pois estes não podem correr em simultâneo dado usarem o mesmo endereço. Contudo ainda não foi encontrada uma 
+     solução, pois alterar o endereço causa outros erros para os quais não foram ainda identificadas as faltas correspondentes.
+     Dada esta situação, algumas das horas de trabalho não foram gastas no que estava planeado.
 
 
 Francisco:
@@ -27,5 +35,5 @@ Rodrigo         0   0   4   0   0   0   0   #63 #64 #65
 Teresa          2   0   1   2   1   2   1          
 Daniel          0   0   2   2   2   0   2       
 Miguel          0   0   2   1   0   0   0       
-Carlos                                  
+Carlos          0   0   0   2   0   1   0   #56 #57 #58 #59   
 Francisco       0   0   0   2   2   1   0   #60 #61 #62
