@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
+import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
 import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
@@ -83,6 +84,22 @@ public class RenewPasswordIntegratorTest extends BubbleDocsIntegrationTest {
             new RenewPasswordIntegrator(USER_TOKEN).execute();
             fail("Expected UnavailableServiceException");
         } catch (UnavailableServiceException use) {
+            assertEquals(PASSWORD, getUserFromSession(USER_TOKEN).getPassword());
+        }
+    }
+
+    @Test
+    public void loginBubbleDocsException() {
+        new NonStrictExpectations() {
+            {
+                idRemoteServices.renewPassword(USERNAME);
+                result = new LoginBubbleDocsException();
+            }
+        };
+        try {
+            new RenewPasswordIntegrator(USER_TOKEN).execute();
+            fail("Expected UnavailableServiceException");
+        } catch (LoginBubbleDocsException lbe) {
             assertEquals(PASSWORD, getUserFromSession(USER_TOKEN).getPassword());
         }
     }

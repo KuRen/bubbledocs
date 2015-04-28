@@ -5,6 +5,7 @@ import java.util.List;
 
 import pt.ist.fenixframework.Atomic;
 import pt.ist.fenixframework.Atomic.TxMode;
+import pt.tecnico.bubbledocs.exception.InvalidUsernameException;
 
 public class User extends User_Base {
 
@@ -28,6 +29,13 @@ public class User extends User_Base {
         setName(name);
         setEmail(email);
     }
+
+    @Override
+    public void setUsername(String username) {
+        if (username.length() < 3 || username.length() > 8)
+            throw new InvalidUsernameException("Username must be betweetn 3 and 8 characters");
+        super.setUsername(username);
+    };
 
     @Atomic(mode = TxMode.READ)
     public static List<Spreadsheet> getSpreadsheetsByName(User owner, String name) {

@@ -43,9 +43,6 @@ public class AssignBinaryFunctionToCell extends BubbleDocsService {
         if (cellId == null || cellId.isEmpty())
             throw new InvalidArgumentException();
 
-        if (token == null || token.isEmpty())
-            throw new InvalidArgumentException();
-
         if (expression == null || expression.isEmpty())
             throw new InvalidArgumentException();
 

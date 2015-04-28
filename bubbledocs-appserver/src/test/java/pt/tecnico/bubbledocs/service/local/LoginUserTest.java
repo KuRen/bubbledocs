@@ -3,12 +3,10 @@ package pt.tecnico.bubbledocs.service.local;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import mockit.Expectations;
 import mockit.Mocked;
 
 import org.joda.time.DateTime;
-import org.joda.time.Seconds;
 import org.junit.Test;
 
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
@@ -18,12 +16,11 @@ import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
 import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
-import pt.tecnico.bubbledocs.service.local.LoginUser;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class LoginUserTest extends BubbleDocsServiceTest {
 
-    private static final String USERNAME = "jp";
+    private static final String USERNAME = "jpierre";
     private static final String NON_EXISTING_USERNAME = "otherone";
     private static final String PASSWORD = "jp#";
     private static final String WRONG_PASSWORD = "wrongpsswd";
@@ -63,17 +60,9 @@ public class LoginUserTest extends BubbleDocsServiceTest {
         };
 
         service.execute();
-        DateTime currentTime = new DateTime();
-
-        String token = service.getUserToken();
 
         User user = getUserFromSession(service.getUserToken());
         assertEquals(USERNAME, user.getUsername());
-
-        int difference = Seconds.secondsBetween(getLastAccessTimeInSession(token), currentTime).getSeconds();
-
-        assertTrue("Access time in session not correctly set", difference >= 0);
-        assertTrue("diference in seconds greater than expected", difference < 2);
     }
 
     @Test
@@ -215,5 +204,20 @@ public class LoginUserTest extends BubbleDocsServiceTest {
             }
         };
         service.execute();
+    }
+
+    @Test
+    public void localLoginUserSuccess() {
+        LoginUser service = new LoginUser(USERNAME, PASSWORD);
+        new Expectations() {
+            {
+                idRemoteServices.loginUser(USERNAME, PASSWORD);
+                result = new RemoteInvocationException();
+            }
+        };
+        service.execute();
+
+        User user = getUserFromSession(service.getUserToken());
+        assertEquals(USERNAME, user.getUsername());
     }
 }

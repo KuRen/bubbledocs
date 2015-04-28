@@ -15,7 +15,6 @@ import pt.tecnico.bubbledocs.exception.InvalidEmailException;
 import pt.tecnico.bubbledocs.exception.InvalidUsernameException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
-import pt.tecnico.bubbledocs.service.local.CreateUser;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 // add needed import declarations
@@ -105,7 +104,6 @@ public class CreateUserTest extends BubbleDocsServiceTest {
         new Expectations() {
             {
                 idRemoteServices.createUser(SMALL_USERNAME, EMAIL_DOES_NOT_EXIST);
-                result = new InvalidUsernameException();
             }
         };
 
@@ -118,7 +116,6 @@ public class CreateUserTest extends BubbleDocsServiceTest {
         new Expectations() {
             {
                 idRemoteServices.createUser(LONG_USERNAME, EMAIL_DOES_NOT_EXIST);
-                result = new InvalidUsernameException();
             }
         };
 

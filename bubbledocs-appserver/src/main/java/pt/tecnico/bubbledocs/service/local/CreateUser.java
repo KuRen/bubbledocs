@@ -31,10 +31,10 @@ public class CreateUser extends BubbleDocsService {
     @Override
     protected void dispatch() throws BubbleDocsException {
 
-        if (newUsername.isEmpty())
+        if (newUsername == null || newUsername.isEmpty())
             throw new EmptyUsernameException();
 
-        if (email.isEmpty())
+        if (email == null || email.isEmpty())
             throw new EmptyValueException();
 
         BubbleDocs bubbleDocs = getBubbleDocs();

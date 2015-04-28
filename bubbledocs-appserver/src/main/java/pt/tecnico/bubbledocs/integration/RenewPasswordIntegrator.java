@@ -1,6 +1,7 @@
 package pt.tecnico.bubbledocs.integration;
 
 import pt.tecnico.bubbledocs.domain.User;
+import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
 import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.service.local.RenewPassword;
@@ -29,6 +30,9 @@ public class RenewPasswordIntegrator extends BubbleDocsIntegrator {
         } catch (RemoteInvocationException rie) {
             user.setPassword(service.getRemovedPassword());
             throw new UnavailableServiceException();
+        } catch (LoginBubbleDocsException lbe) {
+            user.setPassword(service.getRemovedPassword());
+            throw lbe;
         }
     }
 
