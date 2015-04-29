@@ -8,14 +8,19 @@ import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.service.local.ExportDocument;
 import pt.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
-public class ExportDocumentIntegration extends BubbleDocsIntegrator {
+public class ExportDocumentIntegrator extends BubbleDocsIntegrator {
 
     private ExportDocument service;
     private int docId;
     private String userToken;
 
-    public ExportDocumentIntegration(String token, int doc) {
+    public ExportDocumentIntegrator(String token, int doc) {
         this.service = new ExportDocument(token, doc);
+    }
+
+    public byte[] getDocXML() {
+        //TODO
+        return null;
     }
 
     @Override

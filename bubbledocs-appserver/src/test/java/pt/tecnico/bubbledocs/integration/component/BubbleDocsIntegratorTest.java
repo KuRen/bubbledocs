@@ -1,4 +1,4 @@
-package pt.tecnico.bubbledocs.integration;
+package pt.tecnico.bubbledocs.integration.component;
 
 import java.util.Random;
 
@@ -16,7 +16,7 @@ import pt.tecnico.bubbledocs.domain.Session;
 import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.User;
 
-public class BubbleDocsIntegrationTest {
+public class BubbleDocsIntegratorTest {
 
     @Before
     public void setUp() throws Exception {
