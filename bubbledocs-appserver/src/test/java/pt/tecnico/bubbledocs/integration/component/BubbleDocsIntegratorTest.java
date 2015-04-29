@@ -14,6 +14,7 @@ import pt.ist.fenixframework.core.WriteOnReadError;
 import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Session;
 import pt.tecnico.bubbledocs.domain.SessionManager;
+import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.domain.User;
 
 public class BubbleDocsIntegratorTest {
@@ -40,6 +41,23 @@ public class BubbleDocsIntegratorTest {
 
     public void populate4Test() {
 
+    }
+    
+    public Spreadsheet createSpreadSheet(User user, String name, int row, int column) {
+        BubbleDocs bd = BubbleDocs.getInstance();
+        Spreadsheet ss = new Spreadsheet(row, column, name, user);
+        bd.addSpreadsheets(ss);
+        return ss;
+    }
+
+    public Spreadsheet getSpreadSheet(String name) {
+        BubbleDocs bd = BubbleDocs.getInstance();
+
+        for (Spreadsheet ss : bd.getSpreadsheetsSet())
+            if (ss.getName().equals(name))
+                return ss;
+
+        return null;
     }
 
     User createUser(String username, String password, String email, String name) {
