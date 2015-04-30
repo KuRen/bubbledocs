@@ -43,24 +43,6 @@ public class ExportDocumentIntegratorTest extends BubbleDocsIntegratorTest {
     private static final int CELL_2_COL = 2;
     private static final int CELL_2_ROW = 2;
 
-    @Mocked
-    IDRemoteServices idRemoteServices;
-    StoreRemoteServices storeRemoteServices;
-
-    @Test
-    public void success() {
-        ExportDocumentIntegrator service = new ExportDocumentIntegrator(authorizedToken, validId);
-
-        new Expectations() {
-            {
-                storeRemoteServices.storeDocument(USERNAME, SS_NAME, service.getDocXML());
-            }
-        };
-
-        service.execute();
-
-    }
-
     //token nulo
     @Test(expected = InvalidArgumentException.class)
     public void nullToken() {
