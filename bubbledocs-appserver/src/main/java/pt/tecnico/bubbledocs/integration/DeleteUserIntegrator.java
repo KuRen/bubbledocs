@@ -14,4 +14,12 @@ public class DeleteUserIntegrator extends BubbleDocsIntegrator {
         service.execute();
     }
 
+    public final String getUserToken() {
+        return service.getUserToken();
+    }
+
+    public final String getToDeleteUsername() {
+        return service.getToDeleteUsername();
+    }
+
 }

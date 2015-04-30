@@ -12,10 +12,6 @@ public class CreateSpreadSheet extends BubbleDocsService {
     private int rows;
     private int columns;
 
-    public int getSheetId() {
-        return sheetId;
-    }
-
     public CreateSpreadSheet(String userToken, String name, int rows, int columns) {
         this.userToken = userToken;
         this.name = name;
@@ -40,5 +36,9 @@ public class CreateSpreadSheet extends BubbleDocsService {
 
         this.sheetId = spreadsheet.getId();
         refreshToken(userToken);
+    }
+
+    public int getSheetId() {
+        return sheetId;
     }
 }
