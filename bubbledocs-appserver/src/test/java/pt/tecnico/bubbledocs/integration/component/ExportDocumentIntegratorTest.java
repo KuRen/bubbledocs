@@ -1,9 +1,7 @@
 package pt.tecnico.bubbledocs.integration.component;
 
-import mockit.Expectations;
 import mockit.Mock;
 import mockit.MockUp;
-import mockit.Mocked;
 
 import org.junit.Test;
 
@@ -21,7 +19,6 @@ import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 import pt.tecnico.bubbledocs.integration.ExportDocumentIntegrator;
-import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 import pt.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
 public class ExportDocumentIntegratorTest extends BubbleDocsIntegratorTest {
