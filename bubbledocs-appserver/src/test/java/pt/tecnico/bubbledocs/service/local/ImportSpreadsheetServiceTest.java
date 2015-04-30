@@ -50,7 +50,6 @@ public class ImportSpreadsheetServiceTest extends BubbleDocsServiceTest {
     //username nao autorizado
     @Test(expected = UnauthorizedUserException.class)
     public void unauthorizedUser() {
-        expireToken(authorizedToken);
         new ImportSpreadsheetService(document, unauthorizedToken).execute();
     }
 
