@@ -72,6 +72,12 @@ public class AssignReferenceCell extends BubbleDocsService {
             throw new CellOutOfRangeException();
 
         Cell c = ss.findCell(cellRow, cellColumn);
+
+        if (c == null) {
+            c = new Cell(ss, cellRow, cellColumn);
+            ss.addCells(c);
+        }
+
         Cell cr = ss.findCell(referenceRow, refereceColumn);
 
         Reference ref = new Reference(cr);

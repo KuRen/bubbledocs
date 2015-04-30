@@ -10,6 +10,7 @@ import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.Cell;
 import pt.tecnico.bubbledocs.domain.Division;
 import pt.tecnico.bubbledocs.domain.Literal;
+import pt.tecnico.bubbledocs.domain.Multiplication;
 import pt.tecnico.bubbledocs.domain.Reference;
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
 import pt.tecnico.bubbledocs.domain.Subtraction;
@@ -40,6 +41,7 @@ public class AssignBinaryFunctionToCellTest extends BubbleDocsServiceTest {
     private static final int ROWS = 5;
     private static final Integer VALUE = 42;
     private static final String READER_USER = "rUser";
+    private static final String UNEXISTING_CELL = "3;4";
 
     @Override
     public void populate4Test() {
@@ -76,10 +78,22 @@ public class AssignBinaryFunctionToCellTest extends BubbleDocsServiceTest {
 
     @Test
     public void literalSuccess() {
-        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "ADD(1,2)");
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, FUNCTION_CELL, "MUL(1,2)");
         service.execute();
 
         Cell c = getSpreadSheet(SPREADSHEET_NAME).findCell(3, 3);
+
+        assertNotNull(c.getContent());
+        assertEquals(Multiplication.class, c.getContent().getClass());
+        assertEquals(1 * 2, c.getContent().getValue().intValue());
+    }
+
+    @Test
+    public void unexistingCell() {
+        AssignBinaryFunctionToCell service = new AssignBinaryFunctionToCell(token, id, UNEXISTING_CELL, "ADD(1,2)");
+        service.execute();
+
+        Cell c = getSpreadSheet(SPREADSHEET_NAME).findCell(3, 4);
 
         assertNotNull(c.getContent());
         assertEquals(Addition.class, c.getContent().getClass());

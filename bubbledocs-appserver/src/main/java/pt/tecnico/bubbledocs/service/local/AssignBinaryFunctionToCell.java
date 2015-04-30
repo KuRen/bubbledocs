@@ -142,6 +142,12 @@ public class AssignBinaryFunctionToCell extends BubbleDocsService {
         }
 
         Cell c = ss.findCell(cellRow, cellColumn);
+
+        if (c == null) {
+            c = new Cell(ss, cellRow, cellColumn);
+            ss.addCells(c);
+        }
+
         c.setContent(content);
 
         result = c.asString();

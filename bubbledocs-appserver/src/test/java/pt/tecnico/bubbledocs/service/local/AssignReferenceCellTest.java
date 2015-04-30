@@ -18,8 +18,6 @@ import pt.tecnico.bubbledocs.exception.InvalidSpreadSheetIdException;
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
-import pt.tecnico.bubbledocs.service.local.AssignLiteralCell;
-import pt.tecnico.bubbledocs.service.local.AssignReferenceCell;
 
 public class AssignReferenceCellTest extends BubbleDocsServiceTest {
 
@@ -36,6 +34,7 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
     private static final String SPREADSHEET_NAME = "ss-name";
     private static final String CELL = "2;2";
     private static final String REFERENCED_CELL = "1;1";
+    private static final String UNEXISTING_CELL = "3;4";
     private static final int COLUMNS = 5;
     private static final int ROWS = 5;
     private static final Integer VALUE = 42;
@@ -85,6 +84,19 @@ public class AssignReferenceCellTest extends BubbleDocsServiceTest {
 
     @Test
     public void unexistingCell() {
+        new AssignReferenceCell(token, id, UNEXISTING_CELL, REFERENCED_CELL).execute();
+
+        Cell c1 = getSpreadSheet(SPREADSHEET_NAME).findCell(1, 1);
+        Cell c2 = getSpreadSheet(SPREADSHEET_NAME).findCell(3, 4);
+
+        assertNotNull(c2.getContent());
+        assertEquals(Reference.class, c2.getContent().getClass());
+        assertEquals(c1.getContent().getValue(), c2.getContent().getValue());
+        assertTrue(c2.getContent().getValue() == VALUE);
+    }
+
+    @Test
+    public void unexistingReferencedCell() {
         new AssignReferenceCell(token, id, CELL, "1;2").execute();
     }
 
