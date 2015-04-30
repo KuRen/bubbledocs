@@ -20,7 +20,6 @@ import pt.tecnico.bubbledocs.exception.NotLiteralException;
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
-import pt.tecnico.bubbledocs.service.local.AssignLiteralCell;
 
 public class AssignLiteralCellTest extends BubbleDocsServiceTest {
 
@@ -40,6 +39,7 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
     private static final String CELL = "1;1";
     private static final String VALUE = "42";
     private static final String READER_USER = "rUser";
+    private static final String UNEXISTING_CELL = "3;4";
 
     @Override
     public void populate4Test() {
@@ -77,6 +77,22 @@ public class AssignLiteralCellTest extends BubbleDocsServiceTest {
         assertNotNull(c1.getContent());
         assertEquals(Literal.class, c1.getContent().getClass());
         assertTrue(Integer.parseInt(VALUE) == c1.getContent().getValue());
+    }
+
+    @Test
+    public void unexistingCell() {
+        new AssignLiteralCell(token, id, UNEXISTING_CELL, VALUE).execute();
+
+        Cell c1 = getSpreadSheet(SPREADSHEET_NAME).findCell(3, 4);
+
+        assertNotNull(c1.getContent());
+        assertEquals(Literal.class, c1.getContent().getClass());
+        assertTrue(Integer.parseInt(VALUE) == c1.getContent().getValue());
+    }
+
+    @Test
+    public void unexistingReferencedCell() {
+        new AssignLiteralCell(token, id, CELL, VALUE).execute();
     }
 
     @Test(expected = UnauthorizedOperationException.class)

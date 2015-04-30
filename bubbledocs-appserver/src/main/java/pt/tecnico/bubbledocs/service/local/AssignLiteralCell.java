@@ -73,7 +73,14 @@ public class AssignLiteralCell extends BubbleDocsService {
         }
 
         Cell c = ss.findCell(cellRow, cellColumn);
+
+        if (c == null) {
+            c = new Cell(ss, cellRow, cellColumn);
+            ss.addCells(c);
+        }
+
         Integer valor = Integer.parseInt(literal);
+
         Literal lit = new Literal(valor);
         c.setContent(lit);
 
