@@ -23,14 +23,17 @@ public class GetUsernameForTokenService extends BubbleDocsService {
 
         sessionManager.cleanOldSessions();
 
+        try {
+            sessionManager.findUserByToken(token);
+        } catch (TokenExpiredException tee) {
+            throw new TokenExpiredException();
+        }
+
         if (sessionManager.findUserByToken(token) == null) {
             throw new UserNotInSessionException();
         } else {
             User user = sessionManager.findUserByToken(token);
-            if (user == null)
-                throw new TokenExpiredException();
-            else
-                this.username = user.getUsername();
+            this.username = user.getUsername();
         }
     }
 
