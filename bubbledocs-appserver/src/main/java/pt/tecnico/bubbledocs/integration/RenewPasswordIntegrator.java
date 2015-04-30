@@ -29,14 +29,16 @@ public class RenewPasswordIntegrator extends BubbleDocsIntegrator {
 
         getUsernameService.execute();
 
-        GetUserInfoService getUserService = new GetUserInfoService(getUsernameService.getUsername());
+        String username = getUsernameService.getUsername();
+
+        GetUserInfoService getUserService = new GetUserInfoService(username);
 
         getUserService.execute();
 
         User user = getUserService.getUser();
 
         try {
-            idRemoteServices.renewPassword(user.getUsername());
+            idRemoteServices.renewPassword(username);
         } catch (RemoteInvocationException rie) {
             user.setPassword(service.getRemovedPassword());
             throw new UnavailableServiceException();
