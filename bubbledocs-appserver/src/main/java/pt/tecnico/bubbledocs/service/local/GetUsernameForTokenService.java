@@ -4,6 +4,8 @@ import pt.tecnico.bubbledocs.domain.BubbleDocs;
 import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
+import pt.tecnico.bubbledocs.exception.TokenExpiredException;
+import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 
 public class GetUsernameForTokenService extends BubbleDocsService {
 
@@ -21,9 +23,15 @@ public class GetUsernameForTokenService extends BubbleDocsService {
 
         sessionManager.cleanOldSessions();
 
-        User user = sessionManager.findUserByToken(token);
-
-        this.username = user.getUsername();
+        if (sessionManager.findUserByToken(token) == null) {
+            throw new UserNotInSessionException();
+        } else {
+            User user = sessionManager.findUserByToken(token);
+            if (user == null)
+                throw new TokenExpiredException();
+            else
+                this.username = user.getUsername();
+        }
     }
 
     public String getUsername() {
