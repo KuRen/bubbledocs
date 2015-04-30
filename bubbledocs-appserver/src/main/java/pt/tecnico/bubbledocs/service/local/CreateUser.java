@@ -13,19 +13,18 @@ import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class CreateUser extends BubbleDocsService {
-
+    private IDRemoteServices idRemoteServices;
     private String userToken;
     private String newUsername;
     private String email;
     private String name;
-    private IDRemoteServices idServices = new IDRemoteServices();
 
     public CreateUser(String userToken, String newUsername, String email, String name) {
         this.userToken = userToken;
         this.newUsername = newUsername;
         this.email = email;
         this.name = name;
-        this.idServices = new IDRemoteServices();
+        idRemoteServices = new IDRemoteServices();
     }
 
     @Override
@@ -51,7 +50,7 @@ public class CreateUser extends BubbleDocsService {
             throw new UnauthorizedOperationException();
 
         try {
-            idServices.createUser(newUsername, email);
+            idRemoteServices.createUser(newUsername, email);
         } catch (RemoteInvocationException rie) {
             throw new UnavailableServiceException();
         }

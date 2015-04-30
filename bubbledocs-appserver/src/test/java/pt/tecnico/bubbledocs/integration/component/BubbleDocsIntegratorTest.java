@@ -42,7 +42,7 @@ public class BubbleDocsIntegratorTest {
     public void populate4Test() {
 
     }
-    
+
     public Spreadsheet createSpreadSheet(User user, String name, int row, int column) {
         BubbleDocs bd = BubbleDocs.getInstance();
         Spreadsheet ss = new Spreadsheet(row, column, name, user);
@@ -108,5 +108,17 @@ public class BubbleDocsIntegratorTest {
         session.setLastActivity(lastActivity.minusMillis(SessionManager.EXPIRATION_TIME * 2));
 
         return true;
+    }
+
+    // remove a user from session given its token
+    void removeUserFromSession(String token) {
+        BubbleDocs bd = BubbleDocs.getInstance();
+        SessionManager sm = bd.getSessionManager();
+        for (Session session : sm.getSessionSet()) {
+            if (session.getToken().equals(token)) {
+                sm.removeSession(session);
+                session.delete();
+            }
+        }
     }
 }
