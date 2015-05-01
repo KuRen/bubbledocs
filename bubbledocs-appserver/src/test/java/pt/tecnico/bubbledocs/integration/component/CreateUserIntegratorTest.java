@@ -7,7 +7,6 @@ import mockit.Expectations;
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import pt.tecnico.bubbledocs.domain.User;
@@ -47,11 +46,9 @@ public class CreateUserIntegratorTest extends BubbleDocsIntegratorTest {
         ars = addUserToSession("ars");
     }
 
-    @Ignore
     @Test
     public void success() {
-        CreateUserIntegrator service =
-                new CreateUserIntegrator(root, USERNAME_DOES_NOT_EXIST, EMAIL_DOES_NOT_EXIST, "José Ferreira");
+        CreateUserIntegrator service = new CreateUserIntegrator(root, USERNAME_DOES_NOT_EXIST, EMAIL_DOES_NOT_EXIST, "José Ferreira");
         new Expectations() {
             {
                 idRemoteServices.createUser(USERNAME_DOES_NOT_EXIST, EMAIL_DOES_NOT_EXIST);
@@ -70,10 +67,10 @@ public class CreateUserIntegratorTest extends BubbleDocsIntegratorTest {
 
     @Test(expected = DuplicateUsernameException.class)
     public void usernameExists() {
-        CreateUserIntegrator service = new CreateUserIntegrator(root, USERNAME, EMAIL_DOES_NOT_EXIST, "José Ferreira");
+        CreateUserIntegrator service = new CreateUserIntegrator(root, USERNAME + "m", EMAIL_DOES_NOT_EXIST, "José Ferreira");
         new Expectations() {
             {
-                idRemoteServices.createUser(USERNAME, EMAIL_DOES_NOT_EXIST);
+                idRemoteServices.createUser(USERNAME + "m", EMAIL_DOES_NOT_EXIST);
                 result = new DuplicateUsernameException();
             }
         };
@@ -108,33 +105,21 @@ public class CreateUserIntegratorTest extends BubbleDocsIntegratorTest {
     @Test(expected = InvalidUsernameException.class)
     public void shortUsername() {
         CreateUserIntegrator service = new CreateUserIntegrator(root, SMALL_USERNAME, EMAIL_DOES_NOT_EXIST, NAME);
-        new Expectations() {
-            {
-                idRemoteServices.createUser(SMALL_USERNAME, EMAIL_DOES_NOT_EXIST);
-            }
-        };
-
         service.execute();
     }
 
     @Test(expected = InvalidUsernameException.class)
     public void longUsername() {
         CreateUserIntegrator service = new CreateUserIntegrator(root, LONG_USERNAME, EMAIL_DOES_NOT_EXIST, NAME);
-        new Expectations() {
-            {
-                idRemoteServices.createUser(LONG_USERNAME, EMAIL_DOES_NOT_EXIST);
-            }
-        };
-
         service.execute();
     }
 
     @Test(expected = DuplicateEmailException.class)
     public void emailExists() {
-        CreateUserIntegrator service = new CreateUserIntegrator(root, USERNAME_DOES_NOT_EXIST, EMAIL, NAME);
+        CreateUserIntegrator service = new CreateUserIntegrator(root, USERNAME_DOES_NOT_EXIST, EMAIL + "m", NAME);
         new Expectations() {
             {
-                idRemoteServices.createUser(USERNAME_DOES_NOT_EXIST, EMAIL);
+                idRemoteServices.createUser(USERNAME_DOES_NOT_EXIST, EMAIL + "m");
                 result = new DuplicateEmailException();
             }
         };

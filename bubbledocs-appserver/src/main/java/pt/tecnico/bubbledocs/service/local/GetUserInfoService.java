@@ -15,7 +15,7 @@ public class GetUserInfoService extends BubbleDocsService {
 
     @Override
     protected void dispatch() throws BubbleDocsException {
-        BubbleDocs bubbleDocs = getBubbleDocs();
+        BubbleDocs bubbleDocs = BubbleDocs.getInstance();
 
         this.user = bubbleDocs.getUserByUsername(username);
     }

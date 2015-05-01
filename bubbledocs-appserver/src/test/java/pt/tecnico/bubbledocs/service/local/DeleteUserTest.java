@@ -2,19 +2,13 @@ package pt.tecnico.bubbledocs.service.local;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import mockit.Expectations;
-import mockit.Mocked;
 
 import org.junit.Test;
 
 import pt.tecnico.bubbledocs.domain.User;
-import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
-import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedOperationException;
-import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
 import pt.tecnico.bubbledocs.service.local.DeleteUser;
-import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 // add needed import declarations
 
@@ -28,9 +22,6 @@ public class DeleteUserTest extends BubbleDocsServiceTest {
     private static final String SPREADSHEET_NAME = "spread";
     private static final String EMAIL = "rito.silva@tecnico.ulisboa.pt";
     private static final String EMAIL_ALREADY_TAKEN = "sergio.fernandes@tecnico.ulisboa.pt";
-
-    @Mocked
-    IDRemoteServices idRemoteServices;
 
     // the tokens for user root
     private String root;
@@ -46,8 +37,6 @@ public class DeleteUserTest extends BubbleDocsServiceTest {
 
     public void success() {
         DeleteUser service = new DeleteUser(root, USERNAME_TO_DELETE);
-
-        mockRemoteRemoveUserMethod();
 
         service.execute();
 
@@ -78,18 +67,6 @@ public class DeleteUserTest extends BubbleDocsServiceTest {
         assertNull("Removed user but not removed from session", getUserFromSession(token));
     }
 
-    @Test(expected = LoginBubbleDocsException.class)
-    public void userToDeleteDoesNotExist() {
-        DeleteUser service = new DeleteUser(root, USERNAME_DOES_NOT_EXIST);
-        new Expectations() {
-            {
-                idRemoteServices.removeUser(USERNAME_DOES_NOT_EXIST);
-                result = new LoginBubbleDocsException();
-            }
-        };
-        service.execute();
-    }
-
     @Test(expected = UnauthorizedOperationException.class)
     public void notRootUser() {
         String ars = addUserToSession(USERNAME);
@@ -112,26 +89,5 @@ public class DeleteUserTest extends BubbleDocsServiceTest {
     @Test(expected = UserNotInSessionException.class)
     public void accessUserDoesNotExist() {
         new DeleteUser(USERNAME_DOES_NOT_EXIST, USERNAME_TO_DELETE).execute();
-    }
-
-    @Test(expected = UnavailableServiceException.class)
-    public void remoteException() {
-        DeleteUser service = new DeleteUser(root, USERNAME_DOES_NOT_EXIST);
-        new Expectations() {
-            {
-                idRemoteServices.removeUser(USERNAME_DOES_NOT_EXIST);
-                result = new RemoteInvocationException();
-            }
-        };
-
-        service.execute();
-    }
-
-    private void mockRemoteRemoveUserMethod() {
-        new Expectations() {
-            {
-                idRemoteServices.removeUser(USERNAME_TO_DELETE);
-            }
-        };
     }
 }

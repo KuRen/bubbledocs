@@ -10,20 +10,16 @@ import pt.tecnico.bubbledocs.domain.SessionManager;
 import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
-import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
-import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
-import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class LoginUser extends BubbleDocsService {
+    
     private String userToken;
     private String username;
     private String password;
-    private IDRemoteServices idRemoteServices;
 
     public LoginUser(String username, String password) {
         this.username = username;
         this.password = password;
-        idRemoteServices = new IDRemoteServices();
     }
 
     @Override
@@ -39,29 +35,11 @@ public class LoginUser extends BubbleDocsService {
         SessionManager sm = bd.getSessionManager();
         sm.cleanOldSessions();
         User user = bd.getUserByUsername(getUsername());
-
-        try {
-            idRemoteServices.loginUser(username, password);
-            if (user.getPassword() == null || !user.getPassword().equals(password))
-                user.setPassword(password);
-        } catch (RemoteInvocationException e) {
-            if (user == null)
-                throw new UnavailableServiceException();
-            if (user.getPassword() == null)
-                throw new UnavailableServiceException();
-            if (user.getPassword().equals(getPassword())) {
-                if (sm.userIsInSession(getUsername())) {
-                    for (Session session : sm.getSessionSet()) {
-                        if (session.getUsername().equals(getUsername())) {
-                            sm.removeSession(session);
-                            session.delete();
-                        }
-                    }
-                }
-
-            } else
-                throw new UnavailableServiceException();
-        }
+        
+        if(user == null) throw new LoginBubbleDocsException();
+        
+        if (user.getPassword() == null || !user.getPassword().equals(getPassword()))
+            throw new LoginBubbleDocsException();
 
         String prevToken = "";
 

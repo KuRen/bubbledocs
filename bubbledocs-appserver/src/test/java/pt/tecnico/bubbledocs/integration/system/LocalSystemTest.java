@@ -1,17 +1,19 @@
 package pt.tecnico.bubbledocs.integration.system;
 
+import javax.transaction.NotSupportedException;
+import javax.transaction.SystemException;
+
+import mockit.Expectations;
 import mockit.Mock;
 import mockit.MockUp;
+import mockit.Mocked;
 
-import org.junit.Ignore;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
-import pt.tecnico.bubbledocs.exception.DuplicateEmailException;
-import pt.tecnico.bubbledocs.exception.DuplicateUsernameException;
-import pt.tecnico.bubbledocs.exception.InvalidEmailException;
-import pt.tecnico.bubbledocs.exception.InvalidUsernameException;
-import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
-import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
+import pt.ist.fenixframework.FenixFramework;
+import pt.ist.fenixframework.core.WriteOnReadError;
 import pt.tecnico.bubbledocs.integration.AssignBinaryFunctionToCellIntegrator;
 import pt.tecnico.bubbledocs.integration.AssignLiteralCellIntegrator;
 import pt.tecnico.bubbledocs.integration.AssignReferenceCellIntegrator;
@@ -25,7 +27,6 @@ import pt.tecnico.bubbledocs.integration.LoginUserIntegrator;
 import pt.tecnico.bubbledocs.integration.RenewPasswordIntegrator;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 import pt.tecnico.bubbledocs.service.remote.StoreRemoteServices;
-import pt.ulisboa.tecnico.sdis.id.ws.AuthReqFailed_Exception;
 
 public class LocalSystemTest {
     
@@ -36,50 +37,67 @@ public class LocalSystemTest {
     private final int NUM_ROWS = 4;
     private final int NUM_COLS = 4;
     
-    @Ignore
+    @Mocked
+    IDRemoteServices idRemoteServices;
+    
+    @Before
+    public void setUp() throws Exception {
+
+        try {
+            FenixFramework.getTransactionManager().begin(false);
+        } catch (WriteOnReadError | NotSupportedException | SystemException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+    @After
+    public void tearDown() {
+        try {
+            FenixFramework.getTransactionManager().rollback();
+        } catch (IllegalStateException | SecurityException | SystemException e) {
+            e.printStackTrace();
+        }
+    }
+    
     @Test
-    public void testRemoteSystemIT() {
+    public void testLocalSystem() {
         new MockUp<StoreRemoteServices>() {
             @Mock
             public void storeDocument(String username, String docName, byte[] document) {
             }
             @Mock
             public byte[] loadDocument(String username, String docName) {
-                return null; // TODOTODOTODOTDOTODO (assigns nao funcionam, logo nao tive paciencia para ir buscar o xml manualmente)
+                return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Spreadsheet rows=\"4\" columns=\"4\" id=\"1\" name=\"SpreadsheetTest\" owner=\"root\" created=\"2015-05-01T05:37:18.019+01:00\"><Cells><Cell row=\"1\" column=\"1\"><Addition><Reference><Cell row=\"1\" column=\"2\" /></Reference><Reference><Cell row=\"1\" column=\"3\" /></Reference></Addition></Cell><Cell row=\"1\" column=\"2\"><Addition><Literal literal=\"5\" /><Literal literal=\"5\" /></Addition></Cell><Cell row=\"1\" column=\"3\"><Reference><Cell row=\"2\" column=\"3\" /></Reference></Cell><Cell row=\"2\" column=\"3\"><Literal literal=\"34\" /></Cell><Cell row=\"2\" column=\"2\"><Literal literal=\"123\" /></Cell></Cells></Spreadsheet>".getBytes();
             }
         };
-        new MockUp<IDRemoteServices>() {
-            @Mock
-            public void createUser(String username, String email) throws InvalidUsernameException, DuplicateUsernameException,
-            DuplicateEmailException, InvalidEmailException, RemoteInvocationException {
-            }
-            @Mock
-            public byte[] requestAuthentication(String userId, byte[] reserved) throws AuthReqFailed_Exception {
-                return null; // TODOTODOTODOTODO
-            }
-            @Mock
-            public void removeUser(String username) throws LoginBubbleDocsException, RemoteInvocationException {
-            }
-            @Mock
-            public void renewPassword(String username) throws LoginBubbleDocsException, RemoteInvocationException {
+        new Expectations() {
+            {
+                new IDRemoteServices();
+                idRemoteServices.loginUser("root", "root");
+                new IDRemoteServices();
+                idRemoteServices.createUser(USERNAME, EMAIL);
+                new IDRemoteServices();
+                idRemoteServices.renewPassword("root");
+                new IDRemoteServices();
+                idRemoteServices.removeUser(USERNAME);
             }
         };
         LoginUserIntegrator loginRoot = new LoginUserIntegrator("root", "root");
         loginRoot.execute();
         new CreateUserIntegrator(loginRoot.getUserToken(), USERNAME, EMAIL, NAME).execute();
-        LoginUserIntegrator loginUser = new LoginUserIntegrator(USERNAME, null); //TODO password
-        loginUser.execute();
-        CreateSpreadsheetIntegrator spreadsheet = new CreateSpreadsheetIntegrator(loginUser.getUserToken(), SPREADSHEET, NUM_ROWS, NUM_COLS);
+        //LoginUserIntegrator loginUser = new LoginUserIntegrator(USERNAME, null); //Talvez nao de para testar isto
+        //loginUser.execute();
+        CreateSpreadsheetIntegrator spreadsheet = new CreateSpreadsheetIntegrator(loginRoot.getUserToken(), SPREADSHEET, NUM_ROWS, NUM_COLS);
         spreadsheet.execute();
-        new AssignLiteralCellIntegrator(loginUser.getUserToken(), spreadsheet.getSheetId(), "2;2", "123").execute();
-        new AssignLiteralCellIntegrator(loginUser.getUserToken(), spreadsheet.getSheetId(), "2;3", "34").execute();
-        new AssignReferenceCellIntegrator(loginUser.getUserToken(), spreadsheet.getSheetId(), "1;3", "2;3").execute();
-        new AssignBinaryFunctionToCellIntegrator(loginUser.getUserToken(), spreadsheet.getSheetId(), "1;2", "ADD(5,5)").execute();
-        new AssignBinaryFunctionToCellIntegrator(loginUser.getUserToken(), spreadsheet.getSheetId(), "1;1", "ADD(1;2,1;3)").execute();
-        new GetSpreadsheetContentIntegrator(loginUser.getUserToken(), spreadsheet.getSheetId()).execute();
-        new ExportDocumentIntegrator(loginUser.getUserToken(), spreadsheet.getSheetId()).execute();
-        new ImportDocumentIntegrator(SPREADSHEET, loginUser.getUserToken()).execute();
-        new RenewPasswordIntegrator(loginUser.getUserToken());
+        new AssignLiteralCellIntegrator(loginRoot.getUserToken(), spreadsheet.getSheetId(), "2;2", "123").execute();
+        new AssignLiteralCellIntegrator(loginRoot.getUserToken(), spreadsheet.getSheetId(), "2;3", "34").execute();
+        new AssignReferenceCellIntegrator(loginRoot.getUserToken(), spreadsheet.getSheetId(), "1;3", "2;3").execute();
+        new AssignBinaryFunctionToCellIntegrator(loginRoot.getUserToken(), spreadsheet.getSheetId(), "1;2", "ADD(5,5)").execute();
+        new AssignBinaryFunctionToCellIntegrator(loginRoot.getUserToken(), spreadsheet.getSheetId(), "1;1", "ADD(1;2,1;3)").execute();
+        new GetSpreadsheetContentIntegrator(loginRoot.getUserToken(), spreadsheet.getSheetId()).execute();
+        new ExportDocumentIntegrator(loginRoot.getUserToken(), spreadsheet.getSheetId()).execute();
+        new ImportDocumentIntegrator(SPREADSHEET, loginRoot.getUserToken()).execute();
+        new RenewPasswordIntegrator(loginRoot.getUserToken()).execute();
         new DeleteUserIntegrator(loginRoot.getUserToken(), USERNAME).execute();
         
     }
