@@ -1,8 +1,5 @@
 package pt.tecnico.bubbledocs.service.remote;
 
-import mockit.Expectations;
-import mockit.Mocked;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -13,24 +10,11 @@ import pt.tecnico.bubbledocs.exception.DuplicateUsernameException;
 import pt.tecnico.bubbledocs.exception.InvalidEmailException;
 import pt.tecnico.bubbledocs.exception.InvalidUsernameException;
 import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
-import pt.ulisboa.tecnico.sdis.id.ws.AuthReqFailed_Exception;
-import pt.ulisboa.tecnico.sdis.id.ws.EmailAlreadyExists_Exception;
-import pt.ulisboa.tecnico.sdis.id.ws.InvalidEmail_Exception;
-import pt.ulisboa.tecnico.sdis.id.ws.InvalidUser_Exception;
-import pt.ulisboa.tecnico.sdis.id.ws.SDId;
-import pt.ulisboa.tecnico.sdis.id.ws.UserAlreadyExists_Exception;
-import pt.ulisboa.tecnico.sdis.id.ws.UserDoesNotExist_Exception;
 
-@Ignore("Tests done in the SD Client and BubbleDocs AppServer System Testing")
+@Ignore("Takes too much time to test always and it's tested on system testing")
 public class IdRemoteServicesTest extends SdRemoteServicesTest {
 
-    IDRemoteServices service = null;
-
-    @Mocked
-    private SDId remotePort;
-
-    @Mocked
-    private SDRemoteServices remoteServices;
+    private IDRemoteServices service = null;
 
     @Override
     @Before
@@ -41,262 +25,209 @@ public class IdRemoteServicesTest extends SdRemoteServicesTest {
     @Override
     @After
     public void tearDown() {
+        try {
+            service.removeUser("user");
+        } catch (LoginBubbleDocsException e) {
+        }
+
         service = null;
     }
 
     @Test
-    public void successCreateUser() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "user@example.com");
-            }
-        };
+    public void successCreateUser() {
 
         service.createUser("user", "user@example.com");
     }
 
     @Test
-    public void createMultipleUsers() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "user@example.com");
-                remotePort.createUser("user2", "user2@example.com");
-                remotePort.createUser("user3", "user3@example.com");
-            }
-        };
-        service.createUser("user", "user@example.com");
-        service.createUser("user2", "user2@example.com");
-        service.createUser("user3", "user3@example.com");
+    public void createMultipleUsers() {
+        try {
+            service.createUser("user", "user@example.com");
+            service.createUser("user2", "user2@example.com");
+            service.createUser("user3", "user3@example.com");
+        } finally {
+            service.removeUser("user2");
+            service.removeUser("user3");
+        }
+
     }
 
     @Test(expected = DuplicateEmailException.class)
-    public void duplicateEmail() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "user@example.com");
-                remotePort.createUser("user2", "user@example.com");
-                result = new EmailAlreadyExists_Exception(anyString, null);
-            }
-        };
+    public void duplicateEmail() {
         service.createUser("user", "user@example.com");
         service.createUser("user2", "user@example.com");
     }
 
     @Test(expected = InvalidEmailException.class)
-    public void invalidEmail() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "user@example.com");
-                result = new InvalidEmail_Exception(anyString, null);
-            }
-        };
+    public void invalidEmail_0() {
         service.createUser("user", null);
     }
 
-    @Test(expected = DuplicateUsernameException.class)
-    public void duplicateUser() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "user@example.com");
-                remotePort.createUser("user2", "user2@example.com");
-                result = new UserAlreadyExists_Exception(anyString, null);
-            }
-        };
+    @Test(expected = InvalidEmailException.class)
+    public void invalidEmail_1() {
+        service.createUser("user", "use$r1@example.com");
+    }
 
+    @Test(expected = InvalidEmailException.class)
+    public void invalidEmail_2() throws InvalidEmailException {
+        service.createUser("user", "user@exa$mple.com");
+    }
+
+    @Test(expected = InvalidEmailException.class)
+    public void invalidEmail_3() throws InvalidEmailException {
+        service.createUser("user", "user@example.co$m");
+    }
+
+    @Test(expected = InvalidEmailException.class)
+    public void invalidEmail_4() throws InvalidEmailException {
+        service.createUser("user", "userexample.com");
+    }
+
+    @Test(expected = InvalidEmailException.class)
+    public void invalidEmail_5() throws InvalidEmailException {
+        service.createUser("user", "@example.com");
+    }
+
+    @Test(expected = InvalidEmailException.class)
+    public void invalidEmail_6() throws InvalidEmailException {
+        service.createUser("user", "user@.com");
+    }
+
+    @Test(expected = InvalidEmailException.class)
+    public void invalidEmail_7() throws InvalidEmailException {
+        service.createUser("user", "user@com");
+    }
+
+    @Test(expected = InvalidEmailException.class)
+    public void invalidEmail_8() throws InvalidEmailException {
+        service.createUser("user", "user@@example.com");
+    }
+
+    @Test(expected = InvalidEmailException.class)
+    public void invalidEmail_9() throws InvalidEmailException {
+        service.createUser("user", "sexy_bóy_69@users.brazzers.com");
+    }
+
+    @Test(expected = InvalidEmailException.class)
+    public void invalidEmail_10() throws InvalidEmailException {
+        service.createUser("user", "");
+    }
+
+    @Test
+    public void validEmails() throws InvalidEmailException {
+        try {
+            service.createUser("user", "a@b.c");
+            service.createUser("user2", "a_b@b.c");
+            service.createUser("user3", "a_b.c@b.c");
+            service.createUser("user4", "a@b.c.d");
+            service.createUser("user5", "a_b.c@b.c.d.e");
+            service.createUser("user6", "aaa_bbb.ccc@aaa.bbb.ccc.ddd.eee");
+        } finally {
+            service.removeUser("user2");
+            service.removeUser("user3");
+            service.removeUser("user4");
+            service.removeUser("user5");
+            service.removeUser("user6");
+        }
+
+    }
+
+    @Test(expected = DuplicateUsernameException.class)
+    public void duplicateUser() {
         service.createUser("user", "user@example.com");
         service.createUser("user", "user2@example.com");
     }
 
     @Test(expected = InvalidUsernameException.class)
-    public void invalidUser() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "user@example.com");
-                result = new InvalidUser_Exception(anyString, null);
-            }
-        };
+    public void invalidUser_0() {
         service.createUser("", "user@example.com");
     }
 
+    @Test(expected = InvalidUsernameException.class)
+    public void invalidUser_1() {
+        service.createUser(null, "user@example.com");
+    }
+
     @Test
-    public void renewToRandomPassword() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception, UserDoesNotExist_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "email@example.com");
-                remotePort.renewPassword("user");
-            }
-        };
+    public void renewToRandomPassword() {
         service.createUser("user", "email@example.com");
         service.renewPassword("user");
     }
 
     @Test(expected = LoginBubbleDocsException.class)
-    public void renewNullUserPassword() throws UserDoesNotExist_Exception {
-        new Expectations() {
-            {
-                remotePort.renewPassword(null);
-                result = new UserDoesNotExist_Exception(anyString, null);
-            }
-        };
+    public void renewNullUserPassword() {
         service.renewPassword(null);
     }
 
     @Test(expected = LoginBubbleDocsException.class)
-    public void renewEmtpyUserPassword() throws UserDoesNotExist_Exception {
-        new Expectations() {
-            {
-                remotePort.renewPassword("");
-                result = new UserDoesNotExist_Exception(anyString, null);
-            }
-        };
+    public void renewEmtpyUserPassword() {
         service.renewPassword("");
     }
 
     @Test(expected = LoginBubbleDocsException.class)
-    public void renewNonExistingUserPassword() throws UserDoesNotExist_Exception {
-        new Expectations() {
-            {
-                remotePort.renewPassword("user99");
-                result = new UserDoesNotExist_Exception(anyString, null);
-            }
-        };
+    public void renewNonExistingUserPassword() {
         service.renewPassword("user99");
     }
 
     @Test
-    public void removeUser() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception, UserDoesNotExist_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "email@example.com");
-                remotePort.removeUser("user");
-            }
-        };
+    public void removeUser() {
         service.createUser("user", "email@example.com");
         service.removeUser("user");
     }
 
     @Test(expected = LoginBubbleDocsException.class)
-    public void removeNullUser() throws UserDoesNotExist_Exception {
-        new Expectations() {
-            {
-                remotePort.removeUser(null);
-                result = new UserDoesNotExist_Exception(anyString, null);
-            }
-        };
+    public void removeNullUser() {
         service.removeUser(null);
     }
 
     @Test(expected = LoginBubbleDocsException.class)
-    public void removeEmptyUser() throws UserDoesNotExist_Exception {
-        new Expectations() {
-            {
-                remotePort.removeUser("");
-                result = new UserDoesNotExist_Exception(anyString, null);
-            }
-        };
+    public void removeEmptyUser() {
         service.removeUser("");
     }
 
     @Test(expected = LoginBubbleDocsException.class)
-    public void removeNonExistingUser() throws UserDoesNotExist_Exception {
-        new Expectations() {
-            {
-                remotePort.removeUser("user99");
-                result = new UserDoesNotExist_Exception(anyString, null);
-            }
-        };
+    public void removeNonExistingUser() {
         service.removeUser("user99");
     }
 
+    //Assuming pre loaded data on server
     @Test
-    public void authenticate() throws AuthReqFailed_Exception {
-        new Expectations() {
-            {
-                remotePort.requestAuthentication("alice", "Aaa1".getBytes());
-            }
-        };
+    public void authenticate() {
         service.loginUser("alice", "Aaa1");
     }
 
     @Test(expected = LoginBubbleDocsException.class)
-    public void authenticateNullUser() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception, AuthReqFailed_Exception {
+    public void authenticateNullUser() {
         service.createUser("user", "email@example.com");
         service.loginUser(null, "pw");
     }
 
     @Test(expected = LoginBubbleDocsException.class)
-    public void authenticateEmptyUser() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception, AuthReqFailed_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "email@example.com");
-                remotePort.requestAuthentication("", "pw".getBytes());
-                result = new AuthReqFailed_Exception(anyString, null);
-            }
-        };
+    public void authenticateEmptyUser() {
         service.createUser("user", "email@example.com");
         service.loginUser("", "pw");
     }
 
     @Test(expected = LoginBubbleDocsException.class)
-    public void authenticateNonExistingUser() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception, AuthReqFailed_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "email@example.com");
-                remotePort.requestAuthentication("user99", "pw".getBytes());
-                result = new AuthReqFailed_Exception(anyString, null);
-            }
-        };
+    public void authenticateNonExistingUser() {
         service.createUser("user", "email@example.com");
         service.loginUser("user99", "pw");
     }
 
     @Test(expected = LoginBubbleDocsException.class)
-    public void authenticateNullPassword() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception, AuthReqFailed_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "email@example.com");
-            }
-        };
+    public void authenticateNullPassword() {
         service.createUser("user", "email@example.com");
         service.loginUser("user", null);
     }
 
     @Test(expected = LoginBubbleDocsException.class)
-    public void authenticateEmptyPassword() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception, AuthReqFailed_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "email@example.com");
-                remotePort.requestAuthentication("", "".getBytes());
-                result = new AuthReqFailed_Exception(anyString, null);
-            }
-        };
+    public void authenticateEmptyPassword() {
         service.createUser("user", "email@example.com");
         service.loginUser("user", "");
     }
 
     @Test(expected = LoginBubbleDocsException.class)
-    public void authenticateWrongPassword() throws EmailAlreadyExists_Exception, InvalidEmail_Exception, InvalidUser_Exception,
-            UserAlreadyExists_Exception, AuthReqFailed_Exception {
-        new Expectations() {
-            {
-                remotePort.createUser("user", "email@example.com");
-                remotePort.requestAuthentication("", "notpw".getBytes());
-                result = new AuthReqFailed_Exception(anyString, null);
-            }
-        };
+    public void authenticateWrongPassword() {
         service.createUser("user", "email@example.com");
         service.loginUser("user", "notpw");
     }

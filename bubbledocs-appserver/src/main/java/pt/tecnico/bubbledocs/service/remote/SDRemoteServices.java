@@ -1,27 +1,17 @@
 package pt.tecnico.bubbledocs.service.remote;
 
-import java.util.Map;
-
 import javax.xml.registry.JAXRException;
-import javax.xml.ws.BindingProvider;
 
 import pt.tecnico.bubbledocs.exception.ServiceLookupException;
 import pt.tecnico.bubbledocs.service.remote.uddi.UDDINaming;
-import pt.ulisboa.tecnico.sdis.id.ws.SDId;
-import pt.ulisboa.tecnico.sdis.id.ws.SDId_Service;
 
-public class SDRemoteServices {
-    /** WS service */
-    protected SDId_Service service = null;
-
-    /** WS port (interface) */
-    protected SDId port = null;
+public abstract class SDRemoteServices {
 
     /** Endpoint URL */
-    private String URL = null;
+    protected String URL = null;
 
     /** output option **/
-    private boolean verbose = false;
+    protected boolean verbose = false;
 
     public boolean isVerbose() {
         return verbose;
@@ -34,20 +24,7 @@ public class SDRemoteServices {
     public SDRemoteServices() {
     }
 
-    protected void createStub() {
-        if (verbose)
-            System.out.println("Creating stub ...");
-
-        service = new SDId_Service();
-        port = service.getSDIdImplPort();
-
-        if (verbose)
-            System.out.println("Setting endpoint address ...");
-
-        BindingProvider bindingProvider = (BindingProvider) port;
-        Map<String, Object> requestContext = bindingProvider.getRequestContext();
-        requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, URL);
-    }
+    protected abstract void createStub();
 
     protected void lookForService(String uddiURL, String serviceName) throws ServiceLookupException {
         if (verbose)
@@ -71,22 +48,6 @@ public class SDRemoteServices {
         } catch (JAXRException e) {
             throw new ServiceLookupException();
         }
-    }
-
-    public SDId_Service getService() {
-        return service;
-    }
-
-    public void setService(SDId_Service service) {
-        this.service = service;
-    }
-
-    public SDId getPort() {
-        return port;
-    }
-
-    public void setPort(SDId port) {
-        this.port = port;
     }
 
     public String getURL() {

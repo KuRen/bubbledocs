@@ -1,5 +1,9 @@
 package pt.tecnico.bubbledocs.service.remote;
 
+import java.util.Map;
+
+import javax.xml.ws.BindingProvider;
+
 import pt.tecnico.bubbledocs.exception.DuplicateEmailException;
 import pt.tecnico.bubbledocs.exception.DuplicateUsernameException;
 import pt.tecnico.bubbledocs.exception.InvalidEmailException;
@@ -12,12 +16,19 @@ import pt.ulisboa.tecnico.sdis.id.ws.EmailAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.InvalidEmail_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.InvalidUser_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.SDId;
+import pt.ulisboa.tecnico.sdis.id.ws.SDId_Service;
 import pt.ulisboa.tecnico.sdis.id.ws.UserAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.UserDoesNotExist_Exception;
 
 public class IDRemoteServices extends SDRemoteServices implements SDId {
     final private String uddiURL = "http://localhost:8081";
     final private String serviceName = "SD-ID";
+
+    /** WS service */
+    protected SDId_Service service = null;
+
+    /** WS port (interface) */
+    protected SDId port = null;
 
     public IDRemoteServices() {
         setVerbose(false);
@@ -28,6 +39,50 @@ public class IDRemoteServices extends SDRemoteServices implements SDId {
             throw new RemoteInvocationException();
         }
     }
+
+    @Override
+    protected void createStub() {
+        if (verbose)
+            System.out.println("Creating stub ...");
+
+        service = new SDId_Service();
+        port = service.getSDIdImplPort();
+
+        if (verbose)
+            System.out.println("Setting endpoint address ...");
+
+        BindingProvider bindingProvider = (BindingProvider) port;
+        Map<String, Object> requestContext = bindingProvider.getRequestContext();
+        requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, URL);
+    }
+
+    public SDId_Service getService() {
+        return service;
+    }
+
+    public void setService(SDId_Service service) {
+        this.service = service;
+    }
+
+    public SDId getPort() {
+        return port;
+    }
+
+    public void setPort(SDId port) {
+        this.port = port;
+    }
+
+    public String getUddiURL() {
+        return uddiURL;
+    }
+
+    public String getServiceName() {
+        return serviceName;
+    }
+
+    /*
+     *  Remote Interface (non-Javadoc)
+     */
 
     @Override
     public void createUser(String username, String email) throws InvalidUsernameException, DuplicateUsernameException,
