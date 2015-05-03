@@ -1,6 +1,5 @@
 package pt.tecnico.bubbledocs.service.remote;
 
-import java.util.List;
 import java.util.Map;
 
 import javax.xml.ws.BindingProvider;
@@ -17,7 +16,7 @@ import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore_Service;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 
-public class StoreRemoteServices extends SDRemoteServices implements SDStore {
+public class StoreRemoteServices extends SDRemoteServices {
 
     final private String uddiURL = "http://localhost:8081";
     final private String serviceName = "sd-store";
@@ -56,37 +55,43 @@ public class StoreRemoteServices extends SDRemoteServices implements SDStore {
 
     public void storeDocument(String username, String docName, byte[] document) throws CannotStoreDocumentException,
             RemoteInvocationException {
-        // TODO : the connection and invocation of the remote service
+
+        if (username == null || docName == null)
+            throw new CannotStoreDocumentException();
+
+        DocUserPair pair = new DocUserPair();
+        pair.setDocumentId(docName);
+        pair.setUserId(username);
+        try {
+            port.store(pair, document);
+        } catch (CapacityExceeded_Exception e) {
+            throw new CannotStoreDocumentException();
+        } catch (DocDoesNotExist_Exception e) {
+            try {
+                port.createDoc(pair);
+            } catch (DocAlreadyExists_Exception e1) {
+                throw new CannotStoreDocumentException();
+            }
+        } catch (UserDoesNotExist_Exception e) {
+            throw new CannotStoreDocumentException();
+        }
     }
 
     public byte[] loadDocument(String username, String docName) throws CannotLoadDocumentException, RemoteInvocationException {
-        // TODO : the connection and invocation of the remote service
-        return null;
-    }
+        if (username == null || docName == null)
+            throw new CannotStoreDocumentException();
 
-    @Override
-    public void createDoc(DocUserPair docUserPair) throws DocAlreadyExists_Exception {
-        // TODO Auto-generated method stub
+        DocUserPair pair = new DocUserPair();
+        pair.setDocumentId(docName);
+        pair.setUserId(username);
 
-    }
-
-    @Override
-    public List<String> listDocs(String userId) throws UserDoesNotExist_Exception {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public void store(DocUserPair docUserPair, byte[] contents) throws CapacityExceeded_Exception, DocDoesNotExist_Exception,
-            UserDoesNotExist_Exception {
-        // TODO Auto-generated method stub
+        try {
+            return port.load(pair);
+        } catch (DocDoesNotExist_Exception e) {
+            throw new CannotLoadDocumentException();
+        } catch (UserDoesNotExist_Exception e) {
+            throw new CannotLoadDocumentException();
+        }
 
     }
-
-    @Override
-    public byte[] load(DocUserPair docUserPair) throws DocDoesNotExist_Exception, UserDoesNotExist_Exception {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 }

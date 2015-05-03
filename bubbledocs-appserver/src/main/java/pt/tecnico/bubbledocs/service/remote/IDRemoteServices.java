@@ -20,7 +20,7 @@ import pt.ulisboa.tecnico.sdis.id.ws.SDId_Service;
 import pt.ulisboa.tecnico.sdis.id.ws.UserAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.UserDoesNotExist_Exception;
 
-public class IDRemoteServices extends SDRemoteServices implements SDId {
+public class IDRemoteServices extends SDRemoteServices {
     final private String uddiURL = "http://localhost:8081";
     final private String serviceName = "SD-ID";
 
@@ -84,7 +84,6 @@ public class IDRemoteServices extends SDRemoteServices implements SDId {
      *  Remote Interface (non-Javadoc)
      */
 
-    @Override
     public void createUser(String username, String email) throws InvalidUsernameException, DuplicateUsernameException,
             DuplicateEmailException, InvalidEmailException, RemoteInvocationException {
         try {
@@ -105,13 +104,12 @@ public class IDRemoteServices extends SDRemoteServices implements SDId {
             throw new LoginBubbleDocsException();
         }
         try {
-            requestAuthentication(username, password.getBytes());
+            port.requestAuthentication(username, password.getBytes());
         } catch (AuthReqFailed_Exception e) {
             throw new LoginBubbleDocsException();
         }
     }
 
-    @Override
     public void removeUser(String username) throws LoginBubbleDocsException, RemoteInvocationException {
         try {
             port.removeUser(username);
@@ -120,7 +118,6 @@ public class IDRemoteServices extends SDRemoteServices implements SDId {
         }
     }
 
-    @Override
     public void renewPassword(String username) throws LoginBubbleDocsException, RemoteInvocationException {
         try {
             port.renewPassword(username);
@@ -129,8 +126,4 @@ public class IDRemoteServices extends SDRemoteServices implements SDId {
         }
     }
 
-    @Override
-    public byte[] requestAuthentication(String userId, byte[] reserved) throws AuthReqFailed_Exception {
-        return port.requestAuthentication(userId, reserved);
-    }
 }
