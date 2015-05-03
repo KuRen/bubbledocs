@@ -20,7 +20,7 @@ public class StoreRemoteServicesTest extends SdRemoteServicesTest {
     private static byte[] content;
     private static String contentString = "LoadTestDoc Content";
     private static int testNumber;
-    private static final String USER = "Username";
+    private static final String USER = "alice";
     private String doc = null;
 
     // one-time initialization and clean-up
@@ -30,8 +30,6 @@ public class StoreRemoteServicesTest extends SdRemoteServicesTest {
         service = new StoreRemoteServices();
         content = contentString.getBytes();
         testNumber = 0;
-
-        new IDRemoteServices().createUser(USER, "user@email.com");
     }
 
     @AfterClass
@@ -54,6 +52,7 @@ public class StoreRemoteServicesTest extends SdRemoteServicesTest {
     }
 
     // Success
+    // Assuming pre-loaded data on server
     @Test
     public void testLoad() throws Exception {
         service.storeDocument(USER, doc, content);
@@ -68,6 +67,7 @@ public class StoreRemoteServicesTest extends SdRemoteServicesTest {
     }
 
     // Success
+    // Assuming pre-loaded data on server
     @Test
     public void testStore() throws Exception {
         service.storeDocument(USER, doc, content);
@@ -82,6 +82,6 @@ public class StoreRemoteServicesTest extends SdRemoteServicesTest {
     // Fail - Capacity Exceeded
     @Test(expected = CannotStoreDocumentException.class)
     public void testStoreCapacityExceeded() throws Exception {
-        service.storeDocument(USER, doc, new byte[1024 * 10 + 1]);
+        service.storeDocument(USER, doc, new byte[1024 * 100 + 1]);
     }
 }
