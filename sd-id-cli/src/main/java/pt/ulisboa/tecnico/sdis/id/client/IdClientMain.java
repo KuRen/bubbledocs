@@ -76,6 +76,12 @@ public class IdClientMain {
             System.out.println("Could not delete Hermione, it does not exist");
         }
 
+        try {
+            client.requestAuthentication("Hermione", "Doesn't exist".getBytes());
+        } catch (AuthReqFailed_Exception e) {
+            System.out.println("Could not login Hermione, It's good!");
+        }
+
     }
 
 }
