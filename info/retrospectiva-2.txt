@@ -16,7 +16,7 @@ As horas planeadas não foram cumpridas. Apesar disso a tarefa que tinha planead
 Carlos: 
 
 
-Francisco: As horas planeadas corresponderam à realidade, porém, distribuídas de forma distinta ao previsto (em dias da semana diferentes). As tarefas foram cumpridas.
+Francisco: As horas planeadas corresponderam à realidade, porém, distribuídas de forma distinta ao previsto (em dias da semana diferentes). As tarefas foram cumpridas. Por descuído, criei e fechei uma issue já criada que já estava assigned pelo Miguel.
 
 
 ===== Planeamento para a Semana 3 =====
@@ -27,4 +27,4 @@ Teresa          0   0   0   0   0   0   0
 Daniel          0   0   0   0   0   0   0          
 Miguel          0   0   0   0   0   0   0          
 Carlos          0   0   0   0   0   0   0          
-Francisco       0   0   0   0   0   0   0          
+Francisco       0   0   2   5   2   0   0          
