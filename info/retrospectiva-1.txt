@@ -1,4 +1,4 @@
-Retrospetiva individual:
+Retrospetiva individual da Semana 1:
 
 Rodrigo:
 Todas as tarefas cumpridas, nada a declarar.
@@ -29,7 +29,7 @@ devido a dois motivos:
 Francisco:
 Tudo correu como planeado, sem quaisquer problemas.
 
-
+===== Planeamento para a Semana 2 =====
 
 Group Member    Mon Tue Wed Thu Fri Sat Sun Planned Tasks
 Rodrigo         0   0   4   0   0   0   0   #63 #64 #65
