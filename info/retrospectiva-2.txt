@@ -23,8 +23,8 @@ Francisco: As horas planeadas corresponderam à realidade, porém, distribuídas
 
 Group Member    Mon Tue Wed Thu Fri Sat Sun Planned Tasks
 Rodrigo         0   0   2   2   0   0   0   
-Teresa          0   0   0   0   0   0   0          
-Daniel          0   0   0   0   0   0   0          
-Miguel          0   0   0   0   0   0   0          
-Carlos          3   3   0   0   0   0   0          
+Teresa          0   1   2   2   2   2   2          
+Daniel          2   1   0   0   1   0   0          
+Miguel          3   3   3   2   0   0   0          
+Carlos          3   3   0   0   0   0   0   #79       
 Francisco       0   0   2   5   2   0   0          
