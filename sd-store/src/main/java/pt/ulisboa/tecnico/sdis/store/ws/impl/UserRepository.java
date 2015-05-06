@@ -13,7 +13,7 @@ import pt.ulisboa.tecnico.sdis.store.ws.DocAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist;
 import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 
-public class User {
+public class UserRepository {
 
     private static final int MAX_CAPACITY = 1024 * 10;
     private Map<String, Document> docs = new HashMap<String, Document>();

@@ -14,11 +14,11 @@ import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 /**
  *  Test suite
  */
-public class UserTest {
+public class UserRepositoryTest {
 
     // members
 
-    private User user;
+    private UserRepository repository;
     private byte[] content = new String("Conteudo de teste!").getBytes();
     private String documentId = "TestDocument";
     private int maximumCapacity = 1024 * 10;
@@ -27,78 +27,78 @@ public class UserTest {
 
     @Before
     public void setUp() throws Exception {
-    	user = new User();
+    	repository = new UserRepository();
     }
 
     @After
     public void tearDown() {
-    	user = null;
+    	repository = null;
     }
     
     @Test
     public void testAddDocument() throws Exception {
-        user.addDocument(documentId);
+        repository.addDocument(documentId);
     }
     
     @Test(expected = DocAlreadyExists_Exception.class)
     public void testDocAlreadyExists() throws Exception {
-        user.addDocument(documentId);
-        user.addDocument(documentId);
+        repository.addDocument(documentId);
+        repository.addDocument(documentId);
     }
     
     @Test
     public void testListDocs() throws Exception {
-        user.addDocument(documentId);
-        user.addDocument(documentId+2);
+        repository.addDocument(documentId);
+        repository.addDocument(documentId+2);
         List<String> correctList = new ArrayList<String>();
         correctList.add(documentId);
         correctList.add(documentId+2);
-        Assert.assertEquals(correctList, user.listDocs());
+        Assert.assertEquals(correctList, repository.listDocs());
     }
     
     @Test
     public void testStore() throws Exception {
-        user.addDocument(documentId);
-        user.store(documentId, content);
+        repository.addDocument(documentId);
+        repository.store(documentId, content);
     }
     
     @Test(expected = DocDoesNotExist_Exception.class)
     public void testStoreDocDoesNotExist() throws Exception {
-        user.addDocument(documentId);
-        user.store(documentId+2, content);
+        repository.addDocument(documentId);
+        repository.store(documentId+2, content);
     }
     
     @Test(expected = CapacityExceeded_Exception.class)
     public void testCapacityExceeded() throws Exception {
-        user.addDocument(documentId);
+        repository.addDocument(documentId);
         byte[] contentFail = new byte[maximumCapacity+1];
-        user.store(documentId, contentFail);
+        repository.store(documentId, contentFail);
     }
     
     @Test(expected = CapacityExceeded_Exception.class)
     public void testCapacityExceededTwo() throws Exception {
-        user.addDocument(documentId);
-        user.addDocument(documentId+2);
+        repository.addDocument(documentId);
+        repository.addDocument(documentId+2);
         try {
-            user.store(documentId, content);
+            repository.store(documentId, content);
         } catch(CapacityExceeded_Exception ce) {
             fail();
         }
         byte[] contentFail = new byte[maximumCapacity];
-        user.store(documentId+2, contentFail);
+        repository.store(documentId+2, contentFail);
     }
     
     @Test
     public void testLoad() throws Exception {
-        user.addDocument(documentId);
-        user.store(documentId, content);
-        Assert.assertArrayEquals(user.load(documentId), content);
+        repository.addDocument(documentId);
+        repository.store(documentId, content);
+        Assert.assertArrayEquals(repository.load(documentId), content);
     }
     
     @Test(expected = DocDoesNotExist_Exception.class)
     public void testLoadDocDoesNotExist() throws Exception {
-        user.addDocument(documentId);
-        user.store(documentId, content);
-        user.load(documentId+2);
+        repository.addDocument(documentId);
+        repository.store(documentId, content);
+        repository.load(documentId+2);
     }
 }
