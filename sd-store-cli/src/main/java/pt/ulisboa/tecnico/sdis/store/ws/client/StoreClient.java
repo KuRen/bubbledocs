@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.sdis.store.client;
+package pt.ulisboa.tecnico.sdis.store.ws.client;
 
 import java.util.List;
 import java.util.Map;
@@ -6,7 +6,7 @@ import java.util.Map;
 import javax.xml.registry.JAXRException;
 import javax.xml.ws.BindingProvider;
 
-import pt.ulisboa.tecnico.sdis.store.uddi.UDDINaming;
+import pt.ulisboa.tecnico.sdis.store.ws.client.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.store.ws.CapacityExceeded_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;

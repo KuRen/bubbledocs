@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.sdis.store.client;
+package pt.ulisboa.tecnico.sdis.store.ws.client;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import pt.ulisboa.tecnico.sdis.store.client.StoreClient;
 import pt.ulisboa.tecnico.sdis.store.ws.DocAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore;

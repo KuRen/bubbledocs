@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.sdis.store.client;
+package pt.ulisboa.tecnico.sdis.store.ws.client;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package pt.ulisboa.tecnico.sdis.store.uddi;
+package pt.ulisboa.tecnico.sdis.store.ws.client.uddi;
 
 import java.net.PasswordAuthentication;
 import java.util.ArrayList;

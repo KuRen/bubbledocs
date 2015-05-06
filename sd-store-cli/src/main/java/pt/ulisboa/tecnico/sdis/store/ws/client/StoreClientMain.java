@@ -1,8 +1,8 @@
-package pt.ulisboa.tecnico.sdis.store.client;
+package pt.ulisboa.tecnico.sdis.store.ws.client;
 
 import java.util.ArrayList;
 
-import pt.ulisboa.tecnico.sdis.store.client.StoreClient;
+import pt.ulisboa.tecnico.sdis.store.ws.client.StoreClient;
 import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 
