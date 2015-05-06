@@ -1,4 +1,4 @@
-package sdstorecli;
+package pt.ulisboa.tecnico.sdis.store.client;
 
 import java.util.List;
 import java.util.Map;
@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.xml.registry.JAXRException;
 import javax.xml.ws.BindingProvider;
 
+import pt.ulisboa.tecnico.sdis.store.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.store.ws.CapacityExceeded_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
@@ -13,7 +14,6 @@ import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore_Service;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
-import sdstorecli.uddi.UDDINaming;
 
 public class StoreClient implements SDStore {
     /** WS service */
@@ -21,7 +21,7 @@ public class StoreClient implements SDStore {
 
     /** WS port (interface) */
     SDStore port = null;
-    
+
     /** Endpoint URL */
     private String URL = null;
 
@@ -36,35 +36,38 @@ public class StoreClient implements SDStore {
         this.verbose = verbose;
     }
 
-    /** constructor with provided web service URL 
-     * @throws JAXRException */
+    /**
+     * constructor with provided web service URL
+     * 
+     * @throws JAXRException
+     */
     public StoreClient(String uddiURL, String serviceName) throws StoreClientException, JAXRException {
-        
+
         if (verbose)
-        	System.out.printf("Contacting UDDI at %s%n", uddiURL);
+            System.out.printf("Contacting UDDI at %s%n", uddiURL);
         UDDINaming uddiNaming = new UDDINaming(uddiURL);
 
         if (verbose)
-        	System.out.printf("Looking for '%s'%n", serviceName);
+            System.out.printf("Looking for '%s'%n", serviceName);
         URL = uddiNaming.lookup(serviceName);
 
         if (URL == null && verbose) {
             System.out.println("Not found!");
             return;
         } else {
-        	if(verbose)
-            System.out.printf("Found %s%n", URL);
+            if (verbose)
+                System.out.printf("Found %s%n", URL);
         }
-        
+
         if (verbose)
             System.out.println("Creating stub ...");
-        
+
         service = new SDStore_Service();
         port = service.getSDStoreImplPort();
-        
+
         if (verbose)
-        	System.out.println("Setting endpoint address ...");
-        
+            System.out.println("Setting endpoint address ...");
+
         BindingProvider bindingProvider = (BindingProvider) port;
         Map<String, Object> requestContext = bindingProvider.getRequestContext();
         requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, URL);

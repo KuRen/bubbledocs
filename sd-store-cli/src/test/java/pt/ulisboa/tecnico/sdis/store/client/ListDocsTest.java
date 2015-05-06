@@ -1,4 +1,7 @@
-package sdstorecli;
+package pt.ulisboa.tecnico.sdis.store.client;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -7,7 +10,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
@@ -15,15 +17,13 @@ import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 /**
  * Test suite
  */
-public class LoadTest {
+public class ListDocsTest {
 
     // static members
 
     private static SDStore port;
-    private static String userId = "LoadTest";
-    private static String documentId = "LoadTestDoc";
-    private static byte[] content;
-    private static String contentString = "LoadTestDoc Content";
+    private static String userId = "ListDocsTest";
+    private static String documentId = "ListDocsTestDoc";
     private static int testNumber;
 
     // one-time initialization and clean-up
@@ -31,7 +31,6 @@ public class LoadTest {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
     	port = new StoreClient("http://localhost:8081", "sd-store");
-        content = contentString.getBytes();
         testNumber = 0;
     }
 
@@ -61,25 +60,18 @@ public class LoadTest {
 
     // Success
     @Test
-    public void testLoad() throws Exception {
+    public void testListDocs() throws Exception {
         port.createDoc(pair);
-        port.store(pair, content);
-        byte[] result = port.load(pair);
-        Assert.assertArrayEquals(content, result);
+        List<String> correctList = new ArrayList<String>();
+        correctList.add(documentId + testNumber);
+        List<String> resultList = port.listDocs(userId + testNumber);
+        Assert.assertEquals(correctList, resultList);
     }
 
     // Fail - Unknown UserId
     @Test(expected = UserDoesNotExist_Exception.class)
-    public void testLoadUnknownUser() throws Exception {
-        port.load(pair);
-    }
-
-    // Fail - Unknown DocumentId
-    @Test(expected = DocDoesNotExist_Exception.class)
-    public void testLoadUnknownDoc() throws Exception {
-        port.createDoc(pair);
-        pair.setDocumentId("fail");
-        port.load(pair);
+    public void testListDocsUnknownUser() throws Exception {
+        port.listDocs(userId + testNumber);
     }
 
 }

@@ -1,4 +1,4 @@
-package sdstorecli;
+package pt.ulisboa.tecnico.sdis.store.client;
 
 public class StoreClientException extends Exception {
 

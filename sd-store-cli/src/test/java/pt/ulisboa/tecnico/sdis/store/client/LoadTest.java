@@ -1,14 +1,12 @@
-package sdstorecli;
-
-import static org.junit.Assert.fail;
+package pt.ulisboa.tecnico.sdis.store.client;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import pt.ulisboa.tecnico.sdis.store.ws.CapacityExceeded_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
@@ -17,15 +15,15 @@ import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 /**
  * Test suite
  */
-public class StoreTest {
+public class LoadTest {
 
     // static members
 
     private static SDStore port;
-    private static String userId = "StoreTest";
-    private static String documentId = "StoreTestDoc";
+    private static String userId = "LoadTest";
+    private static String documentId = "LoadTestDoc";
     private static byte[] content;
-    private static String contentString = "StoreTestDoc Content";
+    private static String contentString = "LoadTestDoc Content";
     private static int testNumber;
 
     // one-time initialization and clean-up
@@ -63,44 +61,25 @@ public class StoreTest {
 
     // Success
     @Test
-    public void testStore() throws Exception {
+    public void testLoad() throws Exception {
         port.createDoc(pair);
         port.store(pair, content);
+        byte[] result = port.load(pair);
+        Assert.assertArrayEquals(content, result);
     }
 
     // Fail - Unknown UserId
     @Test(expected = UserDoesNotExist_Exception.class)
-    public void testStoreUnknownUser() throws Exception {
-        port.store(pair, content);
+    public void testLoadUnknownUser() throws Exception {
+        port.load(pair);
     }
 
     // Fail - Unknown DocumentId
     @Test(expected = DocDoesNotExist_Exception.class)
-    public void testStoreDocUnknownDoc() throws Exception {
+    public void testLoadUnknownDoc() throws Exception {
         port.createDoc(pair);
         pair.setDocumentId("fail");
-        port.store(pair, content);
-    }
-    
- // Fail - Capacity Exceeded
-    @Test(expected = CapacityExceeded_Exception.class)
-    public void testStoreCapacityExceeded() throws Exception {
-        port.createDoc(pair);
-        port.store(pair, new byte[1024*10+1]);
-    }
-    
- // Fail - Capacity Exceeded
-    @Test(expected = CapacityExceeded_Exception.class)
-    public void testStoreCapacityExceededTwo() throws Exception {
-        port.createDoc(pair);
-        try {
-        port.store(pair, content);
-        } catch(CapacityExceeded_Exception ce) {
-            fail();
-        }
-        pair.setDocumentId("fail");
-        port.createDoc(pair);
-        port.store(pair, new byte[1024*10+1]);
+        port.load(pair);
     }
 
 }

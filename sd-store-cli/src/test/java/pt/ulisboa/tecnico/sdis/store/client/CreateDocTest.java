@@ -1,4 +1,4 @@
-package sdstorecli;
+package pt.ulisboa.tecnico.sdis.store.client;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import pt.ulisboa.tecnico.sdis.store.client.StoreClient;
 import pt.ulisboa.tecnico.sdis.store.ws.DocAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
@@ -26,7 +27,7 @@ public class CreateDocTest {
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-    	port = new StoreClient("http://localhost:8081", "sd-store");
+        port = new StoreClient("http://localhost:8081", "sd-store");
         testNumber = 0;
     }
 
