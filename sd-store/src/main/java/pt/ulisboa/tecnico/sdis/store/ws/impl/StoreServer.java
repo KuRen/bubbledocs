@@ -1,6 +1,5 @@
 package pt.ulisboa.tecnico.sdis.store.ws.impl;
 
-import javax.xml.registry.JAXRException;
 import javax.xml.ws.Endpoint;
 
 import pt.ulisboa.tecnico.sdis.store.ws.impl.uddi.UDDINaming;
@@ -20,7 +19,7 @@ public class StoreServer {
 		this.uddiURL = uddiURL;
 	}
 	
-	public void run() throws JAXRException {
+	public void run() throws Exception {
 		endpoint = Endpoint.create(new StoreImpl());
 
         // publish endpoint

@@ -4,6 +4,11 @@ public class Document {
 
     private byte[] contents;
     private int size;
+    private int tag;
+    
+    public Document() {
+        tag = 0;
+    }
 
     public byte[] getContent() {
         return contents;
@@ -22,5 +27,13 @@ public class Document {
             return size;
         else
             return 0;
+    }
+    
+    public int getTag() {
+        return tag;
+    }
+    
+    public void setTag(int newtag) {
+        tag = newtag;
     }
 }

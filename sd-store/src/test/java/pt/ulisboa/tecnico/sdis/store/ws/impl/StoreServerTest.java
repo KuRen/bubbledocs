@@ -2,6 +2,7 @@ package pt.ulisboa.tecnico.sdis.store.ws.impl;
 
 import javax.xml.registry.JAXRException;
 import javax.xml.ws.Endpoint;
+
 import mockit.Expectations;
 import mockit.Mocked;
 
@@ -48,7 +49,7 @@ public class StoreServerTest {
     }
     
     @Test(expected = JAXRException.class)
-    public void testJAXRException() throws JAXRException {
+    public void testJAXRException() throws Exception {
         new Expectations() {
         	{
         		endpoint.publish(anyString);
@@ -62,7 +63,7 @@ public class StoreServerTest {
     }
     
     @Test
-    public void testStoreServer() throws JAXRException {
+    public void testStoreServer() throws Exception {
 
         server.run();
         server.stop();

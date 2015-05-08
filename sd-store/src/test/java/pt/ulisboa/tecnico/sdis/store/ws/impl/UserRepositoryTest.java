@@ -68,6 +68,7 @@ public class UserRepositoryTest {
         repository.store(documentId+2, content);
     }
     
+    @Ignore
     @Test(expected = CapacityExceeded_Exception.class)
     public void testCapacityExceeded() throws Exception {
         repository.addDocument(documentId);
@@ -75,6 +76,7 @@ public class UserRepositoryTest {
         repository.store(documentId, contentFail);
     }
     
+    @Ignore
     @Test(expected = CapacityExceeded_Exception.class)
     public void testCapacityExceededTwo() throws Exception {
         repository.addDocument(documentId);

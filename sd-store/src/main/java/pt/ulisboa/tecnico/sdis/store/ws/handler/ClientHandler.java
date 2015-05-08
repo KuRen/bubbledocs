@@ -27,9 +27,7 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
  * is placed in a SOAP message context property
  * that can be accessed by other handlers or by the application.
  */
-public class HeaderHandler implements SOAPHandler<SOAPMessageContext> {
-
-    public static final String CONTEXT_PROPERTY = "my.property";
+public class ClientHandler implements SOAPHandler<SOAPMessageContext> {
 
     //
     // Handler interface methods
@@ -39,33 +37,33 @@ public class HeaderHandler implements SOAPHandler<SOAPMessageContext> {
     }
 
     public boolean handleMessage(SOAPMessageContext smc) {
-        System.out.println("AddHeaderHandler: Handling message.");
-
         Boolean outboundElement = (Boolean) smc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
 
         try {
             if (outboundElement.booleanValue()) {
-                System.out.println("Writing header in outbound SOAP message...");
-
-                // get SOAP envelope
-                SOAPMessage msg = smc.getMessage();
-                SOAPPart sp = msg.getSOAPPart();
-                SOAPEnvelope se = sp.getEnvelope();
-
-                // add header
-                SOAPHeader sh = se.getHeader();
-                if (sh == null)
-                    sh = se.addHeader();
-
-                // add header element (name, namespace prefix, namespace)
-                Name name = se.createName("myHeader", "d", "http://demo");
-                SOAPHeaderElement element = sh.addHeaderElement(name);
-
-                // add header element value
-                int value = 22;
-                String valueString = Integer.toString(value);
-                element.addTextNode(valueString);
-
+                boolean requestTag = (boolean) smc.get("requestTag");
+                if(requestTag) {
+                    System.out.println("Reading header in outbound SOAP message...");
+    
+                    // get SOAP envelope
+                    SOAPMessage msg = smc.getMessage();
+                    SOAPPart sp = msg.getSOAPPart();
+                    SOAPEnvelope se = sp.getEnvelope();
+    
+                    // add header
+                    SOAPHeader sh = se.getHeader();
+                    if (sh == null)
+                        sh = se.addHeader();
+    
+                    // add header element (name, namespace prefix, namespace)
+                    Name name = se.createName("Tag", "t", "http://Tag");
+                    SOAPHeaderElement element = sh.addHeaderElement(name);
+    
+                    // add header element value
+                    int tag = (int) smc.get("Tag");
+                    String valueString = Integer.toString(tag);
+                    element.addTextNode(valueString);
+                }
             } else {
                 System.out.println("Reading header in inbound SOAP message...");
 
@@ -82,7 +80,7 @@ public class HeaderHandler implements SOAPHandler<SOAPMessageContext> {
                 }
 
                 // get first header element
-                Name name = se.createName("myHeader", "d", "http://demo");
+                Name name = se.createName("requestTag", "et", "http://requestTag");
                 Iterator it = sh.getChildElements(name);
                 // check header element
                 if (!it.hasNext()) {
@@ -93,17 +91,16 @@ public class HeaderHandler implements SOAPHandler<SOAPMessageContext> {
 
                 // get header element value
                 String valueString = element.getValue();
-                int value = Integer.parseInt(valueString);
+                boolean value = Boolean.parseBoolean(valueString);
 
                 // print received header
                 System.out.println("Header value is " + value);
 
                 // put header in a property context
-                smc.put(CONTEXT_PROPERTY, value);
+                smc.put("requestTag", value);
                 // set property scope to application client/server class can access it
-                smc.setScope(CONTEXT_PROPERTY, Scope.APPLICATION);
-
-            }
+                smc.setScope("requestTag", Scope.APPLICATION);
+             }
         } catch (Exception e) {
             System.out.print("Caught exception in handleMessage: ");
             System.out.println(e);

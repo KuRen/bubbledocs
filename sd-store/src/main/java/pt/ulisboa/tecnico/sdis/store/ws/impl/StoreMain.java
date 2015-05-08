@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.xml.ws.Endpoint;
 
+import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
+import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
 import pt.ulisboa.tecnico.sdis.store.ws.impl.uddi.UDDINaming;
 
 public class StoreMain {
@@ -20,10 +22,13 @@ public class StoreMain {
         String uddiURL = args[0];
         String name = args[1];
         String url = args[2];
+        int nServers = 2;
+        int write = 1;
+        int read = 1;
         
         List<StoreServer> servers = new ArrayList<StoreServer>();
         
-        for(int i = 0; i<5; i++) {
+        for(int i = 0; i<nServers; i++) {
             servers.add(new StoreServer(uddiURL, name + i, url.replace("8080", "890" + i)));
         }
         
@@ -32,17 +37,26 @@ public class StoreMain {
             System.out.println("Server Started!");
         }
         
-        Endpoint endpoint = Endpoint.create(new FrontEnd(uddiURL, name));
+        SDStore frontend = new FrontEnd(uddiURL, name, nServers, write, read);
+        
+        Endpoint endpoint = Endpoint.create(frontend);
         endpoint.publish(url);
         UDDINaming uddiNaming = new UDDINaming(uddiURL);
         uddiNaming.rebind(name, url);
-        
-        
         
         // wait
         System.out.println("Awaiting connections");
         System.out.println("Press enter to shutdown");
         System.in.read();
+        DocUserPair x = new DocUserPair();
+        x.setDocumentId("a1");
+        x.setUserId("alice");
+        byte[] y = frontend.load(x);
+        System.out.println(new String(y));
+        frontend.store(x, "nova-versao".getBytes());
+        y = frontend.load(x);
+        System.out.println(new String(y));
+        
         for(StoreServer server : servers)
             server.stop();
         try {

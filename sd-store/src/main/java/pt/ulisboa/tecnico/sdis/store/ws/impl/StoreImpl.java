@@ -4,8 +4,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 
 import pt.ulisboa.tecnico.sdis.store.ws.CapacityExceeded_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocAlreadyExists_Exception;
@@ -17,12 +20,15 @@ import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 
 @WebService(endpointInterface = "pt.ulisboa.tecnico.sdis.store.ws.SDStore", wsdlLocation = "SD-STORE.1_1.wsdl", name = "SdStore",
         portName = "SDStoreImplPort", targetNamespace = "urn:pt:ulisboa:tecnico:sdis:store:ws", serviceName = "SDStore")
-@HandlerChain(file = "/handler-chain.xml")
+@HandlerChain(file = "/backend-chain.xml")
 public class StoreImpl implements SDStore {
     
     private Map<String, UserRepository> repositories = new HashMap<String, UserRepository>();
     
-    public StoreImpl() {
+    @Resource
+    private WebServiceContext webServiceContext;
+    
+    public StoreImpl() throws Exception {
         populate4Test();
     }
 
@@ -50,7 +56,16 @@ public class StoreImpl implements SDStore {
             udne.setUserId(docUserPair.getUserId());
             throw new UserDoesNotExist_Exception("The user with the userId " + docUserPair.getUserId() + " does not exist", udne);
         }
-        repositories.get(docUserPair.getUserId()).store(docUserPair.getDocumentId(), contents);
+        MessageContext context = webServiceContext.getMessageContext();
+        if(context.get("newTag") != null) {
+            if((int) context.get("newTag") > repositories.get(docUserPair.getUserId()).getTag(docUserPair.getDocumentId())) {
+                repositories.get(docUserPair.getUserId()).setTag(docUserPair.getDocumentId(), (int) context.get("newTag"));
+                repositories.get(docUserPair.getUserId()).store(docUserPair.getDocumentId(), contents);
+                context.put("Ack", true);
+                return;
+            }
+            else return;
+        }
     }
 
     public byte[] load(DocUserPair docUserPair) throws DocDoesNotExist_Exception, UserDoesNotExist_Exception {
@@ -59,15 +74,26 @@ public class StoreImpl implements SDStore {
             udne.setUserId(docUserPair.getUserId());
             throw new UserDoesNotExist_Exception("The user with the userId " + docUserPair.getUserId() + " does not exist", udne);
         }
+        MessageContext context = webServiceContext.getMessageContext();
+        if(context.get("requestTag") != null && (boolean) context.get("requestTag")) {
+            context.put("Tag", repositories.get(docUserPair.getUserId()).getTag(docUserPair.getDocumentId()));
+            return null;
+        }
         return repositories.get(docUserPair.getUserId()).load(docUserPair.getDocumentId());
     }
     
-    public void populate4Test() {
+    public void populate4Test() throws Exception {
         repositories.clear();
         repositories.put("alice", new UserRepository());
         repositories.put("bruno", new UserRepository());
         repositories.put("carla", new UserRepository());
         repositories.put("duarte", new UserRepository());
         repositories.put("eduardo", new UserRepository());
+        repositories.get("alice").addDocument("a1");
+        repositories.get("alice").addDocument("a2");
+        repositories.get("bruno").addDocument("b1");
+        repositories.get("alice").store("a1", "AAAAAAAAAA".getBytes());
+        repositories.get("alice").store("a2", "aaaaaaaaaa".getBytes());
+        repositories.get("bruno").store("b1", "BBBBBBBBBBBBBBBBBBBB".getBytes());
     }
 }

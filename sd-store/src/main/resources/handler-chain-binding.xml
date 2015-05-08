@@ -1,0 +1,16 @@
+<jaxws:bindings
+    xmlns:jaxws="http://java.sun.com/xml/ns/jaxws"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns:jxb="http://java.sun.com/xml/ns/jaxb">
+    <handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
+        <handler-chain>
+            <handler>
+                <handler-name>FrontEndHandler</handler-name>
+                <handler-class>
+                    pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler
+                </handler-class>
+            </handler>
+        </handler-chain>
+    </handler-chains>    
+</jaxws:bindings>
