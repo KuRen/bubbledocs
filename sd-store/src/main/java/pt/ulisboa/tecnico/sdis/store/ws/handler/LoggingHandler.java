@@ -14,6 +14,14 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
  */
 public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
 
+    /* 
+     * Handler interface methods:
+     * - getHeaders()
+     * - handleMesasge(SOAPMessageContext)
+     * - handleFault(SOAPMessageContext)
+     * - close(MessageContext)
+     */
+
     public Set<QName> getHeaders() {
         return null;
     }
@@ -28,8 +36,9 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
         return true;
     }
 
-    // nothing to clean up
+    // Nothing to clean up
     public void close(MessageContext messageContext) {
+
     }
 
     /**
@@ -51,7 +60,8 @@ public class LoggingHandler implements SOAPHandler<SOAPMessageContext> {
         SOAPMessage message = smc.getMessage();
         try {
             message.writeTo(System.out);
-            System.out.println();   // just to add a newline to output
+            // Just to add a newline to output
+            System.out.println();
         } catch (Exception e) {
             System.out.printf("Exception in handler: %s%n", e);
         }

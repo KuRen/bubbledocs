@@ -5,9 +5,9 @@
         <!-- handler>
             <handler-class>pt.ulisboa.tecnico.sdis.store.ws.handler.MessageContextHandler</handler-class>
         </handler-->
-        <handler>
+        <!-- handler>
             <handler-class>pt.ulisboa.tecnico.sdis.store.ws.handler.LoggingHandler</handler-class>
-        </handler>
+        </handler -->
         <handler>
             <handler-class>pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler</handler-class>
         </handler>

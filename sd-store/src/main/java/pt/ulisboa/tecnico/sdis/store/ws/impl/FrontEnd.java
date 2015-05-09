@@ -6,7 +6,6 @@ import java.util.Map;
 
 import javax.jws.HandlerChain;
 import javax.jws.WebService;
-import javax.xml.registry.JAXRException;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.HandlerResolver;
@@ -26,20 +25,21 @@ import pt.ulisboa.tecnico.sdis.store.ws.impl.uddi.UDDINaming;
         portName = "SDStoreImplPort", targetNamespace = "urn:pt:ulisboa:tecnico:sdis:store:ws", serviceName = "SDStore")
 @HandlerChain(file = "/client-chain.xml")
 public class FrontEnd implements SDStore {
-    
-    private List<SDStore> list;
+
+    private List<SDStore> listOfReplicas;
     private int writeThreshold;
     private int readThreshold;
-    private int nServers;
-    
-    public FrontEnd(String uddiURL, String serviceName, int servern, int write, int read) throws Exception {
-        nServers = servern;
-        writeThreshold = write;
-        readThreshold = read;
+    private int numberOfReplicas;
+
+    @SuppressWarnings("rawtypes")
+    public FrontEnd(String uddiURL, String serviceName, int nReplicas, int WT, int RT) throws Exception {
+        numberOfReplicas = nReplicas;
+        writeThreshold = WT;
+        readThreshold = RT;
         UDDINaming uddi;
-        list = new ArrayList<SDStore>();
+        listOfReplicas = new ArrayList<SDStore>();
         try {
-            for(int i = 0; i < nServers; i++) {
+            for (int i = 0; i < numberOfReplicas; i++) {
                 uddi = new UDDINaming(uddiURL);
                 String url = uddi.lookup(serviceName + i);
                 SDStore_Service service = new SDStore_Service();
@@ -50,58 +50,59 @@ public class FrontEnd implements SDStore {
                         handlerChain.add(new FrontEndHandler());
                         return handlerChain;
                     }
-                    });
+                });
                 SDStore port = service.getSDStoreImplPort();
                 BindingProvider bindingProvider = (BindingProvider) port;
                 Map<String, Object> requestContext = bindingProvider.getRequestContext();
                 requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url);
-                list.add(port);
+                listOfReplicas.add(port);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new Exception("One of the servers was not found!");
         }
     }
 
     public void createDoc(DocUserPair docUserPair) throws DocAlreadyExists_Exception { // no need to quorum
-        for(SDStore port : list) {
-            port.createDoc(docUserPair);
+        for (SDStore replica : listOfReplicas) {
+            replica.createDoc(docUserPair);
         }
     }
 
     public List<String> listDocs(String userId) throws UserDoesNotExist_Exception { // no need to quorum
-        List<String> ret = null;
-        for(SDStore port : list) {
-            ret = port.listDocs(userId);
+        List<String> listOfDocuments = null;
+        for (SDStore replica : listOfReplicas) {
+            listOfDocuments = replica.listDocs(userId);
         }
-        return ret;
+        return listOfDocuments;
     }
 
     public void store(DocUserPair docUserPair, byte[] contents) throws CapacityExceeded_Exception, DocDoesNotExist_Exception,
             UserDoesNotExist_Exception {
         int tag = -1;
         int acks = 0;
-        for(int i = 0; i < readThreshold; i++) {
-            SDStore port = list.get(i);
+        for (int i = 0; i < readThreshold; i++) {
+            SDStore port = listOfReplicas.get(i);
             BindingProvider binding = (BindingProvider) port;
-            Map<String,Object> context = binding.getRequestContext();
+            Map<String, Object> context = binding.getRequestContext();
             context.put("requestTag", true);
             port.load(docUserPair);
             context = binding.getResponseContext();
-            int newtag = (int) context.get("tag");
-            if(newtag > tag)
-                tag = newtag;
+            int newTag = (int) context.get("tag");
+            if (newTag > tag)
+                tag = newTag;
             binding.getRequestContext().remove("requestTag");
         }
         tag++;
-        for(SDStore port : list) {
+        for (SDStore port : listOfReplicas) {
             BindingProvider binding = (BindingProvider) port;
-            Map<String,Object> context = binding.getRequestContext();
+            Map<String, Object> context = binding.getRequestContext();
             context.put("newTag", tag);
             port.store(docUserPair, contents);
             context = binding.getResponseContext();
-            boolean ack = (boolean) context.get("Ack");
-            if(ack) acks++;
-            if(acks > writeThreshold)
+            boolean ack = (boolean) context.get("ack");
+            if (ack)
+                acks++;
+            if (acks > writeThreshold)
                 break;
             binding.getRequestContext().remove("newTag");
         }
@@ -112,15 +113,15 @@ public class FrontEnd implements SDStore {
     public byte[] load(DocUserPair docUserPair) throws DocDoesNotExist_Exception, UserDoesNotExist_Exception {
         int tag = -1;
         SDStore theChosenOne = null;
-        for(int i = 0; i < readThreshold; i++) {
-            SDStore port = list.get(i);
+        for (int i = 0; i < readThreshold; i++) {
+            SDStore port = listOfReplicas.get(i);
             BindingProvider binding = (BindingProvider) port;
-            Map<String,Object> context = binding.getRequestContext();
+            Map<String, Object> context = binding.getRequestContext();
             context.put("requestTag", true);
             port.load(docUserPair);
             context = binding.getResponseContext();
-            int newtag = (int) context.get("tag");
-            if(newtag > tag)
+            int newTag = (int) context.get("tag");
+            if (newTag > tag)
                 theChosenOne = port;
             binding.getRequestContext().remove("requestTag");
         }

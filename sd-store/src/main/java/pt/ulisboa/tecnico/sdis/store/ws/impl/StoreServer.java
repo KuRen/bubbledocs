@@ -5,58 +5,58 @@ import javax.xml.ws.Endpoint;
 import pt.ulisboa.tecnico.sdis.store.ws.impl.uddi.UDDINaming;
 
 public class StoreServer {
-	
-	private Endpoint endpoint = null;
-	private UDDINaming uddiNaming = null;
-	private String name;
-	private String url;
-	private String uddiURL;
-    private boolean verbose = false;
-	
-	public StoreServer(String uddiURL, String name, String url) {
-		this.name = name;
-		this.url = url;
-		this.uddiURL = uddiURL;
-	}
-	
-	public void run() throws Exception {
-		endpoint = Endpoint.create(new StoreImpl());
 
-        // publish endpoint
-		if(verbose)
-			System.out.printf("Starting %s%n", url);
+    private Endpoint endpoint = null;
+    private UDDINaming uddiNaming = null;
+    private String name;
+    private String url;
+    private String uddiURL;
+    private boolean verbose = false;
+
+    public StoreServer(String uddiURL, String name, String url) {
+        this.name = name;
+        this.url = url;
+        this.uddiURL = uddiURL;
+    }
+
+    public void run() throws Exception {
+        endpoint = Endpoint.create(new StoreImpl());
+
+        // Publish endpoint
+        if (verbose)
+            System.out.printf("Starting %s%n", url);
         endpoint.publish(url);
 
-        // publish to UDDI
-        if(verbose)
-        	System.out.printf("Publishing '%s' to UDDI at %s%n", name, uddiURL);
+        // Publish to UDDI
+        if (verbose)
+            System.out.printf("Publishing '%s' to UDDI at %s%n", name, uddiURL);
         uddiNaming = new UDDINaming(uddiURL);
         uddiNaming.rebind(name, url);
-	}
-	
-	public void stop() {
-		try {
+    }
+
+    public void stop() {
+        try {
             if (endpoint != null) {
-                // stop endpoint
+                // Stop endpoint
                 endpoint.stop();
-                if(verbose)
-                	System.out.printf("Stopped %s%n", url);
+                if (verbose)
+                    System.out.printf("Stopped %s%n", url);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.printf("Caught exception when stopping: %s%n", e);
         }
         try {
             if (uddiNaming != null) {
-                // delete from UDDI
+                // Delete from UDDI
                 uddiNaming.unbind(name);
-                if(verbose)
-                	System.out.printf("Deleted '%s' from UDDI%n", name);
+                if (verbose)
+                    System.out.printf("Deleted '%s' from UDDI%n", name);
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.printf("Caught exception when deleting: %s%n", e);
         }
-	}
-	
+    }
+
     public boolean isVerbose() {
         return verbose;
     }

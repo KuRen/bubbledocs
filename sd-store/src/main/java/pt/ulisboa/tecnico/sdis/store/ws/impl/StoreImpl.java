@@ -22,18 +22,20 @@ import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
         portName = "SDStoreImplPort", targetNamespace = "urn:pt:ulisboa:tecnico:sdis:store:ws", serviceName = "SDStore")
 @HandlerChain(file = "/backend-chain.xml")
 public class StoreImpl implements SDStore {
-    
+
+    // Map<String, UserRepository> where String is userId
     private Map<String, UserRepository> repositories = new HashMap<String, UserRepository>();
-    
+
     @Resource
     private WebServiceContext webServiceContext;
-    
+
     public StoreImpl() throws Exception {
         populate4Test();
     }
 
     public void createDoc(DocUserPair docUserPair) throws DocAlreadyExists_Exception {
-        if(docUserPair.getUserId() == null || docUserPair.getUserId().isEmpty() || docUserPair.getDocumentId() == null || docUserPair.getDocumentId().isEmpty())
+        if (docUserPair.getUserId() == null || docUserPair.getUserId().isEmpty() || docUserPair.getDocumentId() == null
+                || docUserPair.getDocumentId().isEmpty())
             return;
         if (repositories.get(docUserPair.getUserId()) == null)
             repositories.put(docUserPair.getUserId(), new UserRepository());
@@ -57,14 +59,14 @@ public class StoreImpl implements SDStore {
             throw new UserDoesNotExist_Exception("The user with the userId " + docUserPair.getUserId() + " does not exist", udne);
         }
         MessageContext context = webServiceContext.getMessageContext();
-        if(context.get("newTag") != null) {
-            if((int) context.get("newTag") > repositories.get(docUserPair.getUserId()).getTag(docUserPair.getDocumentId())) {
+        if (context.get("newTag") != null) {
+            if ((int) context.get("newTag") > repositories.get(docUserPair.getUserId()).getTag(docUserPair.getDocumentId())) {
                 repositories.get(docUserPair.getUserId()).setTag(docUserPair.getDocumentId(), (int) context.get("newTag"));
                 repositories.get(docUserPair.getUserId()).store(docUserPair.getDocumentId(), contents);
-                context.put("Ack", true);
+                context.put("ack", true);
                 return;
-            }
-            else return;
+            } else
+                return;
         }
     }
 
@@ -75,13 +77,13 @@ public class StoreImpl implements SDStore {
             throw new UserDoesNotExist_Exception("The user with the userId " + docUserPair.getUserId() + " does not exist", udne);
         }
         MessageContext context = webServiceContext.getMessageContext();
-        if(context.get("requestTag") != null && (boolean) context.get("requestTag")) {
-            context.put("Tag", repositories.get(docUserPair.getUserId()).getTag(docUserPair.getDocumentId()));
+        if (context.get("requestTag") != null && (boolean) context.get("requestTag")) {
+            context.put("tag", repositories.get(docUserPair.getUserId()).getTag(docUserPair.getDocumentId()));
             return null;
         }
         return repositories.get(docUserPair.getUserId()).load(docUserPair.getDocumentId());
     }
-    
+
     public void populate4Test() throws Exception {
         repositories.clear();
         repositories.put("alice", new UserRepository());

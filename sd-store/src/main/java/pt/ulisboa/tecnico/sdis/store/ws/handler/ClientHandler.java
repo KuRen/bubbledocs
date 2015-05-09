@@ -20,9 +20,14 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
  */
 public class ClientHandler implements SOAPHandler<SOAPMessageContext> {
 
-    //
-    // Handler interface methods
-    //
+    /* 
+     * Handler interface methods:
+     * - getHeaders()
+     * - handleMesasge(SOAPMessageContext)
+     * - handleFault(SOAPMessageContext)
+     * - close(MessageContext)
+     */
+
     public Set<QName> getHeaders() {
         return null;
     }
@@ -36,6 +41,7 @@ public class ClientHandler implements SOAPHandler<SOAPMessageContext> {
     }
 
     public void close(MessageContext messageContext) {
+
     }
 
 }

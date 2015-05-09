@@ -12,6 +12,7 @@ import pt.ulisboa.tecnico.sdis.store.ws.impl.uddi.UDDINaming;
 public class StoreMain {
 
     public static void main(String[] args) throws Exception {
+
         // Check arguments
         if (args.length < 3) {
             System.err.println("Argument(s) missing!");
@@ -22,53 +23,64 @@ public class StoreMain {
         String uddiURL = args[0];
         String name = args[1];
         String url = args[2];
-        int nServers = 2;
-        int write = 1;
-        int read = 1;
-        
-        List<StoreServer> servers = new ArrayList<StoreServer>();
-        
-        for(int i = 0; i<nServers; i++) {
-            servers.add(new StoreServer(uddiURL, name + i, url.replace("8080", "890" + i)));
+        int nReplicas = 2;
+        int writeThreshold = 1;
+        int readThreshold = 1;
+
+        List<StoreServer> listOfReplicas = new ArrayList<StoreServer>();
+
+        for (int i = 0; i < nReplicas; i++) {
+            listOfReplicas.add(new StoreServer(uddiURL, name + i, url.replace("8080", "890" + i)));
         }
-        
-        for(StoreServer server : servers) {
-            server.run();
+
+        for (StoreServer replica : listOfReplicas) {
+            replica.run();
             System.out.println("Server Started!");
         }
-        
-        SDStore frontend = new FrontEnd(uddiURL, name, nServers, write, read);
-        
+
+        SDStore frontend = new FrontEnd(uddiURL, name, nReplicas, writeThreshold, readThreshold);
+
         Endpoint endpoint = Endpoint.create(frontend);
         endpoint.publish(url);
         UDDINaming uddiNaming = new UDDINaming(uddiURL);
         uddiNaming.rebind(name, url);
-        
-        // wait
-        System.out.println("Awaiting connections");
-        System.out.println("Press enter to shutdown");
+
+        System.out.println("Alright, let's work this out...");
+        System.out.println("For this demonstration, we're going to use Alice's file \"a1\".");
+        System.out.println("To start, press enter.");
         System.in.read();
-        DocUserPair x = new DocUserPair();
-        x.setDocumentId("a1");
-        x.setUserId("alice");
-        byte[] y = frontend.load(x);
-        System.out.println(new String(y));
-        frontend.store(x, "nova-versao".getBytes());
-        y = frontend.load(x);
-        System.out.println(new String(y));
-        
-        for(StoreServer server : servers)
-            server.stop();
+
+        DocUserPair docUserPair = new DocUserPair();
+        docUserPair.setDocumentId("a1");
+        docUserPair.setUserId("alice");
+
+        System.out.println("What's in Alice's file? Let's print its content and find out!");
+        byte[] contents = frontend.load(docUserPair);
+        System.out.println(new String(contents));
+
+        System.out.println("Nice! But it could be a little better... Let's change it for another thing.");
+        frontend.store(docUserPair, "Alice rocks! Kappa 123".getBytes());
+
+        System.out.println("Let's check if the content changed!");
+        contents = frontend.load(docUserPair);
+        System.out.println(new String(contents));
+
+        System.out.println("Awesome! Good job.");
+
+        for (StoreServer replica : listOfReplicas)
+            replica.stop();
+
         try {
             if (endpoint != null)
                 endpoint.stop();
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.printf("Caught exception when stopping: %s%n", e);
         }
+
         try {
             if (uddiNaming != null)
                 uddiNaming.unbind(name);
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.printf("Caught exception when deleting: %s%n", e);
         }
     }

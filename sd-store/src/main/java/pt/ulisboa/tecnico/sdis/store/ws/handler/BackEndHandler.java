@@ -29,9 +29,14 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
  */
 public class BackEndHandler implements SOAPHandler<SOAPMessageContext> {
 
-    //
-    // Handler interface methods
-    //
+    /* 
+     * Handler interface methods:
+     * - getHeaders()
+     * - handleMesasge(SOAPMessageContext)
+     * - handleFault(SOAPMessageContext)
+     * - close(MessageContext)
+     */
+
     public Set<QName> getHeaders() {
         return null;
     }
@@ -41,50 +46,49 @@ public class BackEndHandler implements SOAPHandler<SOAPMessageContext> {
 
         try {
             if (outboundElement.booleanValue()) {
-                if(smc.get("requestTag") != null) {
-                    if((boolean) smc.get("requestTag")) {
+                if (smc.get("requestTag") != null) {
+                    if ((boolean) smc.get("requestTag")) {
                         System.out.println("Reading header in outbound SOAP message...");
-        
-                        // get SOAP envelope
-                        SOAPMessage msg = smc.getMessage();
-                        SOAPPart sp = msg.getSOAPPart();
-                        SOAPEnvelope se = sp.getEnvelope();
-        
-                        // add header
-                        SOAPHeader sh = se.getHeader();
-                        if (sh == null)
-                            sh = se.addHeader();
-        
-                        // add header element (name, namespace prefix, namespace)
-                        Name name = se.createName("Tag", "t", "http://Tag");
-                        SOAPHeaderElement element = sh.addHeaderElement(name);
-        
-                        // add header element value
-                        int tag = (int) smc.get("Tag");
+
+                        // Get SOAP envelope
+                        SOAPMessage message = smc.getMessage();
+                        SOAPPart soapPart = message.getSOAPPart();
+                        SOAPEnvelope soapEnvelope = soapPart.getEnvelope();
+
+                        // Add header
+                        SOAPHeader soapHeader = soapEnvelope.getHeader();
+                        if (soapHeader == null)
+                            soapHeader = soapEnvelope.addHeader();
+
+                        // Add header element (name, namespace prefix, namespace)
+                        Name name = soapEnvelope.createName("tag", "t", "http://tag");
+                        SOAPHeaderElement element = soapHeader.addHeaderElement(name);
+
+                        // Add header element value
+                        int tag = (int) smc.get("tag");
                         String valueString = Integer.toString(tag);
                         element.addTextNode(valueString);
                     }
-                }
-                else if(smc.get("Ack") != null) {
-                    if((boolean) smc.get("Ack")) {
+                } else if (smc.get("ack") != null) {
+                    if ((boolean) smc.get("ack")) {
                         System.out.println("Reading header in outbound SOAP message...");
-        
-                        // get SOAP envelope
-                        SOAPMessage msg = smc.getMessage();
-                        SOAPPart sp = msg.getSOAPPart();
-                        SOAPEnvelope se = sp.getEnvelope();
-        
-                        // add header
-                        SOAPHeader sh = se.getHeader();
-                        if (sh == null)
-                            sh = se.addHeader();
-        
-                        // add header element (name, namespace prefix, namespace)
-                        Name name = se.createName("Ack", "a", "http://Ack");
-                        SOAPHeaderElement element = sh.addHeaderElement(name);
-        
-                        // add header element value
-                        boolean tag = (boolean) smc.get("Ack");
+
+                        // Get SOAP envelope
+                        SOAPMessage message = smc.getMessage();
+                        SOAPPart soapPart = message.getSOAPPart();
+                        SOAPEnvelope soapEnvelope = soapPart.getEnvelope();
+
+                        // Add header
+                        SOAPHeader soapHeader = soapEnvelope.getHeader();
+                        if (soapHeader == null)
+                            soapHeader = soapEnvelope.addHeader();
+
+                        // Add header element (name, namespace prefix, namespace)
+                        Name name = soapEnvelope.createName("ack", "a", "http://ack");
+                        SOAPHeaderElement element = soapHeader.addHeaderElement(name);
+
+                        // Add header element value
+                        boolean tag = (boolean) smc.get("ack");
                         String valueString = Boolean.toString(tag);
                         element.addTextNode(valueString);
                     }
@@ -92,60 +96,60 @@ public class BackEndHandler implements SOAPHandler<SOAPMessageContext> {
             } else {
                 System.out.println("Reading header in inbound SOAP message...");
 
-                // get SOAP envelope header
-                SOAPMessage msg = smc.getMessage();
-                SOAPPart sp = msg.getSOAPPart();
-                SOAPEnvelope se = sp.getEnvelope();
-                SOAPHeader sh = se.getHeader();
+                // Get SOAP envelope header
+                SOAPMessage message = smc.getMessage();
+                SOAPPart soapPart = message.getSOAPPart();
+                SOAPEnvelope soapEnvelope = soapPart.getEnvelope();
+                SOAPHeader soapHeader = soapEnvelope.getHeader();
 
-                // check header
-                if (sh == null) {
+                // Check header
+                if (soapHeader == null) {
                     System.out.println("Header not found.");
                     return true;
                 }
 
-                // get first header element
-                Name name = se.createName("requestTag", "et", "http://requestTag");
-                Iterator it = sh.getChildElements(name);
-                
+                // Get first header element
+                Name name = soapEnvelope.createName("requestTag", "rt", "http://requestTag");
+                Iterator<?> it = soapHeader.getChildElements(name);
+
                 if (!it.hasNext()) {
-                    name = se.createName("newTag", "nt", "http://newTag");
-                    it = sh.getChildElements(name);
-                    
+                    name = soapEnvelope.createName("newTag", "nt", "http://newTag");
+                    it = soapHeader.getChildElements(name);
+
                     if (!it.hasNext()) {
                         System.out.println("Header element not found.");
                         return true;
                     }
-                    
+
                     SOAPElement element = (SOAPElement) it.next();
-                    
-                    // get header element value
+
+                    // Get header element value
                     String valueString = element.getValue();
                     int value = Integer.parseInt(valueString);
-    
-                    // print received header
+
+                    // Print received header
                     System.out.println("Header value is " + value);
-    
-                    // put header in a property context
+
+                    // Put header in a property context
                     smc.put("newTag", value);
-                    // set property scope to application client/server class can access it
+                    // Set property scope to application client/server class can access it
                     smc.setScope("newTag", Scope.APPLICATION);
                 } else {
                     SOAPElement element = (SOAPElement) it.next();
-    
-                    // get header element value
+
+                    // Get header element value
                     String valueString = element.getValue();
                     boolean value = Boolean.parseBoolean(valueString);
-    
-                    // print received header
+
+                    // Print received header
                     System.out.println("Header value is " + value);
-    
-                    // put header in a property context
+
+                    // Put header in a property context
                     smc.put("requestTag", value);
-                    // set property scope to application client/server class can access it
+                    // Set property scope to application client/server class can access it
                     smc.setScope("requestTag", Scope.APPLICATION);
                 }
-             }
+            }
         } catch (Exception e) {
             System.out.print("Caught exception in handleMessage: ");
             System.out.println(e);
@@ -161,6 +165,7 @@ public class BackEndHandler implements SOAPHandler<SOAPMessageContext> {
     }
 
     public void close(MessageContext messageContext) {
+
     }
 
 }

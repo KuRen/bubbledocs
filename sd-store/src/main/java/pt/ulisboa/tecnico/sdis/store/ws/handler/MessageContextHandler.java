@@ -13,6 +13,15 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
  */
 public class MessageContextHandler implements SOAPHandler<SOAPMessageContext> {
 
+    /* 
+     * Handler interface methods:
+     * - getHeaders()
+     * - handleMesasge(SOAPMessageContext)
+     * - handleFault(SOAPMessageContext)
+     * - close(MessageContext)
+     * - printMessageContext(MessageContext)
+     */
+
     public Set<QName> getHeaders() {
         return null;
     }
@@ -27,14 +36,15 @@ public class MessageContextHandler implements SOAPHandler<SOAPMessageContext> {
         return true;
     }
 
-    // nothing to clean up
+    // Nothing to clean up
     public void close(MessageContext messageContext) {
+
     }
 
     private void printMessageContext(MessageContext map) {
         System.out.println("Message context: (scope,key,value)");
         try {
-            java.util.Iterator it = map.keySet().iterator();
+            java.util.Iterator<String> it = map.keySet().iterator();
             while (it.hasNext()) {
                 Object key = it.next();
                 Object value = map.get(key);
