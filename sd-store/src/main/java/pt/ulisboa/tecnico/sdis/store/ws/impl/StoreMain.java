@@ -23,9 +23,9 @@ public class StoreMain {
         String uddiURL = args[0];
         String name = args[1];
         String url = args[2];
-        int nReplicas = 2;
-        int writeThreshold = 1;
-        int readThreshold = 1;
+        int nReplicas = 5;
+        int writeThreshold = 3;
+        int readThreshold = 3;
 
         List<StoreServer> listOfReplicas = new ArrayList<StoreServer>();
 

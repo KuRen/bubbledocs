@@ -51,21 +51,21 @@ public class FrontEndHandler implements SOAPHandler<SOAPMessageContext> {
                     if ((boolean) smc.get("requestTag")) {
                         System.out.println("Writing header in outbound SOAP message...");
                         try {
-                            // get SOAP envelope
+                            // Get SOAP envelope
                             SOAPMessage message = smc.getMessage();
                             SOAPPart soapPart = message.getSOAPPart();
                             SOAPEnvelope soapEnvelope = soapPart.getEnvelope();
 
-                            // add header
+                            // Add header
                             SOAPHeader soapHeader = soapEnvelope.getHeader();
                             if (soapHeader == null)
                                 soapHeader = soapEnvelope.addHeader();
 
-                            // add header element (name, namespace prefix, namespace)
+                            // Add header element (name, namespace prefix, namespace)
                             Name name = soapEnvelope.createName("requestTag", "rt", "http://requestTag");
                             SOAPHeaderElement element = soapHeader.addHeaderElement(name);
 
-                            // add header element value
+                            // Add header element value
                             boolean doTagHeader = true;
                             String value = new Boolean(doTagHeader).toString();
                             element.addTextNode(value);
@@ -76,21 +76,21 @@ public class FrontEndHandler implements SOAPHandler<SOAPMessageContext> {
                 } else if (smc.get("newTag") != null) {
                     System.out.println("Writing header in outbound SOAP message...");
                     try {
-                        // get SOAP envelope
+                        // Get SOAP envelope
                         SOAPMessage message = smc.getMessage();
                         SOAPPart soapPart = message.getSOAPPart();
                         SOAPEnvelope soapEnvelope = soapPart.getEnvelope();
 
-                        // add header
+                        // Add header
                         SOAPHeader soapHeader = soapEnvelope.getHeader();
                         if (soapHeader == null)
                             soapHeader = soapEnvelope.addHeader();
 
-                        // add header element (name, namespace prefix, namespace)
+                        // Add header element (name, namespace prefix, namespace)
                         Name name = soapEnvelope.createName("newTag", "nt", "http://newTag");
                         SOAPHeaderElement element = soapHeader.addHeaderElement(name);
 
-                        // add header element value
+                        // Add header element value
                         int tag = (int) smc.get("newTag");
                         String value = new Integer(tag).toString();
                         element.addTextNode(value);
@@ -102,22 +102,22 @@ public class FrontEndHandler implements SOAPHandler<SOAPMessageContext> {
             } else {
                 System.out.println("Reading header in inbound SOAP message...");
 
-                // get SOAP envelope header
+                // Get SOAP envelope header
                 SOAPMessage message = smc.getMessage();
                 SOAPPart soapPart = message.getSOAPPart();
                 SOAPEnvelope soapEnvelope = soapPart.getEnvelope();
                 SOAPHeader soapHeader = soapEnvelope.getHeader();
 
-                // check header
+                // Check header
                 if (soapHeader == null) {
                     System.out.println("Header not found.");
                     return true;
                 }
 
-                // get first header element
+                // Get first header element
                 Name name = soapEnvelope.createName("tag", "t", "http://tag");
                 Iterator<?> it = soapHeader.getChildElements(name);
-                // check header element
+                // Check header element
                 if (!it.hasNext()) {
                     name = soapEnvelope.createName("ack", "a", "http://ack");
                     it = soapHeader.getChildElements(name);
@@ -129,30 +129,29 @@ public class FrontEndHandler implements SOAPHandler<SOAPMessageContext> {
 
                     SOAPElement element = (SOAPElement) it.next();
 
-                    // get header element value
+                    // Get header element value
                     String valueString = element.getValue();
                     boolean value = Boolean.parseBoolean(valueString);
 
-                    // print received header
+                    // Print received header
                     System.out.println("Header value is " + value);
 
-                    // put header in a property context
+                    // Put header in a property context
                     smc.put("ack", value);
-                    // set property scope to application client/server class can access it
+                    // Set property scope to application client/server class can access it
                     smc.setScope("ack", Scope.APPLICATION);
                 }
                 SOAPElement element = (SOAPElement) it.next();
-
-                // get header element value
+                // Get header element value
                 String valueString = element.getValue();
                 int value = Integer.parseInt(valueString);
 
-                // print received header
+                // Print received header
                 System.out.println("Header value is " + value);
 
-                // put header in a property context
+                // Put header in a property context
                 smc.put("tag", value);
-                // set property scope to application client/server class can access it
+                // Set property scope to application client/server class can access it
                 smc.setScope("tag", Scope.APPLICATION);
             }
         } catch (Exception e) {
