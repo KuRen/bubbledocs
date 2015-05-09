@@ -79,106 +79,67 @@ public class FrontEnd implements SDStore {
     public void store(DocUserPair docUserPair, byte[] contents) throws CapacityExceeded_Exception, DocDoesNotExist_Exception,
             UserDoesNotExist_Exception {
         int maxTag = -1;
-        int newTag;
-        int currentReadQuorum = 0;
         int acks = 0;
-        List<Integer> listOfTags = new ArrayList<Integer>();
-        List<SDStore> listOfReadReplicas = new ArrayList<SDStore>();
-        List<SDStore> listOfWriteReplicas = new ArrayList<SDStore>();
-        for (int i = 0; i < numberOfReplicas; i++) {
-            try {
-                while (currentReadQuorum < readThreshold) {
-                    SDStore port = listOfReplicas.get(i);
-                    BindingProvider binding = (BindingProvider) port;
-                    Map<String, Object> context = binding.getRequestContext();
-                    context.put("requestTag", true);
-                    port.load(docUserPair);
-                    listOfReadReplicas.add(port);
-                    context = binding.getResponseContext();
-                    listOfTags.add((int) context.get("tag"));
-                    currentReadQuorum++;
-                    binding.getRequestContext().remove("requestTag");
-                }
-                break;
-            } catch (Exception e) {
-                continue;
-            }
+        int i;
+        SDStore port;
+        BindingProvider binding;
+        Map<String, Object> context;
+        boolean ack;
+        for (i = 0; i < readThreshold; i++) {
+            port = listOfReplicas.get(i);
+            binding = (BindingProvider) port;
+            context = binding.getRequestContext();
+            context.put("requestTag", true);
+            port.load(docUserPair);
+            context = binding.getResponseContext();
+            if ((int) context.get("tag") > maxTag)
+                maxTag = (int) context.get("tag");
+            binding.getRequestContext().remove("requestTag");
         }
-        for (int i = 0; i < listOfTags.size(); i++) {
-            if (listOfTags.get(i) > maxTag)
-                maxTag = listOfTags.get(i);
+        maxTag++;
+        for (i = 0; i < numberOfReplicas; i++) {
+            port = listOfReplicas.get(i);
+            binding = (BindingProvider) port;
+            context = binding.getRequestContext();
+            context.put("newTag", maxTag);
+            port.store(docUserPair, contents);
+            binding.getRequestContext().remove("newTag");
         }
-        newTag = maxTag + 1;
-        for (int i = 0; i < numberOfReplicas; i++) {
-            try {
-                SDStore port = listOfReplicas.get(i);
-                BindingProvider binding = (BindingProvider) port;
-                Map<String, Object> context = binding.getRequestContext();
-                context.put("newTag", newTag);
-                port.store(docUserPair, contents);
-                listOfWriteReplicas.add(port);
-                binding.getRequestContext().remove("newTag");
-            } catch (Exception e) {
-                continue;
-            }
+        i = 0;
+        while (acks < writeThreshold && i < numberOfReplicas) {
+            port = listOfReplicas.get(i);
+            binding = (BindingProvider) port;
+            context = binding.getResponseContext();
+            ack = (boolean) context.get("ack");
+            if (ack)
+                acks++;
+            i++;
         }
-        for (int i = 0; i < listOfWriteReplicas.size(); i++) {
-            while (acks < writeThreshold) {
-                SDStore port = listOfWriteReplicas.get(i);
-                BindingProvider binding = (BindingProvider) port;
-                Map<String, Object> context = binding.getResponseContext();
-                port.store(docUserPair, contents);
-                try {
-                    boolean ack = (boolean) context.get("ack");
-                    if (ack)
-                        acks++;
-                } catch (Exception e) {
-                    break;
-                }
-            }
-        }
+        return;
     }
 
     public byte[] load(DocUserPair docUserPair) throws DocDoesNotExist_Exception, UserDoesNotExist_Exception {
         int maxTag = -1;
-        int currentQuorum = 0;
+        SDStore port;
         SDStore theChosenOne = null;
-        List<Integer> listOfTags = new ArrayList<Integer>();
-        List<SDStore> listOfReadReplicas = new ArrayList<SDStore>();
+        BindingProvider binding;
+        Map<String, Object> context;
         for (int i = 0; i < numberOfReplicas; i++) {
-            try {
-                while (currentQuorum < readThreshold) {
-                    SDStore port = listOfReplicas.get(i);
-                    BindingProvider binding = (BindingProvider) port;
-                    Map<String, Object> context = binding.getRequestContext();
-                    context.put("requestTag", true);
-                    port.load(docUserPair);
-                    listOfReadReplicas.add(port);
-                    context = binding.getResponseContext();
-                    listOfTags.add((int) context.get("tag"));
-                    currentQuorum++;
-                }
-                break;
-            } catch (Exception e) {
-                continue;
-            }
-        }
-        for (int i = 0; i < listOfTags.size(); i++) {
-            if (listOfTags.get(i) > maxTag)
-                maxTag = listOfTags.get(i);
-        }
-        for (int i = 0; i < listOfReadReplicas.size(); i++) {
-            SDStore port = listOfReadReplicas.get(i);
-            BindingProvider binding = (BindingProvider) port;
-            Map<String, Object> context = binding.getRequestContext();
+            port = listOfReplicas.get(i);
+            binding = (BindingProvider) port;
+            context = binding.getRequestContext();
             context.put("requestTag", true);
-            context = binding.getResponseContext();
-            if ((int) context.get("tag") == maxTag) {
-                theChosenOne = port;
-                binding.getRequestContext().remove("requestTag");
-                break;
-            }
+            port.load(docUserPair);
             binding.getRequestContext().remove("requestTag");
+        }
+        for (int i = 0; i < readThreshold; i++) {
+            port = listOfReplicas.get(i);
+            binding = (BindingProvider) port;
+            context = binding.getResponseContext();
+            if ((int) context.get("tag") > maxTag) {
+                maxTag = (int) context.get("tag");
+                theChosenOne = port;
+            }
         }
         return theChosenOne.load(docUserPair);
     }
