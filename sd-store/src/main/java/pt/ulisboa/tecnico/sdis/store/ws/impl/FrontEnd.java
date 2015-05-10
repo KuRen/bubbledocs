@@ -120,11 +120,14 @@ public class FrontEnd implements SDStore {
 
     public byte[] load(DocUserPair docUserPair) throws DocDoesNotExist_Exception, UserDoesNotExist_Exception {
         int maxTag = -1;
+        int acks = 0;
+        int i;
+        boolean ack;
         SDStore port;
         SDStore theChosenOne = null;
         BindingProvider binding;
         Map<String, Object> context;
-        for (int i = 0; i < numberOfReplicas; i++) {
+        for (i = 0; i < numberOfReplicas; i++) {
             port = listOfReplicas.get(i);
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
@@ -132,13 +135,38 @@ public class FrontEnd implements SDStore {
             port.load(docUserPair);
             binding.getRequestContext().remove("requestTag");
         }
-        for (int i = 0; i < readThreshold; i++) {
+        for (i = 0; i < readThreshold; i++) {
             port = listOfReplicas.get(i);
             binding = (BindingProvider) port;
             context = binding.getResponseContext();
             if ((int) context.get("tag") > maxTag) {
                 maxTag = (int) context.get("tag");
                 theChosenOne = port;
+            }
+        }
+        for (i = 0; i < numberOfReplicas; i++) {
+            port = listOfReplicas.get(i);
+            binding = (BindingProvider) port;
+            context = binding.getRequestContext();
+            context.put("newTag", maxTag);
+            try {
+                port.store(docUserPair, theChosenOne.load(docUserPair));
+            } catch (CapacityExceeded_Exception e) {
+                e.printStackTrace();
+            }
+        }
+        i = 0;
+        while (acks < writeThreshold && i < numberOfReplicas) {
+            port = listOfReplicas.get(i);
+            binding = (BindingProvider) port;
+            context = binding.getResponseContext();
+            try {
+                ack = (boolean) context.get("ack");
+                if (ack)
+                    acks++;
+                i++;
+            } catch (Exception e) {
+                i++;
             }
         }
         return theChosenOne.load(docUserPair);

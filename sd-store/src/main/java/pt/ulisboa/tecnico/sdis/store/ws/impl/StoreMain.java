@@ -65,6 +65,9 @@ public class StoreMain {
         contents = frontend.load(docUserPair);
         System.out.println(new String(contents));
 
+        frontend.store(docUserPair, "Other thing just to see what happens...".getBytes());
+        System.out.println(new String(frontend.load(docUserPair)));
+
         System.out.println("Awesome! Good job.");
 
         for (StoreServer replica : listOfReplicas)
