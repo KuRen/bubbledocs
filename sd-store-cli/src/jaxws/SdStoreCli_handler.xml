@@ -1,6 +1,6 @@
 <handler-chains xmlns="http://java.sun.com/xml/ns/javaee">
 	<handler-chain>
-		<handler>
+		<!--  handler>
 			<handler-class>pt.ulisboa.tecnico.sdis.store.ws.handler.LoggingHandler</handler-class>
 		</handler>
 		<handler>
@@ -11,6 +11,9 @@
 		</handler>
 		<handler>
 			<handler-class>pt.ulisboa.tecnico.sdis.store.ws.handler.RelayClientHandler</handler-class>
+		</handler-->
+		<handler>
+			<handler-class>pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler</handler-class>
 		</handler>
 	</handler-chain>
 </handler-chains>   

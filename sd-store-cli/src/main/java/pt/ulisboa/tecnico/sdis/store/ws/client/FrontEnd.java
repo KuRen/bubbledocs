@@ -1,10 +1,9 @@
-package pt.ulisboa.tecnico.sdis.store.ws.impl;
+package pt.ulisboa.tecnico.sdis.store.ws.client;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.jws.HandlerChain;
 import javax.jws.WebService;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
@@ -18,26 +17,28 @@ import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore_Service;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
+import pt.ulisboa.tecnico.sdis.store.ws.client.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler;
-import pt.ulisboa.tecnico.sdis.store.ws.impl.uddi.UDDINaming;
 
 @WebService(endpointInterface = "pt.ulisboa.tecnico.sdis.store.ws.SDStore", wsdlLocation = "SD-STORE.1_1.wsdl", name = "SdStore",
         portName = "SDStoreImplPort", targetNamespace = "urn:pt:ulisboa:tecnico:sdis:store:ws", serviceName = "SDStore")
-@HandlerChain(file = "/client-chain.xml")
 public class FrontEnd implements SDStore {
 
-    private List<SDStore> listOfReplicas;
+    private int numberOfReplicas;
     private int writeThreshold;
     private int readThreshold;
-    private int numberOfReplicas;
+    private List<SDStore> listOfReplicas;
 
     @SuppressWarnings("rawtypes")
     public FrontEnd(String uddiURL, String serviceName, int nReplicas, int WT, int RT) throws Exception {
+
         numberOfReplicas = nReplicas;
         writeThreshold = WT;
         readThreshold = RT;
-        UDDINaming uddi;
         listOfReplicas = new ArrayList<SDStore>();
+
+        UDDINaming uddi;
+
         try {
             for (int i = 0; i < numberOfReplicas; i++) {
                 uddi = new UDDINaming(uddiURL);
@@ -62,13 +63,15 @@ public class FrontEnd implements SDStore {
         }
     }
 
-    public void createDoc(DocUserPair docUserPair) throws DocAlreadyExists_Exception { // no need to quorum
+    // Quorum Consensus protocol not needed 
+    public void createDoc(DocUserPair docUserPair) throws DocAlreadyExists_Exception {
         for (SDStore replica : listOfReplicas) {
             replica.createDoc(docUserPair);
         }
     }
 
-    public List<String> listDocs(String userId) throws UserDoesNotExist_Exception { // no need to quorum
+    // Quorum Consensus protocol not needed 
+    public List<String> listDocs(String userId) throws UserDoesNotExist_Exception {
         List<String> listOfDocuments = null;
         for (SDStore replica : listOfReplicas) {
             listOfDocuments = replica.listDocs(userId);
@@ -85,8 +88,6 @@ public class FrontEnd implements SDStore {
         BindingProvider binding;
         Map<String, Object> context;
         boolean ack;
-        //@SuppressWarnings("rawtypes")
-        //Response response;
         for (i = 0; i < readThreshold; i++) {
             port = listOfReplicas.get(i);
             binding = (BindingProvider) port;
@@ -173,5 +174,4 @@ public class FrontEnd implements SDStore {
         }
         return theChosenOne.load(docUserPair);
     }
-
 }

@@ -98,7 +98,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <mainclass>sdstorecli.StoreClientMain</mainclass>
+    <mainclass>pt.ulisboa.tecnico.sdis.store.ws.client.StoreClientMain</mainclass>
     <uddi.url>http://localhost:8081</uddi.url>
     <ws.name>sd-store</ws.name>
     <ws.url>http://localhost:8080/store-ws/endpoint</ws.url>
@@ -138,6 +138,12 @@
             <artifactId>jaxws-tools</artifactId>
             <version>2.2.10</version>
           </dependency>
+          <!-- JAX-WS -->
+          <dependency>
+            <groupId>com.sun.xml.ws</groupId>
+            <artifactId>jaxws-rt</artifactId>
+            <version>2.2.10</version>
+          </dependency>
         </dependencies>
       </plugin>
       <plugin>
@@ -157,6 +163,7 @@
           <arguments>
             <argument>${uddi.url}</argument>
             <argument>${ws.name}</argument>
+            <argument>${ws.url}</argument>
           </arguments>
         </configuration>
       </plugin>

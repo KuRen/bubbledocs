@@ -1,10 +1,10 @@
 package pt.ulisboa.tecnico.sdis.store.ws.client;
 
-import java.util.ArrayList;
+import javax.xml.ws.Endpoint;
 
-import pt.ulisboa.tecnico.sdis.store.ws.client.StoreClient;
-import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
+import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
+import pt.ulisboa.tecnico.sdis.store.ws.client.uddi.UDDINaming;
 
 public class StoreClientMain {
 
@@ -18,24 +18,55 @@ public class StoreClientMain {
 
         String uddiURL = args[0];
         String name = args[1];
+        String url = args[2];
+        int nReplicas = 5;
+        int writeThreshold = 3;
+        int readThreshold = 3;
 
-        StoreClient client = new StoreClient(uddiURL, name);
+        SDStore frontend = new FrontEnd(uddiURL, name, nReplicas, writeThreshold, readThreshold);
 
-        DocUserPair pair = new DocUserPair();
-        pair.setDocumentId("fail");
-        pair.setUserId("carla");
+        Endpoint endpoint = Endpoint.create(frontend);
+        endpoint.publish(url);
+        UDDINaming uddiNaming = new UDDINaming(uddiURL);
+        uddiNaming.rebind(name, url);
 
-        if (!client.listDocs("carla").equals(new ArrayList<String>()))
-            System.out.println("Error: carla docs should be null!");
+        System.out.println("Alright, let's work this out...");
+        System.out.println("For this demonstration, we're going to use Alice's file \"a1\".");
+        System.out.println("To start, press enter.");
+        System.in.read();
+
+        DocUserPair docUserPair = new DocUserPair();
+        docUserPair.setDocumentId("a1");
+        docUserPair.setUserId("alice");
+
+        System.out.println("What's in Alice's file? Let's print its content and find out!");
+        byte[] contents = frontend.load(docUserPair);
+        System.out.println(new String(contents));
+
+        System.out.println("Nice! But it could be a little better... Let's change it for another thing.");
+        frontend.store(docUserPair, "Alice rocks! Kappa 123".getBytes());
+
+        System.out.println("Let's check if the content changed!");
+        contents = frontend.load(docUserPair);
+        System.out.println(new String(contents));
+
+        frontend.store(docUserPair, "Other thing just to see what happens...".getBytes());
+        System.out.println(new String(frontend.load(docUserPair)));
+
+        System.out.println("Awesome! Good job.");
+
         try {
-            client.store(pair, new String("fail").getBytes());
-            System.out.println("Error: carla doc shouldnt exist!");
-        } catch (DocDoesNotExist_Exception e) {
+            if (endpoint != null)
+                endpoint.stop();
+        } catch (Exception e) {
+            System.out.printf("Caught exception when stopping: %s%n", e);
         }
+
         try {
-            client.load(pair);
-            System.out.println("Error: carla doc shouldnt exist!");
-        } catch (DocDoesNotExist_Exception e) {
+            if (uddiNaming != null)
+                uddiNaming.unbind(name);
+        } catch (Exception e) {
+            System.out.printf("Caught exception when deleting: %s%n", e);
         }
     }
 }
