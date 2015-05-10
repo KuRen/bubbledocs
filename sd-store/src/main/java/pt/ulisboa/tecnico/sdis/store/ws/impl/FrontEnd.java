@@ -85,6 +85,8 @@ public class FrontEnd implements SDStore {
         BindingProvider binding;
         Map<String, Object> context;
         boolean ack;
+        //@SuppressWarnings("rawtypes")
+        //Response response;
         for (i = 0; i < readThreshold; i++) {
             port = listOfReplicas.get(i);
             binding = (BindingProvider) port;
