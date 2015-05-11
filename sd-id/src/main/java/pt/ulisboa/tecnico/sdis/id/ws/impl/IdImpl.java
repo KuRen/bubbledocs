@@ -122,11 +122,11 @@ public class IdImpl implements SDId {
         XMLOutputter xmlOutputter = new XMLOutputter();
         Element rootElement = new Element("Request");
         Element ticketElement = new Element("Ticket");
-        Element serverKeyElement = new Element("ServerKey");
+        Element KcsNoncePairElement = new Element("KcsNoncePair");
 
         try {
             ticketElement.setText(cipherXMLForServer(generateTicket(userId, server)));
-            serverKeyElement.setText(cipherXMLForClient(generateServerKey(nonce), user.getPassword()));
+            KcsNoncePairElement.setText(cipherXMLForClient(generateClientServerKey(nonce), user.getPassword()));
         } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidKeySpecException | IllegalBlockSizeException
                 | BadPaddingException | NoSuchPaddingException | UnsupportedEncodingException e1) {
 
@@ -137,7 +137,7 @@ public class IdImpl implements SDId {
         }
 
         rootElement.addContent(ticketElement);
-        rootElement.addContent(serverKeyElement);
+        rootElement.addContent(KcsNoncePairElement);
         response.setRootElement(rootElement);
 
         System.out.printf("[  Auth] User: %s%n", userId);
@@ -231,9 +231,9 @@ public class IdImpl implements SDId {
         return printBase64Binary(key.getEncoded());
     }
 
-    private String generateServerKey(String nonce) {
+    private String generateClientServerKey(String nonce) {
         String kCS = "SomeKeyAplha42"; // TODO
-        Document serverKey = new Document();
+        Document KcsNoncePair = new Document();
         XMLOutputter xmlOutputter = new XMLOutputter();
 
         Element rootElement = new Element("CipheredPackage");
@@ -244,8 +244,8 @@ public class IdImpl implements SDId {
         nonceElement.setText(nonce);
         rootElement.addContent(kCSElement);
         rootElement.addContent(nonceElement);
-        serverKey.setRootElement(rootElement);
+        KcsNoncePair.setRootElement(rootElement);
 
-        return xmlOutputter.outputString(serverKey);
+        return xmlOutputter.outputString(KcsNoncePair);
     }
 }

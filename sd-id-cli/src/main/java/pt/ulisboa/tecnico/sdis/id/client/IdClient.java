@@ -180,7 +180,7 @@ public class IdClient implements SDId {
             throw new AuthReqFailed_Exception(userId, null);
         }
 
-        String serverKey = response.getRootElement().getChildText("ServerKey");
+        String kcsNoncePair = response.getRootElement().getChildText("KcsNoncePair");
 
         Cipher cipher = null;
         try {
@@ -205,7 +205,7 @@ public class IdClient implements SDId {
 
         try {
             cipher.init(Cipher.DECRYPT_MODE, key);
-            kCSNoncePairBytes = cipher.doFinal(parseBase64Binary(serverKey));
+            kCSNoncePairBytes = cipher.doFinal(parseBase64Binary(kcsNoncePair));
         } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
             throw new AuthReqFailed_Exception("Failed to login " + userId, null);
         }
@@ -223,7 +223,7 @@ public class IdClient implements SDId {
         setkCS(kCSNoncePair.getRootElement().getChildText("Key"));
         setTicket(response.getRootElement().getChildText("Ticket"));
 
-        response.getRootElement().getChild("ServerKey").setText(getkCS());
+        response.getRootElement().getChild("KcsNoncePair").setText(getkCS());
 
         try {
             return xmlOutputter.outputString(response).getBytes("UTF-8");
