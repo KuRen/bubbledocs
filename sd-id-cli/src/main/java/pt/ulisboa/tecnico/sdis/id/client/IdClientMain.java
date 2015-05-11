@@ -40,7 +40,7 @@ public class IdClientMain {
 
         try {
             byte[] success = client.requestAuthentication("alice", "Aaa1".getBytes());
-            if (success[0] == 1)
+            if (success != null)
                 System.out.println("Successful login with user: alice");
             else
                 System.out.println("Error in login with user: alice");

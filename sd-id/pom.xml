@@ -22,6 +22,16 @@
 	  <version>${version.junit}</version>
 	  <scope>test</scope>
 	</dependency>
+	<dependency>
+	  <groupId>org.jdom</groupId>
+	  <artifactId>jdom2</artifactId>
+	  <version>${version.org.jdom.jdom}</version>
+	</dependency>
+	<dependency>
+		<groupId>joda-time</groupId>
+		<artifactId>joda-time</artifactId>
+		<version>2.7</version>
+	</dependency>
     <!-- JAX-R API -->
     <dependency>
       <groupId>javax.xml.registry</groupId>
@@ -110,6 +120,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <mainclass>pt.ulisboa.tecnico.sdis.id.ws.impl.IdMain</mainclass>
+    <version.org.jdom.jdom>2.0.5</version.org.jdom.jdom>
     <uddi.url>http://localhost:8081</uddi.url>
     <ws.name>SD-ID</ws.name>
     <ws.url>http://localhost:8088/id-ws/endpoint</ws.url>

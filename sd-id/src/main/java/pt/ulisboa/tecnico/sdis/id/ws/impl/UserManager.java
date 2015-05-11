@@ -126,13 +126,14 @@ public class UserManager {
     }
 
     public void authenticate(String username, byte[] reserved) throws AuthReqFailed_Exception {
-        if (username == null || username.isEmpty() || reserved == null) {
+        User user = null;
+        try {
+            user = getUserByName(username);
+        } catch (UserDoesNotExist_Exception e) {
             throwAuthFailedException(reserved);
         }
 
-        User user = users.get(username);
-
-        if (user == null) {
+        if (reserved == null) {
             throwAuthFailedException(reserved);
         }
 
@@ -151,5 +152,19 @@ public class UserManager {
 
     public int size() {
         return users.size();
+    }
+
+    public User getUserByName(String username) throws UserDoesNotExist_Exception {
+        if (username == null || username.isEmpty()) {
+            throw new UserDoesNotExist_Exception(username, null);
+        }
+
+        User user = users.get(username);
+
+        if (user == null) {
+            throw new UserDoesNotExist_Exception(username, null);
+        }
+
+        return user;
     }
 }

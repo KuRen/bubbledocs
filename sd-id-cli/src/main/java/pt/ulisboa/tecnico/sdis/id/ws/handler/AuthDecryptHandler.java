@@ -11,13 +11,13 @@ public class AuthDecryptHandler implements SOAPHandler<SOAPMessageContext> {
 
     @Override
     public boolean handleMessage(SOAPMessageContext context) {
-        System.out.println("Regular Message Received");
+        //System.out.println("Regular Message Received");
         return true;
     }
 
     @Override
     public boolean handleFault(SOAPMessageContext context) {
-        System.out.println("Fault Message Received");
+        //System.out.println("Fault Message Received");
         return true;
     }
 
