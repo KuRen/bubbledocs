@@ -10,7 +10,9 @@ class SessionManager;
 
 class Session {
 	DateTime lastActivity;
+	String ticket;
 	String token;
+	String key;
 }
 
 class User {

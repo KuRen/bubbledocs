@@ -13,6 +13,7 @@ import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
 import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.integration.LoginUserIntegrator;
+import pt.tecnico.bubbledocs.service.dto.AuthenticationResult;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class LoginUserIntegratorTest extends BubbleDocsIntegratorTest {
@@ -52,6 +53,7 @@ public class LoginUserIntegratorTest extends BubbleDocsIntegratorTest {
         new Expectations() {
             {
                 idRemoteServices.loginUser(USERNAME, PASSWORD);
+                result = new AuthenticationResult("key", "ticket");
             }
         };
 
@@ -68,7 +70,9 @@ public class LoginUserIntegratorTest extends BubbleDocsIntegratorTest {
         new Expectations() {
             {
                 idRemoteServices.loginUser(USERNAME, PASSWORD);
+                result = new AuthenticationResult("key", "ticket");
                 idRemoteServices.loginUser(USERNAME, PASSWORD);
+                result = new AuthenticationResult("key", "ticket");
             }
         };
 
@@ -94,6 +98,7 @@ public class LoginUserIntegratorTest extends BubbleDocsIntegratorTest {
         new Expectations() {
             {
                 idRemoteServices.loginUser(USERNAME, PASSWORD);
+                result = new AuthenticationResult("key", "ticket");
                 times = N;
             }
         };
@@ -115,6 +120,7 @@ public class LoginUserIntegratorTest extends BubbleDocsIntegratorTest {
         new Expectations() {
             {
                 idRemoteServices.loginUser(USERNAME, DIFF_FROM_LOCAL_PASSWORD);
+                result = new AuthenticationResult("key", "ticket");
             }
         };
 

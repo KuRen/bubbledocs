@@ -1,8 +1,11 @@
 package pt.tecnico.bubbledocs.service.remote;
 
-import java.util.Map;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 
-import javax.xml.ws.BindingProvider;
+import org.jdom2.Document;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
 import pt.tecnico.bubbledocs.exception.DuplicateEmailException;
 import pt.tecnico.bubbledocs.exception.DuplicateUsernameException;
@@ -11,83 +14,41 @@ import pt.tecnico.bubbledocs.exception.InvalidUsernameException;
 import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
 import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.ServiceLookupException;
+import pt.tecnico.bubbledocs.service.dto.AuthenticationResult;
+import pt.ulisboa.tecnico.sdis.id.client.IdClient;
+import pt.ulisboa.tecnico.sdis.id.client.serviceFindException;
 import pt.ulisboa.tecnico.sdis.id.ws.AuthReqFailed_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.EmailAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.InvalidEmail_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.InvalidUser_Exception;
-import pt.ulisboa.tecnico.sdis.id.ws.SDId;
-import pt.ulisboa.tecnico.sdis.id.ws.SDId_Service;
 import pt.ulisboa.tecnico.sdis.id.ws.UserAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.UserDoesNotExist_Exception;
 
-public class IDRemoteServices extends SDRemoteServices {
-    final private String uddiURL = "http://localhost:8081";
-    final private String serviceName = "SD-ID";
+public class IDRemoteServices {
 
-    /** WS service */
-    protected SDId_Service service = null;
-
-    /** WS port (interface) */
-    protected SDId port = null;
+    private IdClient client;
+    private final static String uddiURL = "http://localhost:8081";
+    private final static String serviceName = "SD-ID";
 
     public IDRemoteServices() {
-        setVerbose(false);
         try {
-            lookForService(uddiURL, serviceName);
-            createStub();
-        } catch (ServiceLookupException e) {
-            throw new RemoteInvocationException();
+            IdClient client = new IdClient(uddiURL, serviceName);
+            this.client = client;
+        } catch (serviceFindException e) {
+            // We are very optimistic. This will never happen :)
+            throw new ServiceLookupException();
         }
     }
 
-    @Override
-    protected void createStub() {
-        if (verbose)
-            System.out.println("Creating stub ...");
-
-        service = new SDId_Service();
-        port = service.getSDIdImplPort();
-
-        if (verbose)
-            System.out.println("Setting endpoint address ...");
-
-        BindingProvider bindingProvider = (BindingProvider) port;
-        Map<String, Object> requestContext = bindingProvider.getRequestContext();
-        requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, URL);
+    public IDRemoteServices(IdClient client) {
+        super();
+        this.client = client;
     }
-
-    public SDId_Service getService() {
-        return service;
-    }
-
-    public void setService(SDId_Service service) {
-        this.service = service;
-    }
-
-    public SDId getPort() {
-        return port;
-    }
-
-    public void setPort(SDId port) {
-        this.port = port;
-    }
-
-    public String getUddiURL() {
-        return uddiURL;
-    }
-
-    public String getServiceName() {
-        return serviceName;
-    }
-
-    /*
-     *  Remote Interface (non-Javadoc)
-     */
 
     public void createUser(String username, String email) throws InvalidUsernameException, DuplicateUsernameException,
             DuplicateEmailException, InvalidEmailException, RemoteInvocationException {
         try {
-            port.createUser(username, email);
+            client.createUser(username, email);
         } catch (EmailAlreadyExists_Exception e) {
             throw new DuplicateEmailException();
         } catch (InvalidEmail_Exception e) {
@@ -99,12 +60,26 @@ public class IDRemoteServices extends SDRemoteServices {
         }
     }
 
-    public void loginUser(String username, String password) throws LoginBubbleDocsException, RemoteInvocationException {
+    public AuthenticationResult loginUser(String username, String password) throws LoginBubbleDocsException,
+            RemoteInvocationException {
         if (password == null || username == null) {
             throw new LoginBubbleDocsException();
         }
         try {
-            port.requestAuthentication(username, password.getBytes());
+            byte[] xmlBytes = client.requestAuthentication(username, password.getBytes());
+
+            SAXBuilder builder = new SAXBuilder();
+            builder.setIgnoringElementContentWhitespace(true);
+
+            try {
+                Document xmlDocument = builder.build(new ByteArrayInputStream(xmlBytes));
+                String key = xmlDocument.getRootElement().getChildText("ClientServerKey");
+                String ticket = xmlDocument.getRootElement().getChildText("Ticket");
+                return new AuthenticationResult(key, ticket);
+            } catch (JDOMException | IOException e) {
+                throw new LoginBubbleDocsException();
+            }
+
         } catch (AuthReqFailed_Exception e) {
             throw new LoginBubbleDocsException();
         }
@@ -112,7 +87,7 @@ public class IDRemoteServices extends SDRemoteServices {
 
     public void removeUser(String username) throws LoginBubbleDocsException, RemoteInvocationException {
         try {
-            port.removeUser(username);
+            client.removeUser(username);
         } catch (UserDoesNotExist_Exception e) {
             throw new LoginBubbleDocsException();
         }
@@ -120,7 +95,7 @@ public class IDRemoteServices extends SDRemoteServices {
 
     public void renewPassword(String username) throws LoginBubbleDocsException, RemoteInvocationException {
         try {
-            port.renewPassword(username);
+            client.renewPassword(username);
         } catch (UserDoesNotExist_Exception e) {
             throw new LoginBubbleDocsException();
         }

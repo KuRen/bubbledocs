@@ -12,14 +12,23 @@ import pt.tecnico.bubbledocs.exception.BubbleDocsException;
 import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
 
 public class LoginUser extends BubbleDocsService {
-    
-    private String userToken;
+
+    private String token;
+    private String key;
+    private String ticket;
     private String username;
     private String password;
 
     public LoginUser(String username, String password) {
+        this(username, password, null, null);
+    }
+
+    public LoginUser(String username, String password, String key, String ticket) {
+        super();
+        this.key = key;
         this.username = username;
         this.password = password;
+        this.ticket = ticket;
     }
 
     @Override
@@ -35,9 +44,10 @@ public class LoginUser extends BubbleDocsService {
         SessionManager sm = bd.getSessionManager();
         sm.cleanOldSessions();
         User user = bd.getUserByUsername(getUsername());
-        
-        if(user == null) throw new LoginBubbleDocsException();
-        
+
+        if (user == null)
+            throw new LoginBubbleDocsException();
+
         if (user.getPassword() == null || !user.getPassword().equals(getPassword()))
             throw new LoginBubbleDocsException();
 
@@ -48,15 +58,15 @@ public class LoginUser extends BubbleDocsService {
         }
 
         do {
-            userToken = username + new Random().nextInt(10);
-        } while (userToken.equals(prevToken));
+            token = username + new Random().nextInt(10);
+        } while (token.equals(prevToken));
 
-        sm.addSession(new Session(getBubbleDocs().getUserByUsername(getUsername()), getUserToken(), new DateTime()));
+        sm.addSession(new Session(getBubbleDocs().getUserByUsername(getUsername()), getUserToken(), new DateTime(), key, ticket));
 
     }
 
     public final String getUserToken() {
-        return userToken;
+        return token;
     }
 
     public final String getUsername() {
@@ -65,6 +75,14 @@ public class LoginUser extends BubbleDocsService {
 
     public final String getPassword() {
         return password;
+    }
+
+    public final String getKey() {
+        return key;
+    }
+
+    public final String getTicket() {
+        return ticket;
     }
 
 }
