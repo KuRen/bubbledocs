@@ -1,10 +1,6 @@
 package pt.ulisboa.tecnico.sdis.store.ws.client;
 
-import javax.xml.ws.Endpoint;
-
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
-import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
-import pt.ulisboa.tecnico.sdis.store.ws.client.uddi.UDDINaming;
 
 public class StoreClientMain {
 
@@ -18,17 +14,11 @@ public class StoreClientMain {
 
         String uddiURL = args[0];
         String name = args[1];
-        String url = args[2];
         int nReplicas = 5;
         int writeThreshold = 3;
         int readThreshold = 3;
 
-        SDStore frontend = new FrontEnd(uddiURL, name, nReplicas, writeThreshold, readThreshold);
-
-        Endpoint endpoint = Endpoint.create(frontend);
-        endpoint.publish(url);
-        UDDINaming uddiNaming = new UDDINaming(uddiURL);
-        uddiNaming.rebind(name, url);
+        FrontEnd frontend = new FrontEnd(uddiURL, name, nReplicas, writeThreshold, readThreshold);
 
         System.out.println("Alright, let's work this out...");
         System.out.println("For this demonstration, we're going to use Alice's file \"a1\".");
@@ -54,19 +44,5 @@ public class StoreClientMain {
         System.out.println(new String(frontend.load(docUserPair)));
 
         System.out.println("Awesome! Good job.");
-
-        try {
-            if (endpoint != null)
-                endpoint.stop();
-        } catch (Exception e) {
-            System.out.printf("Caught exception when stopping: %s%n", e);
-        }
-
-        try {
-            if (uddiNaming != null)
-                uddiNaming.unbind(name);
-        } catch (Exception e) {
-            System.out.printf("Caught exception when deleting: %s%n", e);
-        }
     }
 }

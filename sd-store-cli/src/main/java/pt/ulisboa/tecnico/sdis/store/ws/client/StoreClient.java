@@ -6,7 +6,6 @@ import java.util.Map;
 import javax.xml.registry.JAXRException;
 import javax.xml.ws.BindingProvider;
 
-import pt.ulisboa.tecnico.sdis.store.ws.client.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.store.ws.CapacityExceeded_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
@@ -14,8 +13,9 @@ import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore_Service;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
+import pt.ulisboa.tecnico.sdis.store.ws.client.uddi.UDDINaming;
 
-public class StoreClient implements SDStore {
+public class StoreClient {
     /** WS service */
     SDStore_Service service = null;
 

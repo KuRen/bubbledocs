@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.jws.WebService;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.HandlerResolver;
@@ -20,9 +19,7 @@ import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.client.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler;
 
-@WebService(endpointInterface = "pt.ulisboa.tecnico.sdis.store.ws.SDStore", wsdlLocation = "SD-STORE.1_1.wsdl", name = "SdStore",
-        portName = "SDStoreImplPort", targetNamespace = "urn:pt:ulisboa:tecnico:sdis:store:ws", serviceName = "SDStore")
-public class FrontEnd implements SDStore {
+public class FrontEnd {
 
     private int numberOfReplicas;
     private int writeThreshold;
