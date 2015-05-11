@@ -223,8 +223,6 @@ public class IdClient implements SDId {
         setkCS(kCSNoncePair.getRootElement().getChildText("Key"));
         setTicket(response.getRootElement().getChildText("Ticket"));
 
-        System.out.println("User: " + userId + " Key: " + kCS);
-
         response.getRootElement().getChild("ServerKey").setText(getkCS());
 
         try {
