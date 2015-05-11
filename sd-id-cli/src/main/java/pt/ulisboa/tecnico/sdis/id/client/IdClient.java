@@ -223,7 +223,10 @@ public class IdClient implements SDId {
         setkCS(kCSNoncePair.getRootElement().getChildText("Key"));
         setTicket(response.getRootElement().getChildText("Ticket"));
 
-        response.getRootElement().getChild("KcsNoncePair").setText(getkCS());
+        response.getRootElement().removeChild("KcsNoncePair");
+        Element clientServerElement = new Element("ClientServerKey");
+        clientServerElement.setText(getkCS());
+        response.getRootElement().addContent(clientServerElement);
 
         try {
             return xmlOutputter.outputString(response).getBytes("UTF-8");
