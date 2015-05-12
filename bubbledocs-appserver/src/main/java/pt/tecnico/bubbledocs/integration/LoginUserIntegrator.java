@@ -27,6 +27,7 @@ public class LoginUserIntegrator extends BubbleDocsIntegrator {
     public void execute() {
         if (username == null || password == null || username.isEmpty() || password.isEmpty())
             throw new LoginBubbleDocsException();
+
         try {
             AuthenticationResult result = idRemoteServices.loginUser(username, password);
             new SetPasswordWithUsernameService(username, password).execute();

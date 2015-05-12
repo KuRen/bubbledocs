@@ -61,6 +61,7 @@ public class IDRemoteServices {
 
     public AuthenticationResult loginUser(String username, String password) throws LoginBubbleDocsException,
             RemoteInvocationException {
+
         if (password == null || username == null) {
             throw new LoginBubbleDocsException();
         }
