@@ -11,5 +11,8 @@
         <handler>
             <handler-class>pt.ulisboa.tecnico.sdis.store.ws.handler.BackEndHandler</handler-class>
         </handler>
+        <handler>
+            <handler-class>pt.ulisboa.tecnico.sdis.store.ws.handler.AuthenticationHandler</handler-class>
+        </handler>
     </handler-chain>
 </handler-chains>

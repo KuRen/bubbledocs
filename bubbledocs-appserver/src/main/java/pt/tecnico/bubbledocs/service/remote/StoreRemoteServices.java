@@ -28,6 +28,7 @@ public class StoreRemoteServices {
             this.client = client;
         } catch (Exception e) {
             // We are very optimistic. This will never happen :)
+            e.printStackTrace();
             throw new ServiceLookupException();
         }
     }
@@ -42,12 +43,12 @@ public class StoreRemoteServices {
         pair.setDocumentId(docName);
         pair.setUserId(username);
         try {
-            client.store(pair, document, getTicketForUser(username));
+            client.store(pair, document, getTicketForUser(username), getKeyForUser(username));
         } catch (CapacityExceeded_Exception e) {
             throw new CannotStoreDocumentException();
         } catch (DocDoesNotExist_Exception e) {
             try {
-                client.createDoc(pair, getTicketForUser(username));
+                client.createDoc(pair, getTicketForUser(username), getKeyForUser(username));
             } catch (DocAlreadyExists_Exception e1) {
                 throw new CannotStoreDocumentException();
             }
@@ -65,7 +66,7 @@ public class StoreRemoteServices {
         pair.setUserId(username);
 
         try {
-            return client.load(pair, getTicketForUser(username));
+            return client.load(pair, getTicketForUser(username), getKeyForUser(username));
         } catch (DocDoesNotExist_Exception e) {
             throw new CannotLoadDocumentException();
         } catch (UserDoesNotExist_Exception e) {
@@ -80,5 +81,13 @@ public class StoreRemoteServices {
         if (session == null)
             throw new UnauthorizedUserException();
         return session.getTicket();
+    }
+
+    private String getKeyForUser(String username) {
+        User user = FenixFramework.getDomainRoot().getBubbleDocs().getUserByUsername(username);
+        Session session = user.getSession();
+        if (session == null)
+            throw new UnauthorizedUserException();
+        return session.getKey();
     }
 }

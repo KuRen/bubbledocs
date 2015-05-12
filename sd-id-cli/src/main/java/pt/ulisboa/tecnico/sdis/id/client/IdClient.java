@@ -189,7 +189,6 @@ public class IdClient implements SDId {
             throw new AuthReqFailed_Exception("Failed to login " + userId, null);
         }
 
-        // generate a secret key
         SecretKey key = null;
         try {
             MessageDigest cript = MessageDigest.getInstance("SHA-1");

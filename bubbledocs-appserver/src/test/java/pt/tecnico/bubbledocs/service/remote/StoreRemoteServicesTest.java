@@ -5,13 +5,12 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import pt.tecnico.bubbledocs.exception.CannotLoadDocumentException;
 import pt.tecnico.bubbledocs.exception.CannotStoreDocumentException;
 
-@Ignore("Takes too much time to test always and it's tested on system testing")
+//@Ignore("Takes too much time to test always and it's tested on system testing")
 public class StoreRemoteServicesTest extends SdRemoteServicesTest {
     // static members
 

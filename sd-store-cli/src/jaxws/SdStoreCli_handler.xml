@@ -8,10 +8,10 @@
 		</handler>
 		<handler>
 			<handler-class>pt.ulisboa.tecnico.sdis.store.ws.handler.MessageContextHandler</handler-class>
-		</handler>
+		</handler-->
 		<handler>
 			<handler-class>pt.ulisboa.tecnico.sdis.store.ws.handler.RelayClientHandler</handler-class>
-		</handler-->
+		</handler>
 		<handler>
 			<handler-class>pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler</handler-class>
 		</handler>
