@@ -40,11 +40,11 @@ public class AuthenticationHandler implements SOAPHandler<SOAPMessageContext> {
                             soapHeader = soapEnvelope.addHeader();
 
                         // Add header element (name, namespace prefix, namespace)
-                        Name name = soapEnvelope.createName("authenticationHeader", "ah", "http://authenticationHeader");
+                        Name name = soapEnvelope.createName("authenticationTicket", "at", "http://authenticationTicket");
                         SOAPHeaderElement element = soapHeader.addHeaderElement(name);
 
                         // Add header element value
-                        String ticket = (String) smc.get("authenticationHeader");
+                        String ticket = (String) smc.get("authenticationTicket");
                         element.addTextNode(ticket);
                     } catch (SOAPException e) {
                         System.out.printf("Failed to add SOAP header because of %s%n", e);
@@ -65,16 +65,49 @@ public class AuthenticationHandler implements SOAPHandler<SOAPMessageContext> {
                     return true;
                 }
 
-                // Get first header element
-                Name name = soapEnvelope.createName("authenticationHeader", "ah", "http://authenticationHeader");
+                // Get ticket header element
+                Name name = soapEnvelope.createName("authenticationTicket", "at", "http://authenticationTicket");
                 SOAPElement element = (SOAPElement) soapHeader.getChildElements(name).next();
 
                 String valueString = element.getValue();
 
                 // Put header in a property context
-                smc.put("ah", valueString);
+                smc.put("at", valueString);
                 // Set property scope to application client/server class can access it
-                smc.setScope("ah", Scope.APPLICATION);
+                smc.setScope("at", Scope.APPLICATION);
+
+                // Get authentication header element
+                name = soapEnvelope.createName("authentication", "auth", "http://authentication");
+                element = (SOAPElement) soapHeader.getChildElements(name).next();
+
+                valueString = element.getValue();
+
+                // Put header in a property context
+                smc.put("auth", valueString);
+                // Set property scope to application client/server class can access it
+                smc.setScope("auth", Scope.APPLICATION);
+
+                // Get nonce header element
+                name = soapEnvelope.createName("authenticationNonce", "nonce", "http://authenticationNonce");
+                element = (SOAPElement) soapHeader.getChildElements(name).next();
+
+                valueString = element.getValue();
+
+                // Put header in a property context
+                smc.put("nonce", valueString);
+                // Set property scope to application client/server class can access it
+                smc.setScope("nonce", Scope.APPLICATION);
+
+                // Get hash header element
+                name = soapEnvelope.createName("authenticationHash", "hash", "http://authenticationHash");
+                element = (SOAPElement) soapHeader.getChildElements(name).next();
+
+                valueString = element.getValue();
+
+                // Put header in a property context
+                smc.put("hash", valueString);
+                // Set property scope to application client/server class can access it
+                smc.setScope("hash", Scope.APPLICATION);
 
             }
         } catch (Exception e) {

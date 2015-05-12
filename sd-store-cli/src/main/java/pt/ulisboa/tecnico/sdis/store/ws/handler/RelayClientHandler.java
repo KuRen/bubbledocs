@@ -33,14 +33,28 @@ import javax.xml.ws.handler.soap.SOAPMessageContext;
 
 public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
 
-    public static final String REQUEST_PROPERTY = "my.request.property";
-    public static final String RESPONSE_PROPERTY = "my.response.property";
+    public static final String REQUEST_TICKET = "my.request.ticket";
 
-    public static final String REQUEST_HEADER = "myRequestHeader";
-    public static final String REQUEST_NS = "urn:example";
+    public static final String REQUEST_TICKET_HEADER = "authenticationTicket";
+    public static final String REQUEST_TICKET_NS = "urn:at";
+
+    public static final String REQUEST_AUTH = "my.request.auth";
+
+    public static final String REQUEST_AUTH_HEADER = "authentication";
+    public static final String REQUEST_AUTH_NS = "urn:auth";
+
+    public static final String REQUEST_NONCE = "my.request.nonce";
+
+    public static final String REQUEST_NONCE_HEADER = "authenticationNonce";
+    public static final String REQUEST_NONCE_NS = "urn:nonce";
+
+    public static final String REQUEST_HASH = "my.request.hash";
+
+    public static final String REQUEST_HASH_HEADER = "authenticationHash";
+    public static final String REQUEST_HASH_NS = "urn:hash";
 
     public static final String RESPONSE_HEADER = "myResponseHeader";
-    public static final String RESPONSE_NS = REQUEST_NS;
+    public static final String RESPONSE_NS = "urn:response";
 
     public static final String CLASS_NAME = RelayClientHandler.class.getSimpleName();
     public static final String TOKEN = "client-handler";
@@ -52,7 +66,7 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
 
             // *** #2 ***
             // get token from request context
-            String propertyValue = (String) smc.get(REQUEST_PROPERTY);
+            String propertyValue = (String) smc.get(REQUEST_TICKET);
             System.out.printf("%s received '%s'%n", CLASS_NAME, propertyValue);
 
             // put token in request SOAP header
@@ -67,8 +81,9 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
                 if (sh == null)
                     sh = se.addHeader();
 
+                // TICKET
                 // add header element (name, namespace prefix, namespace)
-                Name name = se.createName(REQUEST_HEADER, "e", REQUEST_NS);
+                Name name = se.createName(REQUEST_TICKET_HEADER, "e", REQUEST_TICKET_NS);
                 SOAPHeaderElement element = sh.addHeaderElement(name);
 
                 // *** #3 ***
@@ -77,6 +92,45 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
                 element.addTextNode(newValue);
 
                 System.out.printf("%s put token '%s' on request message header%n", CLASS_NAME, newValue);
+
+                // AUTH
+                String auth = (String) smc.get(REQUEST_AUTH);
+
+                // add header element (name, namespace prefix, namespace)
+                name = se.createName(REQUEST_AUTH_HEADER, "e", REQUEST_AUTH_NS);
+                element = sh.addHeaderElement(name);
+
+                // *** #3 ***
+                // add header element value
+                element.addTextNode(auth);
+
+                System.out.printf("%s put token '%s' on request message header%n", CLASS_NAME, auth);
+
+                // NONCE
+                String nonce = (String) smc.get(REQUEST_NONCE);
+
+                // add header element (name, namespace prefix, namespace)
+                name = se.createName(REQUEST_NONCE_HEADER, "e", REQUEST_NONCE_NS);
+                element = sh.addHeaderElement(name);
+
+                // *** #3 ***
+                // add header element value
+                element.addTextNode(nonce);
+
+                System.out.printf("%s put token '%s' on request message header%n", CLASS_NAME, nonce);
+
+                // HASH
+                String hash = (String) smc.get(REQUEST_HASH);
+
+                // add header element (name, namespace prefix, namespace)
+                name = se.createName(REQUEST_HASH_HEADER, "e", REQUEST_HASH_NS);
+                element = sh.addHeaderElement(name);
+
+                // *** #3 ***
+                // add header element value
+                element.addTextNode(hash);
+
+                System.out.printf("%s put token '%s' on request message header%n", CLASS_NAME, hash);
 
             } catch (SOAPException e) {
                 System.out.printf("Failed to add SOAP header because of %s%n", e);
@@ -118,9 +172,9 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
                 // put token in response context
                 String newValue = headerValue + "," + TOKEN;
                 System.out.printf("%s put token '%s' on response context%n", CLASS_NAME, TOKEN);
-                smc.put(RESPONSE_PROPERTY, newValue);
+                smc.put(RESPONSE_HEADER, newValue);
                 // set property scope to application so that client class can access property
-                smc.setScope(RESPONSE_PROPERTY, Scope.APPLICATION);
+                smc.setScope(RESPONSE_HEADER, Scope.APPLICATION);
 
             } catch (SOAPException e) {
                 System.out.printf("Failed to get SOAP header because of %s%n", e);
