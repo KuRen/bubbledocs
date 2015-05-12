@@ -39,14 +39,14 @@ public class StoreClientMain {
         System.out.println(new String(contents));
 
         System.out.println("Nice! But it could be a little better... Let's change it for another thing.");
-        //frontend.store(docUserPair, "Alice rocks! Kappa 123".getBytes());
+        frontend.store(docUserPair, "Alice rocks! Kappa 123".getBytes());
 
         System.out.println("Let's check if the content changed!");
-        //contents = frontend.load(docUserPair);
-        //System.out.println(new String(contents));
+        contents = frontend.load(docUserPair);
+        System.out.println(new String(contents));
 
-        //frontend.store(docUserPair, "Other thing just to see what happens...".getBytes());
-        // System.out.println(new String(frontend.load(docUserPair)));
+        frontend.store(docUserPair, "Other thing just to see what happens...".getBytes());
+        System.out.println(new String(frontend.load(docUserPair)));
 
         System.out.println("Awesome! Good job.");
     }

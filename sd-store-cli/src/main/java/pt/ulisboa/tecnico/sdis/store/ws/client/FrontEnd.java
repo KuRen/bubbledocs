@@ -3,7 +3,6 @@ package pt.ulisboa.tecnico.sdis.store.ws.client;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -294,7 +293,7 @@ public class FrontEnd {
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("newTag", maxTag);
-            putToHandler(ticket, port, key, docUserPair.getUserId());
+            //putToHandler(ticket, port, key, docUserPair.getUserId());
             Response<StoreResponse> response = port.storeAsync(docUserPair, contents);
             listOfStoreResponses.add(response);
             binding.getRequestContext().remove("newTag");
@@ -409,7 +408,7 @@ public class FrontEnd {
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("requestTag", true);
-            putToHandler(ticket, port, key, docUserPair.getUserId());
+            //putToHandler(ticket, port, key, docUserPair.getUserId());
             Response<LoadResponse> response = port.loadAsync(docUserPair);
             listOfLoadResponses.add(response);
             binding.getRequestContext().remove("requestTag");
@@ -438,7 +437,7 @@ public class FrontEnd {
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("newTag", maxTag);
-            MessageDigest cript = null;
+            /*MessageDigest cript = null;
             try {
                 cript = MessageDigest.getInstance("SHA-1");
             } catch (NoSuchAlgorithmException e1) {
@@ -449,7 +448,7 @@ public class FrontEnd {
                 cript.update(theChosenOne.get().getContents());
             } catch (ExecutionException | InterruptedException e1) {
                 e1.printStackTrace();
-            }
+            }*/
             try {
                 Response<StoreResponse> response = port.storeAsync(docUserPair, theChosenOne.get().getContents());
                 listOfStoreResponses.add(response);
@@ -473,9 +472,9 @@ public class FrontEnd {
             }
         }
 
-        Map<String, Object> responseContext = binding.getResponseContext();
+        // Map<String, Object> responseContext = binding.getResponseContext();
 
-        String finalValue = (String) responseContext.get(FrontEndHandler.RESPONSE_HEADER);
+        // String finalValue = (String) responseContext.get(FrontEndHandler.RESPONSE_HEADER);
 
         try {
             return theChosenOne.get().getContents();
