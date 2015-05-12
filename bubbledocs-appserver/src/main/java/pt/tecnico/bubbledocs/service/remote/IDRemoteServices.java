@@ -16,7 +16,7 @@ import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.ServiceLookupException;
 import pt.tecnico.bubbledocs.service.dto.AuthenticationResult;
 import pt.ulisboa.tecnico.sdis.id.client.IdClient;
-import pt.ulisboa.tecnico.sdis.id.client.serviceFindException;
+import pt.ulisboa.tecnico.sdis.id.client.ServiceLookupException;
 import pt.ulisboa.tecnico.sdis.id.ws.AuthReqFailed_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.EmailAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.InvalidEmail_Exception;
@@ -34,7 +34,7 @@ public class IDRemoteServices {
         try {
             IdClient client = new IdClient(uddiURL, serviceName);
             this.client = client;
-        } catch (serviceFindException e) {
+        } catch (ServiceLookupException e) {
             // We are very optimistic. This will never happen :)
             throw new ServiceLookupException();
         }

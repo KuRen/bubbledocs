@@ -1,6 +1,6 @@
 package pt.ulisboa.tecnico.sdis.id.client;
 
-public class serviceFindException extends IdClientException {
+public class ServiceLookupException extends Exception {
 
     /**
      * 

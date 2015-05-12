@@ -26,7 +26,7 @@ public class IdClientMain {
             client.setVerbose(true);
             //client.lookForService(uddiURL, serviceName);
             //client.createStub();
-        } catch (serviceFindException e) {
+        } catch (ServiceLookupException e) {
             System.out.println("Could not connect to server!");
             e.printStackTrace();
         }

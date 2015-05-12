@@ -17,7 +17,7 @@ public class IdClientContractTest {
     private IdClient client = null;
 
     @Before
-    public void setUp() throws serviceFindException {
+    public void setUp() throws ServiceLookupException {
         client = new IdClient(uddiURL, serviceName);
         //client.lookForService(uddiURL, serviceName);
         //client.createStub();

@@ -28,7 +28,6 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.XMLOutputter;
 
-import pt.ulisboa.tecnico.sdis.id.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.id.ws.AuthReqFailed_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.EmailAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.InvalidEmail_Exception;
@@ -37,6 +36,7 @@ import pt.ulisboa.tecnico.sdis.id.ws.SDId;
 import pt.ulisboa.tecnico.sdis.id.ws.SDId_Service;
 import pt.ulisboa.tecnico.sdis.id.ws.UserAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.UserDoesNotExist_Exception;
+import example.ws.uddi.UDDINaming;
 
 public class IdClient implements SDId {
     /** WS service */
@@ -70,11 +70,11 @@ public class IdClient implements SDId {
      * 
      * @param uddiURL
      * @param serviceName
-     * @throws serviceFindException
+     * @throws ServiceLookupException
      * 
      * @throws JAXRException
      */
-    public IdClient(String uddiURL, String serviceName) throws serviceFindException {
+    public IdClient(String uddiURL, String serviceName) throws ServiceLookupException {
         lookForService(uddiURL, serviceName);
         createStub();
     }
@@ -94,7 +94,7 @@ public class IdClient implements SDId {
         requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, URL);
     }
 
-    private void lookForService(String uddiURL, String serviceName) throws serviceFindException {
+    private void lookForService(String uddiURL, String serviceName) throws ServiceLookupException {
         if (verbose)
             System.out.printf("Contacting UDDI at %s%n", uddiURL);
         UDDINaming uddiNaming;
@@ -114,7 +114,7 @@ public class IdClient implements SDId {
             }
 
         } catch (JAXRException e) {
-            throw new serviceFindException();
+            throw new ServiceLookupException();
         }
     }
 

@@ -18,9 +18,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import pt.ulisboa.tecnico.sdis.id.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.id.ws.SDId;
 import pt.ulisboa.tecnico.sdis.id.ws.UserAlreadyExists_Exception;
+import example.ws.uddi.UDDINaming;
 
 public class IdClientCommTest {
 
@@ -50,15 +50,15 @@ public class IdClientCommTest {
      * simulate a communication exception.
      * 
      * @throws JAXRException
-     * @throws serviceFindException
+     * @throws ServiceLookupException
      */
-    @Test(expected = serviceFindException.class)
-    public void testMockServerCommunicationException(@Mocked final UDDINaming uddi) throws JAXRException, serviceFindException {
+    @Test(expected = ServiceLookupException.class)
+    public void testMockServerCommunicationException(@Mocked final UDDINaming uddi) throws JAXRException, ServiceLookupException {
         new Expectations() {
             {
                 new UDDINaming(anyString);
                 uddi.lookup(anyString);
-                result = new serviceFindException();
+                result = new ServiceLookupException();
             }
         };
 
