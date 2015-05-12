@@ -140,19 +140,20 @@ public class FrontEndHandler implements SOAPHandler<SOAPMessageContext> {
                     smc.put("ack", value);
                     // Set property scope to application client/server class can access it
                     smc.setScope("ack", Scope.APPLICATION);
+                } else {
+                    SOAPElement element = (SOAPElement) it.next();
+                    // Get header element value
+                    String valueString = element.getValue();
+                    int value = Integer.parseInt(valueString);
+
+                    // Print received header
+                    System.out.println("Header value is " + value);
+
+                    // Put header in a property context
+                    smc.put("tag", value);
+                    // Set property scope to application client/server class can access it
+                    smc.setScope("tag", Scope.APPLICATION);
                 }
-                SOAPElement element = (SOAPElement) it.next();
-                // Get header element value
-                String valueString = element.getValue();
-                int value = Integer.parseInt(valueString);
-
-                // Print received header
-                System.out.println("Header value is " + value);
-
-                // Put header in a property context
-                smc.put("tag", value);
-                // Set property scope to application client/server class can access it
-                smc.setScope("tag", Scope.APPLICATION);
             }
         } catch (Exception e) {
             System.out.print("Caught exception in handleMessage: ");

@@ -171,6 +171,7 @@
         <configuration>
           <killAfter>-1</killAfter><!-- to prevent deprecation warning -->
           <mainClass>${mainclass}</mainClass>
+          <cleanupDaemonThreads>false</cleanupDaemonThreads>
           <arguments>
             <argument>${uddi.url}</argument>
             <argument>${ws.name}</argument>

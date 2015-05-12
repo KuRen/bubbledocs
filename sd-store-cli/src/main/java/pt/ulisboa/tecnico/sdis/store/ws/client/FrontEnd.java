@@ -3,13 +3,13 @@ package pt.ulisboa.tecnico.sdis.store.ws.client;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 
 import java.security.InvalidKeyException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -19,6 +19,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.DESKeySpec;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.Response;
 import javax.xml.ws.handler.Handler;
 import javax.xml.ws.handler.HandlerResolver;
 import javax.xml.ws.handler.PortInfo;
@@ -32,8 +33,10 @@ import pt.ulisboa.tecnico.sdis.store.ws.CapacityExceeded_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
+import pt.ulisboa.tecnico.sdis.store.ws.LoadResponse;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore_Service;
+import pt.ulisboa.tecnico.sdis.store.ws.StoreResponse;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.client.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler;
@@ -191,16 +194,33 @@ public class FrontEnd {
         BindingProvider binding;
         Map<String, Object> context;
         boolean ack;
+        List<Response<LoadResponse>> listOfLoadResponses = new ArrayList<Response<LoadResponse>>();
+        List<Response<StoreResponse>> listOfStoreResponses = new ArrayList<Response<StoreResponse>>();
         for (i = 0; i < readThreshold; i++) {
             port = listOfReplicas.get(i);
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("requestTag", true);
-            port.load(docUserPair);
-            context = binding.getResponseContext();
-            if ((int) context.get("tag") > maxTag)
-                maxTag = (int) context.get("tag");
+            Response<LoadResponse> response = port.loadAsync(docUserPair);
+            listOfLoadResponses.add(response);
             binding.getRequestContext().remove("requestTag");
+        }
+        i = 0;
+        while (i < readThreshold) {
+            for (Response<LoadResponse> resp : new ArrayList<>(listOfLoadResponses)) {
+                try {
+                    if (resp.get() != null) {
+                        listOfLoadResponses.remove(resp);
+                        context = resp.getContext();
+                        if ((int) context.get("tag") > maxTag)
+                            maxTag = (int) context.get("tag");
+                        i++;
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
         }
         maxTag++;
         for (i = 0; i < numberOfReplicas; i++) {
@@ -208,18 +228,24 @@ public class FrontEnd {
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("newTag", maxTag);
-            port.store(docUserPair, contents);
+            Response<StoreResponse> response = port.storeAsync(docUserPair, contents);
+            listOfStoreResponses.add(response);
             binding.getRequestContext().remove("newTag");
         }
-        i = 0;
-        while (acks < writeThreshold && i < numberOfReplicas) {
-            port = listOfReplicas.get(i);
-            binding = (BindingProvider) port;
-            context = binding.getResponseContext();
-            ack = (boolean) context.get("ack");
-            if (ack)
-                acks++;
-            i++;
+        while (acks < writeThreshold) {
+            for (Response<StoreResponse> resp : new ArrayList<>(listOfStoreResponses)) {
+                try {
+                    if (resp.get() != null) {
+                        listOfStoreResponses.remove(resp);
+                        context = resp.getContext();
+                        ack = (boolean) context.get("ack");
+                        if (ack)
+                            acks++;
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return;
     }
@@ -234,16 +260,33 @@ public class FrontEnd {
         BindingProvider binding;
         Map<String, Object> context;
         boolean ack;
+        List<Response<LoadResponse>> listOfLoadResponses = new ArrayList<Response<LoadResponse>>();
+        List<Response<StoreResponse>> listOfStoreResponses = new ArrayList<Response<StoreResponse>>();
         for (i = 0; i < readThreshold; i++) {
             port = listOfReplicas.get(i);
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("requestTag", true);
-            port.load(docUserPair);
-            context = binding.getResponseContext();
-            if ((int) context.get("tag") > maxTag)
-                maxTag = (int) context.get("tag");
+            Response<LoadResponse> response = port.loadAsync(docUserPair);
+            listOfLoadResponses.add(response);
             binding.getRequestContext().remove("requestTag");
+        }
+        i = 0;
+        while (i < readThreshold) {
+            for (Response<LoadResponse> resp : new ArrayList<>(listOfLoadResponses)) {
+                try {
+                    if (resp.get() != null) {
+                        listOfLoadResponses.remove(resp);
+                        context = resp.getContext();
+                        if ((int) context.get("tag") > maxTag)
+                            maxTag = (int) context.get("tag");
+                        i++;
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
         }
         maxTag++;
         for (i = 0; i < numberOfReplicas; i++) {
@@ -252,18 +295,24 @@ public class FrontEnd {
             context = binding.getRequestContext();
             context.put("newTag", maxTag);
             putToHandler(ticket, port, key, docUserPair.getUserId());
-            port.store(docUserPair, contents);
+            Response<StoreResponse> response = port.storeAsync(docUserPair, contents);
+            listOfStoreResponses.add(response);
             binding.getRequestContext().remove("newTag");
         }
-        i = 0;
-        while (acks < writeThreshold && i < numberOfReplicas) {
-            port = listOfReplicas.get(i);
-            binding = (BindingProvider) port;
-            context = binding.getResponseContext();
-            ack = (boolean) context.get("ack");
-            if (ack)
-                acks++;
-            i++;
+        while (acks < writeThreshold) {
+            for (Response<StoreResponse> resp : new ArrayList<>(listOfStoreResponses)) {
+                try {
+                    if (resp.get() != null) {
+                        listOfStoreResponses.remove(resp);
+                        context = resp.getContext();
+                        ack = (boolean) context.get("ack");
+                        if (ack)
+                            acks++;
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
         return;
     }
@@ -274,24 +323,37 @@ public class FrontEnd {
         int i;
         boolean ack;
         SDStore port;
-        SDStore theChosenOne = null;
+        Response<LoadResponse> theChosenOne = null;
         BindingProvider binding;
         Map<String, Object> context;
+        List<Response<LoadResponse>> listOfLoadResponses = new ArrayList<Response<LoadResponse>>();
+        List<Response<StoreResponse>> listOfStoreResponses = new ArrayList<Response<StoreResponse>>();
         for (i = 0; i < numberOfReplicas; i++) {
             port = listOfReplicas.get(i);
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("requestTag", true);
-            port.load(docUserPair);
+            Response<LoadResponse> response = port.loadAsync(docUserPair);
+            listOfLoadResponses.add(response);
             binding.getRequestContext().remove("requestTag");
         }
-        for (i = 0; i < readThreshold; i++) {
-            port = listOfReplicas.get(i);
-            binding = (BindingProvider) port;
-            context = binding.getResponseContext();
-            if ((int) context.get("tag") > maxTag) {
-                maxTag = (int) context.get("tag");
-                theChosenOne = port;
+        i = 0;
+        while (i < readThreshold) {
+            for (Response<LoadResponse> resp : new ArrayList<>(listOfLoadResponses)) {
+                try {
+                    if (resp.get() != null) {
+                        listOfLoadResponses.remove(resp);
+                        context = resp.getContext();
+                        if ((int) context.get("tag") > maxTag) {
+                            maxTag = (int) context.get("tag");
+                            theChosenOne = resp;
+                        }
+                        i++;
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
         for (i = 0; i < numberOfReplicas; i++) {
@@ -300,26 +362,33 @@ public class FrontEnd {
             context = binding.getRequestContext();
             context.put("newTag", maxTag);
             try {
-                port.store(docUserPair, theChosenOne.load(docUserPair));
-            } catch (CapacityExceeded_Exception e) {
+                Response<StoreResponse> response = port.storeAsync(docUserPair, theChosenOne.get().getContents());
+                listOfStoreResponses.add(response);
+            } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        i = 0;
-        while (acks < writeThreshold && i < numberOfReplicas) {
-            port = listOfReplicas.get(i);
-            binding = (BindingProvider) port;
-            context = binding.getResponseContext();
-            try {
-                ack = (boolean) context.get("ack");
-                if (ack)
-                    acks++;
-                i++;
-            } catch (Exception e) {
-                i++;
+        while (acks < writeThreshold) {
+            for (Response<StoreResponse> resp : new ArrayList<>(listOfStoreResponses)) {
+                try {
+                    if (resp.get() != null) {
+                        listOfStoreResponses.remove(resp);
+                        context = resp.getContext();
+                        ack = (boolean) context.get("ack");
+                        if (ack)
+                            acks++;
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        return theChosenOne.load(docUserPair);
+        try {
+            return theChosenOne.get().getContents();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     //Using handler
@@ -330,24 +399,37 @@ public class FrontEnd {
         int i;
         boolean ack;
         SDStore port;
-        SDStore theChosenOne = null;
+        Response<LoadResponse> theChosenOne = null;
         BindingProvider binding = null;
         Map<String, Object> context;
+        List<Response<LoadResponse>> listOfLoadResponses = new ArrayList<Response<LoadResponse>>();
+        List<Response<StoreResponse>> listOfStoreResponses = new ArrayList<Response<StoreResponse>>();
         for (i = 0; i < numberOfReplicas; i++) {
             port = listOfReplicas.get(i);
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("requestTag", true);
-            port.load(docUserPair);
+            Response<LoadResponse> response = port.loadAsync(docUserPair);
+            listOfLoadResponses.add(response);
             binding.getRequestContext().remove("requestTag");
         }
-        for (i = 0; i < readThreshold; i++) {
-            port = listOfReplicas.get(i);
-            binding = (BindingProvider) port;
-            context = binding.getResponseContext();
-            if ((int) context.get("tag") > maxTag) {
-                maxTag = (int) context.get("tag");
-                theChosenOne = port;
+        i = 0;
+        while (i < readThreshold) {
+            for (Response<LoadResponse> resp : new ArrayList<>(listOfLoadResponses)) {
+                try {
+                    if (resp.get() != null) {
+                        listOfLoadResponses.remove(resp);
+                        context = resp.getContext();
+                        if ((int) context.get("tag") > maxTag) {
+                            maxTag = (int) context.get("tag");
+                            theChosenOne = resp;
+                        }
+                        i++;
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         }
         for (i = 0; i < numberOfReplicas; i++) {
@@ -356,7 +438,7 @@ public class FrontEnd {
             context = binding.getRequestContext();
             context.put("newTag", maxTag);
             putToHandler(ticket, port, key, docUserPair.getUserId());
-
+/*
             MessageDigest cript = null;
             try {
                 cript = MessageDigest.getInstance("SHA-1");
@@ -364,29 +446,35 @@ public class FrontEnd {
                 e1.printStackTrace();
             }
             cript.reset();
-            cript.update(theChosenOne.load(docUserPair));
+            try {
+                cript.update(theChosenOne.get().getContents());
+            } catch (ExecutionException | InterruptedException e1) {
+                e1.printStackTrace();
+            }
             byte[] hash = cript.digest();
 
             context.put(RelayClientHandler.REQUEST_TICKET, printBase64Binary(hash));
-
+*/
             try {
-                port.store(docUserPair, theChosenOne.load(docUserPair));
-            } catch (CapacityExceeded_Exception e) {
+                Response<StoreResponse> response = port.storeAsync(docUserPair, theChosenOne.get().getContents());
+                listOfStoreResponses.add(response);
+            } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        i = 0;
-        while (acks < writeThreshold && i < numberOfReplicas) {
-            port = listOfReplicas.get(i);
-            binding = (BindingProvider) port;
-            context = binding.getResponseContext();
-            try {
-                ack = (boolean) context.get("ack");
-                if (ack)
-                    acks++;
-                i++;
-            } catch (Exception e) {
-                i++;
+        while (acks < writeThreshold) {
+            for (Response<StoreResponse> resp : new ArrayList<>(listOfStoreResponses)) {
+                try {
+                    if (resp.get() != null) {
+                        listOfStoreResponses.remove(resp);
+                        context = resp.getContext();
+                        ack = (boolean) context.get("ack");
+                        if (ack)
+                            acks++;
+                    }
+                } catch (ExecutionException | InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
 
@@ -394,6 +482,11 @@ public class FrontEnd {
 
         String finalValue = (String) responseContext.get(RelayClientHandler.RESPONSE_HEADER);
 
-        return theChosenOne.load(docUserPair);
+        try {
+            return theChosenOne.get().getContents();
+        } catch (ExecutionException | InterruptedException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

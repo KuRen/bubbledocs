@@ -83,13 +83,13 @@ public class StoreImpl implements SDStore {
             throw new UserDoesNotExist_Exception("The user with the userId " + docUserPair.getUserId() + " does not exist", udne);
         }
         MessageContext context = webServiceContext.getMessageContext();
-
+/*
         String authenticationHeaderString = (String) context.get("authenticationHeader");
         if (!authenticate(authenticationHeaderString))
             throw new CapacityExceeded_Exception("", null); //FIXME get proper exception
-
+*/
         if (context.get("newTag") != null) {
-            if ((int) context.get("newTag") > repositories.get(docUserPair.getUserId()).getTag(docUserPair.getDocumentId())) {
+            if ((int) context.get("newTag") >= repositories.get(docUserPair.getUserId()).getTag(docUserPair.getDocumentId())) {
                 repositories.get(docUserPair.getUserId()).setTag(docUserPair.getDocumentId(), (int) context.get("newTag"));
                 repositories.get(docUserPair.getUserId()).store(docUserPair.getDocumentId(), contents);
                 context.put("ack", true);
@@ -109,7 +109,6 @@ public class StoreImpl implements SDStore {
         MessageContext context = webServiceContext.getMessageContext();
         if (context.get("requestTag") != null && (boolean) context.get("requestTag")) {
             context.put("tag", repositories.get(docUserPair.getUserId()).getTag(docUserPair.getDocumentId()));
-            return null;
         }
         return repositories.get(docUserPair.getUserId()).load(docUserPair.getDocumentId());
     }
