@@ -38,9 +38,9 @@ import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore_Service;
 import pt.ulisboa.tecnico.sdis.store.ws.StoreResponse;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
-import pt.ulisboa.tecnico.sdis.store.ws.client.uddi.UDDINaming;
 import pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler;
 import pt.ulisboa.tecnico.sdis.store.ws.handler.RelayClientHandler;
+import example.ws.uddi.UDDINaming;
 
 public class FrontEnd {
 

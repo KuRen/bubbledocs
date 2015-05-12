@@ -6,7 +6,7 @@ import pt.ulisboa.tecnico.sdis.id.ws.EmailAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.InvalidEmail_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.InvalidUser_Exception;
 import pt.ulisboa.tecnico.sdis.id.ws.UserAlreadyExists_Exception;
-import pt.ulisboa.tecnico.sdis.id.ws.impl.uddi.UDDINaming;
+import example.ws.uddi.UDDINaming;
 
 public class IdMain {
 

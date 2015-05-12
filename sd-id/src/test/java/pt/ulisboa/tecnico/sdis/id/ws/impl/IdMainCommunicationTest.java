@@ -12,7 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import pt.ulisboa.tecnico.sdis.id.ws.impl.uddi.UDDINaming;
+import example.ws.uddi.UDDINaming;
 
 public class IdMainCommunicationTest {
 

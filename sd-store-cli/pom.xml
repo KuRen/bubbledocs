@@ -21,6 +21,13 @@
 	 <artifactId>joda-time</artifactId>
 	 <version>2.7</version>
 	</dependency>
+	<!-- JAX-WS -->
+    <dependency>
+        <groupId>com.sun.xml.ws</groupId>
+        <artifactId>jaxws-rt</artifactId>
+        <version>2.2.10</version>
+    </dependency>
+    <!-- UDDI -->
     <dependency>
 	 <groupId>example</groupId>
 	 <artifactId>uddi-naming</artifactId>
