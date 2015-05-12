@@ -126,6 +126,9 @@ public class LoginUserIntegratorTest extends BubbleDocsIntegratorTest {
 
         service.execute();
 
+        System.out.println(user.getPassword());
+        System.out.println(DIFF_FROM_LOCAL_PASSWORD);
+
         assertEquals(DIFF_FROM_LOCAL_PASSWORD, user.getPassword());
     }
 

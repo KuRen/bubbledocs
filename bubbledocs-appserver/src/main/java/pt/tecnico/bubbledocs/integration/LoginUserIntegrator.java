@@ -1,12 +1,11 @@
 package pt.tecnico.bubbledocs.integration;
 
-import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
 import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
 import pt.tecnico.bubbledocs.service.dto.AuthenticationResult;
-import pt.tecnico.bubbledocs.service.local.GetUserInfoService;
 import pt.tecnico.bubbledocs.service.local.LoginUser;
+import pt.tecnico.bubbledocs.service.local.SetPasswordWithUsernameService;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class LoginUserIntegrator extends BubbleDocsIntegrator {
@@ -30,10 +29,7 @@ public class LoginUserIntegrator extends BubbleDocsIntegrator {
             throw new LoginBubbleDocsException();
         try {
             AuthenticationResult result = idRemoteServices.loginUser(username, password);
-            GetUserInfoService getUserService = new GetUserInfoService(username);
-            getUserService.execute();
-            User user = getUserService.getUser();
-            user.setPassword(password);
+            new SetPasswordWithUsernameService(username, password).execute();
             LoginUser service = new LoginUser(username, password, result.getKey(), result.getTicket());
             service.execute();
             token = service.getUserToken();

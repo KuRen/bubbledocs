@@ -1,11 +1,8 @@
 package pt.tecnico.bubbledocs.integration;
 
-import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
-import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
-import pt.tecnico.bubbledocs.service.local.GetUserInfoService;
 import pt.tecnico.bubbledocs.service.local.GetUsernameForTokenService;
 import pt.tecnico.bubbledocs.service.local.ImportSpreadsheetService;
 import pt.tecnico.bubbledocs.service.remote.StoreRemoteServices;
@@ -36,16 +33,6 @@ public class ImportDocumentIntegrator extends BubbleDocsIntegrator {
         getUsernameService.execute();
 
         String username = getUsernameService.getUsername();
-
-        GetUserInfoService getUserService = new GetUserInfoService(username);
-
-        getUserService.execute();
-
-        User user = getUserService.getUser();
-
-        if (user == null) {
-            throw new UserNotInSessionException();
-        }
 
         StoreRemoteServices remote = new StoreRemoteServices();
 

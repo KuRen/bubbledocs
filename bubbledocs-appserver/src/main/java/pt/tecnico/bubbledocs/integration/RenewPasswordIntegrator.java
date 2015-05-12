@@ -1,12 +1,11 @@
 package pt.tecnico.bubbledocs.integration;
 
-import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
 import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.UnavailableServiceException;
-import pt.tecnico.bubbledocs.service.local.GetUserInfoService;
 import pt.tecnico.bubbledocs.service.local.GetUsernameForTokenService;
 import pt.tecnico.bubbledocs.service.local.RenewPassword;
+import pt.tecnico.bubbledocs.service.local.SetPasswordService;
 import pt.tecnico.bubbledocs.service.remote.IDRemoteServices;
 
 public class RenewPasswordIntegrator extends BubbleDocsIntegrator {
@@ -31,19 +30,15 @@ public class RenewPasswordIntegrator extends BubbleDocsIntegrator {
 
         String username = getUsernameService.getUsername();
 
-        GetUserInfoService getUserService = new GetUserInfoService(username);
-
-        getUserService.execute();
-
-        User user = getUserService.getUser();
+        SetPasswordService resetPasswordService = new SetPasswordService(token, service.getRemovedPassword());
 
         try {
             idRemoteServices.renewPassword(username);
         } catch (RemoteInvocationException rie) {
-            user.setPassword(service.getRemovedPassword());
+            resetPasswordService.execute();;
             throw new UnavailableServiceException();
         } catch (LoginBubbleDocsException lbe) {
-            user.setPassword(service.getRemovedPassword());
+            resetPasswordService.execute();
             throw lbe;
         }
     }
