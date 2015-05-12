@@ -3,6 +3,7 @@ package pt.ulisboa.tecnico.sdis.store.ws.client;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -39,7 +40,6 @@ import pt.ulisboa.tecnico.sdis.store.ws.SDStore_Service;
 import pt.ulisboa.tecnico.sdis.store.ws.StoreResponse;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler;
-import pt.ulisboa.tecnico.sdis.store.ws.handler.RelayClientHandler;
 import example.ws.uddi.UDDINaming;
 
 public class FrontEnd {
@@ -80,7 +80,6 @@ public class FrontEnd {
                 listOfReplicas.add(port);
             }
         } catch (Exception e) {
-            e.printStackTrace();
             throw new Exception("One of the servers was not found!");
         }
     }
@@ -90,7 +89,7 @@ public class FrontEnd {
         Map<String, Object> requestContext;
         bindingProvider = (BindingProvider) replica;
         requestContext = bindingProvider.getRequestContext();
-        requestContext.put(RelayClientHandler.REQUEST_TICKET, ticket);
+        requestContext.put(FrontEndHandler.REQUEST_TICKET, ticket);
         String auth = null;
         try {
             auth = cipherXML(makeAuth(user), key);
@@ -98,10 +97,10 @@ public class FrontEnd {
                 | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace(); //FIXME
         }
-        requestContext.put(RelayClientHandler.REQUEST_AUTH, auth);
+        requestContext.put(FrontEndHandler.REQUEST_AUTH, auth);
 
         nonce = Integer.toString(new SecureRandom().nextInt());
-        requestContext.put(RelayClientHandler.REQUEST_NONCE, nonce);
+        requestContext.put(FrontEndHandler.REQUEST_NONCE, nonce);
 
         return bindingProvider;
     }
@@ -181,7 +180,7 @@ public class FrontEnd {
 
         Map<String, Object> responseContext = bindingProvider.getResponseContext();
 
-        String finalValue = (String) responseContext.get(RelayClientHandler.RESPONSE_HEADER);
+        String finalValue = (String) responseContext.get(FrontEndHandler.RESPONSE_HEADER);
 
         return listOfDocuments;
     }
@@ -410,6 +409,7 @@ public class FrontEnd {
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("requestTag", true);
+            putToHandler(ticket, port, key, docUserPair.getUserId());
             Response<LoadResponse> response = port.loadAsync(docUserPair);
             listOfLoadResponses.add(response);
             binding.getRequestContext().remove("requestTag");
@@ -438,8 +438,6 @@ public class FrontEnd {
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("newTag", maxTag);
-            putToHandler(ticket, port, key, docUserPair.getUserId());
-/*
             MessageDigest cript = null;
             try {
                 cript = MessageDigest.getInstance("SHA-1");
@@ -452,10 +450,6 @@ public class FrontEnd {
             } catch (ExecutionException | InterruptedException e1) {
                 e1.printStackTrace();
             }
-            byte[] hash = cript.digest();
-
-            context.put(RelayClientHandler.REQUEST_TICKET, printBase64Binary(hash));
-*/
             try {
                 Response<StoreResponse> response = port.storeAsync(docUserPair, theChosenOne.get().getContents());
                 listOfStoreResponses.add(response);
@@ -481,7 +475,7 @@ public class FrontEnd {
 
         Map<String, Object> responseContext = binding.getResponseContext();
 
-        String finalValue = (String) responseContext.get(RelayClientHandler.RESPONSE_HEADER);
+        String finalValue = (String) responseContext.get(FrontEndHandler.RESPONSE_HEADER);
 
         try {
             return theChosenOne.get().getContents();
