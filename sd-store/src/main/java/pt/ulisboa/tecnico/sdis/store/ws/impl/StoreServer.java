@@ -2,7 +2,7 @@ package pt.ulisboa.tecnico.sdis.store.ws.impl;
 
 import javax.xml.ws.Endpoint;
 
-import pt.ulisboa.tecnico.sdis.store.ws.impl.uddi.UDDINaming;
+import example.ws.uddi.UDDINaming;
 
 public class StoreServer {
 

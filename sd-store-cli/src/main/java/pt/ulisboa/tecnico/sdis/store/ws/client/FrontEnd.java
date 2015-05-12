@@ -80,6 +80,7 @@ public class FrontEnd {
                 listOfReplicas.add(port);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             throw new Exception("One of the servers was not found!");
         }
     }
