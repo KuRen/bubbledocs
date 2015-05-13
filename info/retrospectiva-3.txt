@@ -3,7 +3,8 @@ Retrospetiva individual da Semana 3:
 Rodrigo:
 
 
-Teresa:O trabalho foi mais dispendioso que o previsto, mas todas as tarefas foram cumpridas a tempo.
+Teresa:O trabalho foi mais dispendioso e conflituoso do que o previsto, quase todas as tarefas foram concluidas a tempo. O Francisco
+teve de implementar as minhas issues devido a problemas com o meu computador.
 
 
 Daniel:
