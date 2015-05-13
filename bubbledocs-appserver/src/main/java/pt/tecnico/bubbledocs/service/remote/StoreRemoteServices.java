@@ -9,7 +9,6 @@ import pt.tecnico.bubbledocs.exception.RemoteInvocationException;
 import pt.tecnico.bubbledocs.exception.ServiceLookupException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedUserException;
 import pt.ulisboa.tecnico.sdis.store.ws.CapacityExceeded_Exception;
-import pt.ulisboa.tecnico.sdis.store.ws.DocAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
@@ -49,7 +48,7 @@ public class StoreRemoteServices {
         } catch (DocDoesNotExist_Exception e) {
             try {
                 client.createDoc(pair, getTicketForUser(username), getKeyForUser(username));
-            } catch (DocAlreadyExists_Exception e1) {
+            } catch (Exception e1) {
                 throw new CannotStoreDocumentException();
             }
         } catch (UserDoesNotExist_Exception e) {
