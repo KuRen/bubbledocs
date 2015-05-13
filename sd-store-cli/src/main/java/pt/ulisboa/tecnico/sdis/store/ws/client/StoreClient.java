@@ -17,35 +17,35 @@ public class StoreClient {
 
     // SDStore
 
-    public void createDoc(DocUserPair docUserPair) throws DocAlreadyExists_Exception {
-        frontend.createDoc(docUserPair);
+    public void createDoc(DocUserPair docUserPair, String ticket, String key) throws DocAlreadyExists_Exception {
+        frontend.createDoc(docUserPair, ticket, key);
     }
 
-    public List<String> listDocs(String userId) throws UserDoesNotExist_Exception {
-        return frontend.listDocs(userId);
+    public List<String> listDocs(String userId, String ticket, String key) throws UserDoesNotExist_Exception {
+        return frontend.listDocs(userId, ticket, key);
     }
 
-        public void store(DocUserPair docUserPair, byte[] contents) throws UserDoesNotExist_Exception, DocDoesNotExist_Exception {
+    public void store(DocUserPair docUserPair, byte[] contents, String ticket, String key) throws UserDoesNotExist_Exception, DocDoesNotExist_Exception, CapacityExceeded_Exception {
         try {
-            frontend.store(docUserPair, contents);
-        } catch(UserDoesNotExist_Exception u) {
-            throw (UserDoesNotExist_Exception) u;
-        } catch(DocDoesNotExist_Exception d) {
-            throw (DocDoesNotExist_Exception) d;
-        } catch(Throwable t) {
-            System.out.println("Unknown Error");
-        }
-    }
-
-    public byte[] load(DocUserPair docUserPair) throws UserDoesNotExist_Exception, DocDoesNotExist_Exception, CapacityExceeded_Exception {
-        try {
-            return frontend.load(docUserPair);
+            frontend.store(docUserPair, contents, ticket, key);
         } catch(UserDoesNotExist_Exception u) {
             throw (UserDoesNotExist_Exception) u;
         } catch(DocDoesNotExist_Exception d) {
             throw (DocDoesNotExist_Exception) d;
         } catch(CapacityExceeded_Exception c) {
             throw (CapacityExceeded_Exception) c;
+        } catch(Throwable t) {
+            System.out.println("Unknown Error");
+        }
+    }
+
+    public byte[] load(DocUserPair docUserPair, String ticket, String key) throws UserDoesNotExist_Exception, DocDoesNotExist_Exception {
+        try {
+            return frontend.load(docUserPair, ticket, key);
+        } catch(UserDoesNotExist_Exception u) {
+            throw (UserDoesNotExist_Exception) u;
+        } catch(DocDoesNotExist_Exception d) {
+            throw (DocDoesNotExist_Exception) d;
         } catch(Throwable t) {
             System.out.println("Unknown Error");
             return null;

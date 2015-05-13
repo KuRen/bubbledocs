@@ -13,18 +13,18 @@ import pt.ulisboa.tecnico.sdis.store.ws.DocAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
-import pt.ulisboa.tecnico.sdis.store.ws.client.FrontEnd;
+import pt.ulisboa.tecnico.sdis.store.ws.client.StoreClient;
 
 public class StoreRemoteServices {
 
-    private FrontEnd client;
+    private StoreClient client;
     final private String uddiURL = "http://localhost:8081";
     final private String serviceName = "sd-store";
 
     public StoreRemoteServices() {
         try {
             // FIXME: ... Why? Why? Why? Hopefully will be changed.
-            FrontEnd client = new FrontEnd(uddiURL, serviceName, 5, 3, 3); // because.
+            StoreClient client = new StoreClient(uddiURL, serviceName, 5, 3, 3); // because.
             this.client = client;
         } catch (Exception e) {
             // We are very optimistic. This will never happen :)
