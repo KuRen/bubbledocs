@@ -45,7 +45,7 @@ public class StoreClient {
         } catch(DocDoesNotExist_Exception d) {
             throw d;
         } catch(CapacityExceeded_Exception c) {
-            throw d;
+            throw c;
         } catch(Throwable t) {
             System.out.println("Unknown Error");
             return null;
