@@ -158,7 +158,7 @@ public class FrontEnd {
     // Quorum Consensus protocol not needed 
     @Deprecated
     public List<String> listDocs(String userId) throws UserDoesNotExist_Exception {
-        List<String> listOfDocuments;
+        List<String> listOfDocuments = null;
         for (SDStore replica : listOfReplicas) {
             listOfDocuments = replica.listDocs(userId);
         }
