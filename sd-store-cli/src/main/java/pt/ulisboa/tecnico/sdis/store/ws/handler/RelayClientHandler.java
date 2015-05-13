@@ -59,7 +59,9 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
     public static final String CLASS_NAME = RelayClientHandler.class.getSimpleName();
     public static final String TOKEN = "client-handler";
 
+    @Override
     public boolean handleMessage(SOAPMessageContext smc) {
+        System.out.println("Relay :: Entered!");
         Boolean outbound = (Boolean) smc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
         if (outbound) {
             // outbound message
@@ -67,7 +69,7 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
             // *** #2 ***
             // get token from request context
             String propertyValue = (String) smc.get(REQUEST_TICKET);
-            System.out.printf("%s received '%s'%n", CLASS_NAME, propertyValue);
+            //System.out.printf("%s received '%s'%n", CLASS_NAME, propertyValue);
 
             // put token in request SOAP header
             try {
@@ -89,9 +91,11 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
                 // *** #3 ***
                 // add header element value
                 String newValue = propertyValue + "," + TOKEN;
-                element.addTextNode(newValue);
+                element.addTextNode(propertyValue);
 
-                System.out.printf("%s put token '%s' on request message header%n", CLASS_NAME, newValue);
+                System.out.println("Relay :: Writing :: " + REQUEST_TICKET_HEADER + " : len " + propertyValue.length());
+
+                //System.out.printf("%s put token '%s' on request message header%n", CLASS_NAME, newValue);
 
                 // AUTH
                 String auth = (String) smc.get(REQUEST_AUTH);
@@ -105,7 +109,7 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
                 element.addTextNode(auth);
 
                 System.out.printf("%s put token '%s' on request message header%n", CLASS_NAME, auth);
-
+/*
                 // NONCE
                 String nonce = (String) smc.get(REQUEST_NONCE);
 
@@ -130,7 +134,7 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
                 // add header element value
                 element.addTextNode(hash);
 
-                System.out.printf("%s put token '%s' on request message header%n", CLASS_NAME, hash);
+                System.out.printf("%s put token '%s' on request message header%n", CLASS_NAME, hash);*/
 
             } catch (SOAPException e) {
                 System.out.printf("Failed to add SOAP header because of %s%n", e);
@@ -185,14 +189,17 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
         return true;
     }
 
+    @Override
     public boolean handleFault(SOAPMessageContext smc) {
         return true;
     }
 
+    @Override
     public Set<QName> getHeaders() {
         return null;
     }
 
+    @Override
     public void close(MessageContext messageContext) {
     }
 

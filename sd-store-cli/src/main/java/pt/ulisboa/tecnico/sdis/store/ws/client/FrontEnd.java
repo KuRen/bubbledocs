@@ -37,7 +37,6 @@ import pt.ulisboa.tecnico.sdis.store.ws.SDStore_Service;
 import pt.ulisboa.tecnico.sdis.store.ws.StoreResponse;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler;
-import example.ws.uddi.UDDINaming;
 
 public class FrontEnd {
 
@@ -283,7 +282,7 @@ public class FrontEnd {
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("newTag", maxTag);
-            //putToHandler(ticket, port, key, docUserPair.getUserId());
+            putToHandler(ticket, port, key, docUserPair.getUserId());
             Response<StoreResponse> response = port.storeAsync(docUserPair, contents);
             listOfStoreResponses.add(response);
             binding.getRequestContext().remove("newTag");
@@ -395,7 +394,7 @@ public class FrontEnd {
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("requestTag", true);
-            //putToHandler(ticket, port, key, docUserPair.getUserId());
+            putToHandler(ticket, port, key, docUserPair.getUserId());
             Response<LoadResponse> response = port.loadAsync(docUserPair);
             listOfLoadResponses.add(response);
             binding.getRequestContext().remove("requestTag");
