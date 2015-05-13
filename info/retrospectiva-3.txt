@@ -10,7 +10,7 @@ Daniel:
 O tempo previsto foi cumprido. Apesar de nenhuma task (issue) ter sido concluída, foram feitas pequenas correções e foi dedicado tempo ao projeto (sem ser necessariamente a produzir código).
 
 Miguel:
-
+Tive menos tempo para dedicar a este projecto do que o inicialmente planeado. O tempo (reduzido) foi gasto no entendimento teórico da matéria de SD, não tendo sido produzido código.
 
 Carlos: 
 Foi utilizado mais tempo do que o previsto, contudo as tarefas não foram cumpridas dada a sua complexidade.
