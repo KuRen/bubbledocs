@@ -14,7 +14,7 @@
     <name>Store WebService Client</name>
 
     <properties>
-        <main.exec.classname></main.exec.classname>
+        <main.exec.classname>pt.ulisboa.tecnico.sdis.store.ws.client.StoreClientMain</main.exec.classname>
         <wsdl.directory>${basedir}/../sd-store/src/main/resources</wsdl.directory>
         <wsdl.filename>SD-STORE.1_1.wsdl</wsdl.filename>
 
@@ -68,6 +68,7 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
                 <configuration>
+                	<cleanupDaemonThreads>false</cleanupDaemonThreads>
                     <arguments>
                         <argument>${uddi.url}</argument>
                         <argument>${ws.name}</argument>

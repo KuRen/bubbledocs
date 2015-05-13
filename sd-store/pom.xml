@@ -14,14 +14,14 @@
     <name>Store WebService Server</name>
 
     <properties>
-        <main.exec.classname></main.exec.classname>
+        <main.exec.classname>pt.ulisboa.tecnico.sdis.store.ws.impl.StoreMain</main.exec.classname>
 
         <wsdl.directory>${basedir}/src/main/resources</wsdl.directory>
         <wsdl.filename>SD-STORE.1_1.wsdl</wsdl.filename>
 
         <ws.name>${store.name}</ws.name>
         <ws.host>localhost</ws.host>
-        <ws.port>8082</ws.port>
+        <ws.port>8080</ws.port>
         <ws.url>http://${ws.host}:${ws.port}/sd-store/endpoint</ws.url>
     </properties>
 
