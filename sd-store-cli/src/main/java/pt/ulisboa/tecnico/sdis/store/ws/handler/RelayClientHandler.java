@@ -79,8 +79,9 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
 
                 // add header
                 SOAPHeader sh = se.getHeader();
-                if (sh == null)
+                if (sh == null) {
                     sh = se.addHeader();
+                }
 
                 // TICKET
                 // add header element (name, namespace prefix, namespace)
@@ -89,7 +90,6 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
 
                 // *** #3 ***
                 // add header element value
-                String newValue = propertyValue + "," + TOKEN;
                 element.addTextNode(propertyValue);
 
                 // AUTH
