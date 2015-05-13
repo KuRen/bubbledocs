@@ -61,7 +61,6 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
 
     @Override
     public boolean handleMessage(SOAPMessageContext smc) {
-        System.out.println("Relay :: Entered!");
         Boolean outbound = (Boolean) smc.get(MessageContext.MESSAGE_OUTBOUND_PROPERTY);
         if (outbound) {
             // outbound message
@@ -93,10 +92,6 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
                 String newValue = propertyValue + "," + TOKEN;
                 element.addTextNode(propertyValue);
 
-                System.out.println("Relay :: Writing :: " + REQUEST_TICKET_HEADER + " : len " + propertyValue.length());
-
-                //System.out.printf("%s put token '%s' on request message header%n", CLASS_NAME, newValue);
-
                 // AUTH
                 String auth = (String) smc.get(REQUEST_AUTH);
 
@@ -109,7 +104,7 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
                 element.addTextNode(auth);
 
                 System.out.printf("%s put token '%s' on request message header%n", CLASS_NAME, auth);
-/*
+
                 // NONCE
                 String nonce = (String) smc.get(REQUEST_NONCE);
 
@@ -122,7 +117,7 @@ public class RelayClientHandler implements SOAPHandler<SOAPMessageContext> {
                 element.addTextNode(nonce);
 
                 System.out.printf("%s put token '%s' on request message header%n", CLASS_NAME, nonce);
-
+/*
                 // HASH
                 String hash = (String) smc.get(REQUEST_HASH);
 

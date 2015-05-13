@@ -38,6 +38,8 @@ import pt.ulisboa.tecnico.sdis.store.ws.SDStore_Service;
 import pt.ulisboa.tecnico.sdis.store.ws.StoreResponse;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler;
+import pt.ulisboa.tecnico.sdis.store.ws.handler.RelayClientHandler;
+import example.ws.uddi.UDDINaming;
 
 public class FrontEnd {
 
@@ -66,6 +68,7 @@ public class FrontEnd {
                 public List<Handler> getHandlerChain(PortInfo portInfo) {
                     List<Handler> handlerChain = new ArrayList<Handler>();
                     handlerChain.add(new FrontEndHandler());
+                    handlerChain.add(new RelayClientHandler());
                     return handlerChain;
                 }
             });
@@ -174,7 +177,6 @@ public class FrontEnd {
         List<String> listOfDocuments = null;
         for (SDStore replica : listOfReplicas) {
             bindingProvider = putToHandler(ticket, replica, key, userId);
-
             listOfDocuments = replica.listDocs(userId);
         }
 

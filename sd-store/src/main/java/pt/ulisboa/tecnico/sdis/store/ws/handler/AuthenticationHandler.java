@@ -75,7 +75,7 @@ public class AuthenticationHandler implements SOAPHandler<SOAPMessageContext> {
                 }
             } else {
                 System.out.println();
-                System.out.println(" > > > Reading header in inbound SOAP message...");
+                System.out.println("Reading header in inbound SOAP message...");
 
                 // Get SOAP envelope header
                 SOAPMessage message = smc.getMessage();
@@ -97,7 +97,7 @@ public class AuthenticationHandler implements SOAPHandler<SOAPMessageContext> {
 
                 String cipherTicket = element.getValue();
 
-                System.out.println("AUTH HANDLER ::: Ciph Ticket == " + cipherTicket);
+                System.out.println("Received ticket with length: " + cipherTicket.length());
 
                 // Put header in a property context
                 smc.put("at", cipherTicket);
@@ -110,21 +110,25 @@ public class AuthenticationHandler implements SOAPHandler<SOAPMessageContext> {
 
                 String cipherAuth = element.getValue();
 
-                System.out.println("AUTH HANDLER ::: Auth == " + cipherAuth);
+                System.out.println("Received auth with size: " + cipherAuth.length());
 
                 // Put header in a property context
                 smc.put("auth", cipherAuth);
                 // Set property scope to application client/server class can access it
                 smc.setScope("auth", Scope.APPLICATION);
 
-                if (!authenticate(cipherTicket, cipherAuth))
+                if (!authenticate(cipherTicket, cipherAuth)) {
                     System.out.println("Could not auth! Bad Credentials! Abort! Trap!");
+                    return false;
+                }
 
                 // Get nonce header element
-                name = soapEnvelope.createName("authenticationNonce", "nonce", "http://authenticationNonce");
+                name = soapEnvelope.createName("authenticationNonce", "e", "urn:nonce");
                 element = (SOAPElement) soapHeader.getChildElements(name).next();
 
                 String nonce = element.getValue();
+
+                System.out.println("Received nonce: " + nonce);
 
                 // Put header in a property context
                 smc.put("nonce", nonce);
@@ -205,7 +209,6 @@ public class AuthenticationHandler implements SOAPHandler<SOAPMessageContext> {
         key = new SecretKeySpec(secretServerKey, "AES");
 
         try {
-            System.out.println("==========CHIPH TIVKET::: " + chipheredTicket);
             cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(new byte[16]));
             ticketBytes = cipher.doFinal(parseBase64Binary(chipheredTicket));
         } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
@@ -234,9 +237,6 @@ public class AuthenticationHandler implements SOAPHandler<SOAPMessageContext> {
 
         clientServerKey = ticket.getRootElement().getChildText("Key");
 
-        System.out.println("CSKey: " + clientServerKey + " Key is something like: "
-                + new String(parseBase64Binary(clientServerKey)));
-
         key = new SecretKeySpec(parseBase64Binary(clientServerKey), "AES");
 
         System.out.println("Made KCS with ecrypted: " + clientServerKey);
@@ -252,9 +252,6 @@ public class AuthenticationHandler implements SOAPHandler<SOAPMessageContext> {
             e.printStackTrace();
             return false; //FIXME throw exception
         }
-
-        System.out.println("Made authBytes!");
-
         Document auth = null;
 
         try {

@@ -125,7 +125,6 @@ public class IdImpl implements SDId {
         Element ticketElement = new Element("Ticket");
         Element KcsNoncePairElement = new Element("KcsNoncePair");
 
-        System.out.println("Going for ciphers!!");
         String kcsString = null;
         try {
             kcsString = generateKCS();
@@ -134,7 +133,7 @@ public class IdImpl implements SDId {
         }
 
         try {
-            System.out.println(cipherXMLForServer(generateTicket(userId, server, kcsString)));
+            System.out.println("Tcket : " + cipherXMLForServer(generateTicket(userId, server, kcsString)));
             ticketElement.setText(cipherXMLForServer(generateTicket(userId, server, kcsString)));
             KcsNoncePairElement.setText(cipherXMLForClient(generateClientServerKey(nonce, kcsString), user.getPassword()));
         } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidKeySpecException | IllegalBlockSizeException
