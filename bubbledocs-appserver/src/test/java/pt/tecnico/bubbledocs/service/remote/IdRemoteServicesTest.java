@@ -2,7 +2,6 @@ package pt.tecnico.bubbledocs.service.remote;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import pt.tecnico.bubbledocs.exception.DuplicateEmailException;
@@ -11,7 +10,7 @@ import pt.tecnico.bubbledocs.exception.InvalidEmailException;
 import pt.tecnico.bubbledocs.exception.InvalidUsernameException;
 import pt.tecnico.bubbledocs.exception.LoginBubbleDocsException;
 
-@Ignore("Takes too much time to test always and it's tested on system testing")
+//@Ignore("Takes too much time to test always and it's tested on system testing")
 public class IdRemoteServicesTest extends SdRemoteServicesTest {
 
     private IDRemoteServices service = null;

@@ -2,7 +2,6 @@ package pt.tecnico.bubbledocs.service.local;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import pt.ist.fenixframework.FenixFramework;
@@ -11,7 +10,6 @@ import pt.tecnico.bubbledocs.domain.User;
 import pt.tecnico.bubbledocs.exception.InvalidArgumentException;
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
-import pt.tecnico.bubbledocs.service.local.CreateSpreadSheet;
 
 public class CreateSpeadsheetTest extends BubbleDocsServiceTest {
 
@@ -59,12 +57,6 @@ public class CreateSpeadsheetTest extends BubbleDocsServiceTest {
     public void emptyToken() {
         CreateSpreadSheet service = new CreateSpreadSheet(EMPTY_TOKEN, ANY_NAME, POSITIVE, POSITIVE);
         service.execute();
-    }
-
-    @Test
-    @Ignore("The token format isn't known yet")
-    public void invalidToken() {
-
     }
 
     @Test(expected = UserNotInSessionException.class)

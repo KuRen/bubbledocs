@@ -1,4 +1,4 @@
-This is a Java library to simplify the access to UDDI registries (namely jUDDI).
+This is a Java library with several JAX-WS SOAP handlers.
 
 
 Instructions using Maven:

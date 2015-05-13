@@ -1,6 +1,6 @@
 package example.ws.uddi;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -11,7 +11,7 @@ import org.junit.Test;
 /**
  * Test suite
  */
-public class UDDINamingTest {
+public class UDDINamingIT {
 
     // static members
 
@@ -27,13 +27,15 @@ public class UDDINamingTest {
 
     }
 
+
     // members
 
     String uddiURL = "http://localhost:8081";
-    String name = "MyWS";
+    String name = "MyWebServiceName";
     String url = "http://host:port/my-ws/endpoint";
 
     private UDDINaming uddiNaming;
+
 
     // initialization and clean-up for each test
 
@@ -47,11 +49,11 @@ public class UDDINamingTest {
         uddiNaming = null;
     }
 
+
     // tests
 
     @Test
     public void test() throws Exception {
-
         // publish to UDDI
         uddiNaming = new UDDINaming(uddiURL);
         uddiNaming.rebind(name, url);
@@ -59,7 +61,22 @@ public class UDDINamingTest {
         // query UDDI
         String endpointAddress = uddiNaming.lookup(name);
 
-        assertEquals(/* expected */url, /* actual */endpointAddress);
+        assertNotNull(endpointAddress);
+        assertEquals(/* expected */ url, /* actual */ endpointAddress);
+    }
+
+    @Test
+    public void testWildcard() throws Exception {
+        // publish to UDDI
+        uddiNaming = new UDDINaming(uddiURL);
+        uddiNaming.rebind(name, url);
+
+        // query UDDI using a wildcard character '%'
+        String nameWithWildcard = name.substring(0, 5) + "%";
+        String endpointAddress = uddiNaming.lookup(nameWithWildcard);
+
+        assertNotNull(endpointAddress);
+        assertEquals(/* expected */ url, /* actual */ endpointAddress);
     }
 
 }

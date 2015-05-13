@@ -10,7 +10,6 @@ import org.jdom2.Document;
 import org.jdom2.Element;
 import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import pt.tecnico.bubbledocs.domain.Addition;
@@ -28,7 +27,6 @@ import pt.tecnico.bubbledocs.exception.NonExistingSpreadsheetException;
 import pt.tecnico.bubbledocs.exception.TokenExpiredException;
 import pt.tecnico.bubbledocs.exception.UnauthorizedUserException;
 import pt.tecnico.bubbledocs.exception.UserNotInSessionException;
-import pt.tecnico.bubbledocs.service.local.ExportSpreadsheetService;
 
 public class ExportSpreadsheetServiceTest extends BubbleDocsServiceTest {
 
@@ -71,12 +69,6 @@ public class ExportSpreadsheetServiceTest extends BubbleDocsServiceTest {
     public void emptyToken() {
         ExportSpreadsheetService service = new ExportSpreadsheetService(validId, EMPTY_TOKEN);
         service.execute();
-    }
-
-    @Test
-    @Ignore("The token format isn't known yet")
-    public void invalidToken() {
-
     }
 
     @Test(expected = UserNotInSessionException.class)
