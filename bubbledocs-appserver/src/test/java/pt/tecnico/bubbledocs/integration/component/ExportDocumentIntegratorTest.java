@@ -28,7 +28,7 @@ public class ExportDocumentIntegratorTest extends BubbleDocsIntegratorTest {
     private final String PASSWORD = "password";
     private final String SS_NAME = "ssname";
     private final String NOT_IN_SESSION_TOKEN = "notinsession";
-    
+
     private String authorizedToken;
     private int validId;
 
@@ -64,17 +64,22 @@ public class ExportDocumentIntegratorTest extends BubbleDocsIntegratorTest {
         expireToken(authorizedToken);
         new ExportDocumentIntegrator(authorizedToken, validId).execute();
     }
-    
+
     //docid invalido
     @Test(expected = NonExistingSpreadsheetException.class)
     public void invalidDocId() {
         expireToken(authorizedToken);
         new ExportDocumentIntegrator(authorizedToken, 99999).execute();
     }
-    
+
     @Test(expected = UnavailableServiceException.class)
     public void testRemoteInvocationException() {
         new MockUp<StoreRemoteServices>() {
+
+            @Mock
+            public void $init() {
+            }
+
             @Mock
             public void storeDocument(String username, String docName, byte[] document) {
                 throw new RemoteInvocationException();
@@ -85,10 +90,15 @@ public class ExportDocumentIntegratorTest extends BubbleDocsIntegratorTest {
         service.execute();
 
     }
-    
+
     @Test(expected = CannotStoreDocumentException.class)
     public void testCannotStoreDocumentException() {
         new MockUp<StoreRemoteServices>() {
+
+            @Mock
+            public void $init() {
+            }
+
             @Mock
             public void storeDocument(String username, String docName, byte[] document) {
                 throw new CannotStoreDocumentException();
@@ -102,6 +112,11 @@ public class ExportDocumentIntegratorTest extends BubbleDocsIntegratorTest {
     @Test
     public void testStoreDocument() {
         new MockUp<StoreRemoteServices>() {
+
+            @Mock
+            public void $init() {
+            }
+
             @Mock
             public void storeDocument(String username, String docName, byte[] document) {
             }

@@ -203,9 +203,6 @@ public class IdClient implements SDId {
             byte[] hash = cript.digest();
             System.out.println("Made Digest");
             hash = Arrays.copyOf(hash, 16);
-            // SecretKeyFactory factory;
-            //factory = SecretKeyFactory.getInstance("AES");
-            //key = factory.generateSecret(new SecretKeySpec(hash, "AES"));
             key = new SecretKeySpec(hash, "AES");
             System.out.println("Generated Key");
         } catch (NoSuchAlgorithmException e) {
@@ -217,7 +214,7 @@ public class IdClient implements SDId {
             kCSNoncePairBytes = cipher.doFinal(parseBase64Binary(kcsNoncePair));
             System.out.println("Decrypted pair!");
         } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
+            // e.printStackTrace();
             throw new AuthReqFailed_Exception("Failed to login " + userId, null);
         }
 

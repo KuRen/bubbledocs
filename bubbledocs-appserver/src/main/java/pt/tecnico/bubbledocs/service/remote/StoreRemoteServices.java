@@ -18,7 +18,7 @@ public class StoreRemoteServices {
 
     private StoreClient client;
     final private String uddiURL = "http://localhost:8081";
-    final private String serviceName = "sd-store";
+    final private String serviceName = "SD-STORE";
 
     public StoreRemoteServices() {
         try {
@@ -53,7 +53,10 @@ public class StoreRemoteServices {
             }
         } catch (UserDoesNotExist_Exception e) {
             throw new CannotStoreDocumentException();
+        } catch (NullPointerException e) {
+            throw new CannotStoreDocumentException();
         }
+
     }
 
     public byte[] loadDocument(String username, String docName) throws CannotLoadDocumentException, RemoteInvocationException {
@@ -69,6 +72,8 @@ public class StoreRemoteServices {
         } catch (DocDoesNotExist_Exception e) {
             throw new CannotLoadDocumentException();
         } catch (UserDoesNotExist_Exception e) {
+            throw new CannotLoadDocumentException();
+        } catch (NullPointerException e) {
             throw new CannotLoadDocumentException();
         }
 

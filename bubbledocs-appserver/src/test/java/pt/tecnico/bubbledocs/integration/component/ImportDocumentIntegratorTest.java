@@ -1,10 +1,9 @@
 package pt.tecnico.bubbledocs.integration.component;
 
-import org.junit.Assert;
-
 import mockit.Mock;
 import mockit.MockUp;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import pt.tecnico.bubbledocs.domain.Spreadsheet;
@@ -18,7 +17,7 @@ import pt.tecnico.bubbledocs.integration.ImportDocumentIntegrator;
 import pt.tecnico.bubbledocs.service.remote.StoreRemoteServices;
 
 public class ImportDocumentIntegratorTest extends BubbleDocsIntegratorTest {
-    
+
     private final String NAME = "namelastname";
     private final String EMAIL = "namelastname@example.com";
     private final String USERNAME = "lastname";
@@ -26,7 +25,7 @@ public class ImportDocumentIntegratorTest extends BubbleDocsIntegratorTest {
     private final String SS_NAME = "A SS Name";
     private final String DOCID = "documento";
     private final String NOT_IN_SESSION_TOKEN = "notinsession";
-    
+
     private String authorizedToken;
 
     //token nulo
@@ -53,10 +52,15 @@ public class ImportDocumentIntegratorTest extends BubbleDocsIntegratorTest {
         expireToken(authorizedToken);
         new ImportDocumentIntegrator(DOCID, authorizedToken).execute();
     }
-    
+
     @Test(expected = UnavailableServiceException.class)
     public void testRemoteInvocationException() {
         new MockUp<StoreRemoteServices>() {
+
+            @Mock
+            public void $init() {
+            }
+
             @Mock
             public byte[] loadDocument(String username, String docName) {
                 throw new RemoteInvocationException();
@@ -71,6 +75,11 @@ public class ImportDocumentIntegratorTest extends BubbleDocsIntegratorTest {
     @Test(expected = CannotLoadDocumentException.class)
     public void testCannotLoadDocumentException() {
         new MockUp<StoreRemoteServices>() {
+
+            @Mock
+            public void $init() {
+            }
+
             @Mock
             public byte[] loadDocument(String username, String docName) {
                 throw new CannotLoadDocumentException();
@@ -84,9 +93,15 @@ public class ImportDocumentIntegratorTest extends BubbleDocsIntegratorTest {
     @Test
     public void testLoadDocument() {
         new MockUp<StoreRemoteServices>() {
+
+            @Mock
+            public void $init() {
+            }
+
             @Mock
             public byte[] loadDocument(String username, String docName) {
-                return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Spreadsheet rows=\"1\" columns=\"1\" id=\"99\" name=\"A SS Name\" owner=\"lastname\" created=\"2015-04-24T20:25:06.747+01:00\"><Cells><Cell row=\"1\" column=\"1\"><Literal literal=\"2\" /></Cell></Cells></Spreadsheet>".getBytes();
+                return "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Spreadsheet rows=\"1\" columns=\"1\" id=\"99\" name=\"A SS Name\" owner=\"lastname\" created=\"2015-04-24T20:25:06.747+01:00\"><Cells><Cell row=\"1\" column=\"1\"><Literal literal=\"2\" /></Cell></Cells></Spreadsheet>"
+                        .getBytes();
             }
         };
         ImportDocumentIntegrator service = new ImportDocumentIntegrator(DOCID, authorizedToken);

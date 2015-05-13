@@ -42,6 +42,12 @@ public class StoreRemoteServicesTest extends SdRemoteServicesTest {
     @Before
     public void setUp() {
         doc = documentId + testNumber;
+        try {
+            createUser("alice", "Aaa1", "alice@tecnico.pt", "alice");
+        } catch (Exception e) {
+
+        }
+
     }
 
     @Override

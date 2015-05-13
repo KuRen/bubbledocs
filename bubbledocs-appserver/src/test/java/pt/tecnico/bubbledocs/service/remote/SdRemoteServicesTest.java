@@ -8,6 +8,8 @@ import org.junit.Before;
 
 import pt.ist.fenixframework.FenixFramework;
 import pt.ist.fenixframework.core.WriteOnReadError;
+import pt.tecnico.bubbledocs.domain.BubbleDocs;
+import pt.tecnico.bubbledocs.domain.User;
 
 public class SdRemoteServicesTest {
 
@@ -33,6 +35,13 @@ public class SdRemoteServicesTest {
 
     public void populate4Test() {
 
+    }
+
+    User createUser(String username, String password, String email, String name) {
+        BubbleDocs bd = BubbleDocs.getInstance();
+        User user = new User(username, password, email, name);
+        bd.addUsers(user);
+        return user;
     }
 
 }
