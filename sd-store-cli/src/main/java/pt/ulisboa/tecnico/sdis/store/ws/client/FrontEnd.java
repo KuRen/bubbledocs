@@ -40,9 +40,12 @@ import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.client.command.CreateDocumentCommand;
 import pt.ulisboa.tecnico.sdis.store.ws.client.command.ListDocumentsCommand;
 import pt.ulisboa.tecnico.sdis.store.ws.client.command.dto.HandlerInfo;
+import pt.ulisboa.tecnico.sdis.store.ws.handler.ClientHandler;
 import pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler;
 import pt.ulisboa.tecnico.sdis.store.ws.handler.RelayClientHandler;
+
 import example.ws.uddi.UDDINaming;
+import example.ws.handler.LoggingHandler;
 
 public class FrontEnd {
 
@@ -72,6 +75,8 @@ public class FrontEnd {
                     List<Handler> handlerChain = new ArrayList<Handler>();
                     handlerChain.add(new FrontEndHandler());
                     handlerChain.add(new RelayClientHandler());
+                    //handlerChain.add(new ClientHandler());
+                    handlerChain.add(new LoggingHandler());
                     return handlerChain;
                 }
             });
@@ -143,7 +148,6 @@ public class FrontEnd {
     }
 
     // Quorum Consensus protocol not needed 
-    @Deprecated
     public void createDoc(DocUserPair docUserPair) throws DocAlreadyExists_Exception {
         for (SDStore replica : listOfReplicas) {
             replica.createDoc(docUserPair);
@@ -158,7 +162,6 @@ public class FrontEnd {
     }
 
     // Quorum Consensus protocol not needed 
-    @Deprecated
     public List<String> listDocs(String userId) throws UserDoesNotExist_Exception {
         List<String> listOfDocuments = null;
         for (SDStore replica : listOfReplicas) {
@@ -279,7 +282,7 @@ public class FrontEnd {
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("newTag", maxTag);
-            //putToHandler(ticket, port, key, docUserPair.getUserId());
+            putToHandler(ticket, port, key, docUserPair.getUserId());
             Response<StoreResponse> response = port.storeAsync(docUserPair, contents);
             listOfStoreResponses.add(response);
             binding.getRequestContext().remove("newTag");
@@ -391,7 +394,7 @@ public class FrontEnd {
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("requestTag", true);
-            //putToHandler(ticket, port, key, docUserPair.getUserId());
+            putToHandler(ticket, port, key, docUserPair.getUserId());
             Response<LoadResponse> response = port.loadAsync(docUserPair);
             listOfLoadResponses.add(response);
             binding.getRequestContext().remove("requestTag");

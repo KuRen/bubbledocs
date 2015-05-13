@@ -15,7 +15,7 @@
     <name>ID WebService Client</name>
 
     <properties>
-        <main.exec.classname></main.exec.classname>
+        <main.exec.classname>pt.ulisboa.tecnico.sdis.id.client.IdClientMain</main.exec.classname>
         <wsdl.directory>${basedir}/../sd-id/src/main/resources</wsdl.directory>
         <wsdl.filename>SD-ID.1_1.wsdl</wsdl.filename>
 
