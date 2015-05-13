@@ -29,9 +29,7 @@ import org.jdom2.Element;
 import org.jdom2.output.XMLOutputter;
 import org.joda.time.DateTime;
 
-import pt.ulisboa.tecnico.sdis.store.ws.CapacityExceeded_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocAlreadyExists_Exception;
-import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 import pt.ulisboa.tecnico.sdis.store.ws.LoadResponse;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
@@ -59,27 +57,23 @@ public class FrontEnd {
 
         UDDINaming uddi;
 
-        try {
-            for (int i = 0; i < numberOfReplicas; i++) {
-                uddi = new UDDINaming(uddiURL);
-                String url = uddi.lookup(serviceName + i);
-                SDStore_Service service = new SDStore_Service();
-                service.setHandlerResolver(new HandlerResolver() {
-                    @Override
-                    public List<Handler> getHandlerChain(PortInfo portInfo) {
-                        List<Handler> handlerChain = new ArrayList<Handler>();
-                        handlerChain.add(new FrontEndHandler());
-                        return handlerChain;
-                    }
-                });
-                SDStore port = service.getSDStoreImplPort();
-                BindingProvider bindingProvider = (BindingProvider) port;
-                Map<String, Object> requestContext = bindingProvider.getRequestContext();
-                requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url);
-                listOfReplicas.add(port);
-            }
-        } catch (Exception e) {
-            throw new Exception("One of the servers was not found!");
+        for (int i = 0; i < numberOfReplicas; i++) {
+            uddi = new UDDINaming(uddiURL);
+            String url = uddi.lookup(serviceName + i);
+            SDStore_Service service = new SDStore_Service();
+            service.setHandlerResolver(new HandlerResolver() {
+                @Override
+                public List<Handler> getHandlerChain(PortInfo portInfo) {
+                    List<Handler> handlerChain = new ArrayList<Handler>();
+                    handlerChain.add(new FrontEndHandler());
+                    return handlerChain;
+                }
+            });
+            SDStore port = service.getSDStoreImplPort();
+            BindingProvider bindingProvider = (BindingProvider) port;
+            Map<String, Object> requestContext = bindingProvider.getRequestContext();
+            requestContext.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, url);
+            listOfReplicas.add(port);
         }
     }
 
@@ -184,8 +178,7 @@ public class FrontEnd {
         return listOfDocuments;
     }
 
-    public void store(DocUserPair docUserPair, byte[] contents) throws CapacityExceeded_Exception, DocDoesNotExist_Exception,
-            UserDoesNotExist_Exception {
+    public void store(DocUserPair docUserPair, byte[] contents) throws Throwable {
         int maxTag = -1;
         int acks = 0;
         int i;
@@ -216,8 +209,7 @@ public class FrontEnd {
                         i++;
                     }
                 } catch (ExecutionException | InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw e.getCause();
                 }
             }
         }
@@ -242,7 +234,7 @@ public class FrontEnd {
                             acks++;
                     }
                 } catch (ExecutionException | InterruptedException e) {
-                    e.printStackTrace();
+                    throw e.getCause();
                 }
             }
         }
@@ -250,8 +242,7 @@ public class FrontEnd {
     }
 
     //Using handler
-    public void store(DocUserPair docUserPair, byte[] contents, String ticket, String key) throws CapacityExceeded_Exception,
-            DocDoesNotExist_Exception, UserDoesNotExist_Exception {
+    public void store(DocUserPair docUserPair, byte[] contents, String ticket, String key) throws Throwable {
         int maxTag = -1;
         int acks = 0;
         int i;
@@ -282,8 +273,7 @@ public class FrontEnd {
                         i++;
                     }
                 } catch (ExecutionException | InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw e.getCause();
                 }
             }
         }
@@ -309,14 +299,14 @@ public class FrontEnd {
                             acks++;
                     }
                 } catch (ExecutionException | InterruptedException e) {
-                    e.printStackTrace();
+                    throw e.getCause();
                 }
             }
         }
         return;
     }
 
-    public byte[] load(DocUserPair docUserPair) throws DocDoesNotExist_Exception, UserDoesNotExist_Exception {
+    public byte[] load(DocUserPair docUserPair) throws Throwable {
         int maxTag = -1;
         int acks = 0;
         int i;
@@ -350,8 +340,7 @@ public class FrontEnd {
                         i++;
                     }
                 } catch (ExecutionException | InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw e.getCause();
                 }
             }
         }
@@ -364,7 +353,7 @@ public class FrontEnd {
                 Response<StoreResponse> response = port.storeAsync(docUserPair, theChosenOne.get().getContents());
                 listOfStoreResponses.add(response);
             } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
+                throw e.getCause();
             }
         }
         while (acks < writeThreshold) {
@@ -378,21 +367,19 @@ public class FrontEnd {
                             acks++;
                     }
                 } catch (ExecutionException | InterruptedException e) {
-                    e.printStackTrace();
+                    throw e.getCause();
                 }
             }
         }
         try {
             return theChosenOne.get().getContents();
         } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            return null;
+            throw e.getCause();
         }
     }
 
     //Using handler
-    public byte[] load(DocUserPair docUserPair, String ticket, String key) throws DocDoesNotExist_Exception,
-            UserDoesNotExist_Exception {
+    public byte[] load(DocUserPair docUserPair, String ticket, String key) throws Throwable {
         int maxTag = -1;
         int acks = 0;
         int i;
@@ -427,8 +414,7 @@ public class FrontEnd {
                         i++;
                     }
                 } catch (ExecutionException | InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw e.getCause();
                 }
             }
         }
@@ -453,7 +439,7 @@ public class FrontEnd {
                 Response<StoreResponse> response = port.storeAsync(docUserPair, theChosenOne.get().getContents());
                 listOfStoreResponses.add(response);
             } catch (ExecutionException | InterruptedException e) {
-                e.printStackTrace();
+                throw e.getCause();
             }
         }
         while (acks < writeThreshold) {
@@ -467,7 +453,7 @@ public class FrontEnd {
                             acks++;
                     }
                 } catch (ExecutionException | InterruptedException e) {
-                    e.printStackTrace();
+                    throw e.getCause();
                 }
             }
         }
@@ -479,8 +465,7 @@ public class FrontEnd {
         try {
             return theChosenOne.get().getContents();
         } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            return null;
+            throw e.getCause();
         }
     }
 }

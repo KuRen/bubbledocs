@@ -11,7 +11,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
-import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 
 /**
@@ -21,7 +20,7 @@ public class ListDocsTest {
 
     // static members
 
-    private static SDStore port;
+    private static StoreClient port;
     private static String userId = "ListDocsTest";
     private static String documentId = "ListDocsTestDoc";
     private static int testNumber;
@@ -30,7 +29,7 @@ public class ListDocsTest {
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-    	port = new StoreClient("http://localhost:8081", "sd-store");
+    	port = new StoreClient("http://localhost:8081", "sd-store", 5, 3, 3);
         testNumber = 0;
     }
 

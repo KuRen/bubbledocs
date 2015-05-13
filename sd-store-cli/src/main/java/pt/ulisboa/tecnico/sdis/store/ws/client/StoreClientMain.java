@@ -9,7 +9,7 @@ public class StoreClientMain {
 
     private static final String key = "SomeKeyAplha42";
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Throwable {
         // Check arguments
         if (args.length < 2) {
             System.err.println("Argument(s) missing!");

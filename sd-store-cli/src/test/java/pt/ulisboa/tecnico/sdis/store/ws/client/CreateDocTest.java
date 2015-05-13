@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import pt.ulisboa.tecnico.sdis.store.ws.DocAlreadyExists_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
-import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
 
 /**
  * Test suite
@@ -17,7 +16,7 @@ public class CreateDocTest {
 
     // static members
 
-    private static SDStore port;
+    private static StoreClient port;
     private static String userId = "CreateTest";
     private static String documentId = "CreateTestDoc";
     private static int testNumber;
@@ -26,7 +25,7 @@ public class CreateDocTest {
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-        port = new StoreClient("http://localhost:8081", "sd-store");
+        port = new StoreClient("http://localhost:8081", "sd-store", 5, 3, 3);
         testNumber = 0;
     }
 

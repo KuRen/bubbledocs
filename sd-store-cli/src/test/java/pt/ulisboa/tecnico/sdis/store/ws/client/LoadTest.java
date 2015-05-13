@@ -9,7 +9,6 @@ import org.junit.Test;
 
 import pt.ulisboa.tecnico.sdis.store.ws.DocDoesNotExist_Exception;
 import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
-import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
 
 /**
@@ -19,7 +18,7 @@ public class LoadTest {
 
     // static members
 
-    private static SDStore port;
+    private static StoreClient port;
     private static String userId = "LoadTest";
     private static String documentId = "LoadTestDoc";
     private static byte[] content;
@@ -30,7 +29,7 @@ public class LoadTest {
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-    	port = new StoreClient("http://localhost:8081", "sd-store");
+    	port = new StoreClient("http://localhost:8081", "sd-store", 5, 3, 3);
         content = contentString.getBytes();
         testNumber = 0;
     }
@@ -61,7 +60,7 @@ public class LoadTest {
 
     // Success
     @Test
-    public void testLoad() throws Exception {
+    public void testLoad() throws Throwable {
         port.createDoc(pair);
         port.store(pair, content);
         byte[] result = port.load(pair);
@@ -70,13 +69,13 @@ public class LoadTest {
 
     // Fail - Unknown UserId
     @Test(expected = UserDoesNotExist_Exception.class)
-    public void testLoadUnknownUser() throws Exception {
+    public void testLoadUnknownUser() throws Throwable {
         port.load(pair);
     }
 
     // Fail - Unknown DocumentId
     @Test(expected = DocDoesNotExist_Exception.class)
-    public void testLoadUnknownDoc() throws Exception {
+    public void testLoadUnknownDoc() throws Throwable {
         port.createDoc(pair);
         pair.setDocumentId("fail");
         port.load(pair);
