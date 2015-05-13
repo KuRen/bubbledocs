@@ -67,7 +67,7 @@ public class AuthenticationHandler implements SOAPHandler<SOAPMessageContext> {
                         SOAPHeaderElement element = soapHeader.addHeaderElement(name);
 
                         // Add header element value
-                        String ticket = makeResponse((String) smc.get("nonce"));
+                        String ticket = makeResponse((String) smc.get("outNonce"));
                         element.addTextNode(ticket);
                     } catch (SOAPException e) {
                         System.out.printf("Failed to add SOAP header because of %s%n", e);
@@ -147,6 +147,7 @@ public class AuthenticationHandler implements SOAPHandler<SOAPMessageContext> {
         } catch (Exception e) {
             System.out.print("Caught exception in handleMessage: ");
             System.out.println(e);
+            e.printStackTrace();
             //System.out.println("Continue normal processing...");
         }
 

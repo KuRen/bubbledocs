@@ -88,6 +88,7 @@ public class StoreImpl implements SDStore {
         if (!authenticate(authenticationHeaderString))
             throw new CapacityExceeded_Exception("", null); //FIXME get proper exception
 */
+        context.put("outNonce", context.get("nonce"));
         if (context.get("newTag") != null) {
             if ((int) context.get("newTag") >= repositories.get(docUserPair.getUserId()).getTag(docUserPair.getDocumentId())) {
                 repositories.get(docUserPair.getUserId()).setTag(docUserPair.getDocumentId(), (int) context.get("newTag"));
