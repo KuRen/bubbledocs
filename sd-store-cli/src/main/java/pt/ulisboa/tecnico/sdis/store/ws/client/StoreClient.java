@@ -25,13 +25,13 @@ public class StoreClient {
         return frontend.listDocs(userId);
     }
 
-    public void store(DocUserPair docUserPair, byte[] contents) throws UserDoesNotExist_Exception, DocDoesNotExist_Exception {
+        public void store(DocUserPair docUserPair, byte[] contents) throws UserDoesNotExist_Exception, DocDoesNotExist_Exception {
         try {
             frontend.store(docUserPair, contents);
         } catch(UserDoesNotExist_Exception u) {
-            throw u;
+            throw (UserDoesNotExist_Exception) u;
         } catch(DocDoesNotExist_Exception d) {
-            throw d;
+            throw (DocDoesNotExist_Exception) d;
         } catch(Throwable t) {
             System.out.println("Unknown Error");
         }
@@ -41,11 +41,11 @@ public class StoreClient {
         try {
             return frontend.load(docUserPair);
         } catch(UserDoesNotExist_Exception u) {
-            throw u;
+            throw (UserDoesNotExist_Exception) u;
         } catch(DocDoesNotExist_Exception d) {
-            throw d;
+            throw (DocDoesNotExist_Exception) d;
         } catch(CapacityExceeded_Exception c) {
-            throw c;
+            throw (CapacityExceeded_Exception) c;
         } catch(Throwable t) {
             System.out.println("Unknown Error");
             return null;
