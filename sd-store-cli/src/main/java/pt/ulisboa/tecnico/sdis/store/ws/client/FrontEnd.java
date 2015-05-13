@@ -1,11 +1,13 @@
 package pt.ulisboa.tecnico.sdis.store.ws.client;
 
+import static javax.xml.bind.DatatypeConverter.parseBase64Binary;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +17,8 @@ import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Response;
 import javax.xml.ws.handler.Handler;
@@ -83,12 +84,12 @@ public class FrontEnd {
         requestContext = bindingProvider.getRequestContext();
         requestContext.put(FrontEndHandler.REQUEST_TICKET, ticket);
         String auth = null;
-        try {
-            auth = cipherXML(makeAuth(user), key);
-        } catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException
-                | IllegalBlockSizeException | BadPaddingException e) {
+        //try {
+        auth = cipherXML(makeAuth(user), key);
+        /*} catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException
+                | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
             e.printStackTrace(); //FIXME
-        }
+        }*/
         requestContext.put(FrontEndHandler.REQUEST_AUTH, auth);
 
         nonce = Integer.toString(new SecureRandom().nextInt());
@@ -118,20 +119,27 @@ public class FrontEnd {
         return xmlOutputter.outputString(auth);
     }
 
-    private String cipherXML(String xml, String key) throws NoSuchAlgorithmException, InvalidKeyException,
-            InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
+    private String cipherXML(String xml, String key) {
         byte[] bytes = xml.getBytes();
         // generate a secret key
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("DES");
-        SecretKey CSkey = factory.generateSecret(new DESKeySpec(key.getBytes()));
+        Key CSkey = new SecretKeySpec(parseBase64Binary(key), "AES");
+        System.out.println("Made key! size: " + bytes.length);
+        // get a AES cipher object
+        Cipher cipher;
 
-        // get a DES cipher object
-        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        byte[] cipherBytes = null;
+        try {
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            System.out.println("Got Cypher!");
+            // encrypt using the key and the plaintext
+            cipher.init(Cipher.ENCRYPT_MODE, CSkey, new IvParameterSpec(new byte[16]));
+            cipherBytes = cipher.doFinal(bytes);
 
-        // encrypt using the key and the plaintext
-        cipher.init(Cipher.ENCRYPT_MODE, CSkey);
-        byte[] cipherBytes = cipher.doFinal(bytes);
-
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException
+                | IllegalBlockSizeException | BadPaddingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return printBase64Binary(cipherBytes);
     }
 

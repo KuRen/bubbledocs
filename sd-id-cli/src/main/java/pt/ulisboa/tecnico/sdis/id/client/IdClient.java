@@ -5,20 +5,21 @@ import static javax.xml.bind.DatatypeConverter.parseBase64Binary;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
+import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 import java.util.Map;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.xml.registry.JAXRException;
 import javax.xml.ws.BindingProvider;
 
@@ -142,6 +143,7 @@ public class IdClient implements SDId {
 
     @Override
     public byte[] requestAuthentication(String userId, byte[] reserved) throws AuthReqFailed_Exception {
+        System.out.println("Trying to auth " + userId);
         byte[] responseBytes = null;
         Document response;
         byte[] kCSNoncePairBytes = null;
@@ -172,6 +174,8 @@ public class IdClient implements SDId {
             throw new AuthReqFailed_Exception("Encoding error", null);
         }
 
+        System.out.println("Sent remote auth for " + userId);
+
         try {
             response = builder.build(new ByteArrayInputStream(responseBytes));
         } catch (JDOMException e1) {
@@ -184,28 +188,36 @@ public class IdClient implements SDId {
 
         Cipher cipher = null;
         try {
-            cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
         } catch (NoSuchAlgorithmException | NoSuchPaddingException e) {
             throw new AuthReqFailed_Exception("Failed to login " + userId, null);
         }
 
-        SecretKey key = null;
+        System.out.println("Got cipher");
+
+        Key key = null;
         try {
             MessageDigest cript = MessageDigest.getInstance("SHA-1");
             cript.reset();
             cript.update(reserved);
             byte[] hash = cript.digest();
-            SecretKeyFactory factory;
-            factory = SecretKeyFactory.getInstance("DES");
-            key = factory.generateSecret(new DESKeySpec(hash));
-        } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidKeySpecException e) {
+            System.out.println("Made Digest");
+            hash = Arrays.copyOf(hash, 16);
+            // SecretKeyFactory factory;
+            //factory = SecretKeyFactory.getInstance("AES");
+            //key = factory.generateSecret(new SecretKeySpec(hash, "AES"));
+            key = new SecretKeySpec(hash, "AES");
+            System.out.println("Generated Key");
+        } catch (NoSuchAlgorithmException e) {
             throw new AuthReqFailed_Exception("Failed to login " + userId, null);
         }
 
         try {
-            cipher.init(Cipher.DECRYPT_MODE, key);
+            cipher.init(Cipher.DECRYPT_MODE, key, new IvParameterSpec(new byte[16]));
             kCSNoncePairBytes = cipher.doFinal(parseBase64Binary(kcsNoncePair));
-        } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException e) {
+            System.out.println("Decrypted pair!");
+        } catch (IllegalBlockSizeException | BadPaddingException | InvalidKeyException | InvalidAlgorithmParameterException e) {
+            e.printStackTrace();
             throw new AuthReqFailed_Exception("Failed to login " + userId, null);
         }
 
@@ -221,6 +233,8 @@ public class IdClient implements SDId {
 
         setkCS(kCSNoncePair.getRootElement().getChildText("Key"));
         setTicket(response.getRootElement().getChildText("Ticket"));
+
+        System.out.println("KCS = " + getkCS());
 
         response.getRootElement().removeChild("KcsNoncePair");
         Element clientServerElement = new Element("ClientServerKey");

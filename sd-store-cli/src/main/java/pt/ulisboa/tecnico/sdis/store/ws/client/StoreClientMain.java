@@ -5,9 +5,9 @@ import pt.ulisboa.tecnico.sdis.store.ws.DocUserPair;
 public class StoreClientMain {
 
     private static final String ticket =
-            "rqKyXJCTyu0a8xeIkks9CaUxsMpD/yd8Y8xiXOewmsUhxyk5Em1j3wRxZ39UnAPpgwjoNYVpQuSi3VEq+Jt1i6PCRQVuho9Ze5Viorp4/Xy5KnYAUB2Xb+3/xAM0FWGUSG3oFFnQAl9Duk7MW8bo6G+ROUtJvWYWqeMfcN5k+mW70fjNdK+AtpJdNQaexCUg6MC4yeyPcvr9b1rwMcxum3pPrFLh+tvBGx8/4fR69tt65aYmIPUyfDoH0zjdd2ujH4iIQGncICel1PzQZnx5e5sd7GQqRzF1MiYL/i3tx9jVlo2xQl7qi7/HkkLPehQBbtdB4BD6gKaERlmv0bpN0vUw38S8EnNl";
+            "lOmEnmVhotdovGUQOrWBwgBtKs9sPshTvbqfpQx9cb5ErnwSn8oSd7BhR5YMo+YBSCsi6v5mp8s8C1ZcSLtH6D8J+jlHhflBqy3flnn0Ph2C7/3hBxxIyCHPoQJQgdoc6BHHJvPZz2TdFL+M650Aq/vzKPKdv5FlV3LpS/QegBWnEqbv0ZMSYuDOc/T2gwDN+/1Ss8C+xMCSXj8fXCd9Is2cpkuIeXrC7FYDjg6pY7VYo3naEkxYuygcOBqDie1RyKExk0LUfzl63aUHGJxwyjjSPQIJ6G05E+OdJUW+2j8qy+PwfaMdRnm/epKAe7LEepx41MYm9o675fa99yrJXYlKuPo35GvexlD7/Hj0ODs=";
 
-    private static final String key = "SomeKeyAplha42";
+    private static final String key = "Om4TPaXmjVFdirX9Mvxxrg==";
 
     public static void main(String[] args) throws Throwable {
         // Check arguments

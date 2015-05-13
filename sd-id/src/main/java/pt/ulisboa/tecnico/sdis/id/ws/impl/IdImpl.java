@@ -5,20 +5,21 @@ import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import javax.jws.WebService;
 
 import org.jdom2.Document;
@@ -124,11 +125,21 @@ public class IdImpl implements SDId {
         Element ticketElement = new Element("Ticket");
         Element KcsNoncePairElement = new Element("KcsNoncePair");
 
+        System.out.println("Going for ciphers!!");
+        String kcsString = null;
         try {
-            ticketElement.setText(cipherXMLForServer(generateTicket(userId, server)));
-            KcsNoncePairElement.setText(cipherXMLForClient(generateClientServerKey(nonce), user.getPassword()));
+            kcsString = generateKCS();
+        } catch (NoSuchAlgorithmException e2) {
+            throw new AuthReqFailed_Exception(userId, null);
+        }
+
+        try {
+            System.out.println(cipherXMLForServer(generateTicket(userId, server, kcsString)));
+            ticketElement.setText(cipherXMLForServer(generateTicket(userId, server, kcsString)));
+            KcsNoncePairElement.setText(cipherXMLForClient(generateClientServerKey(nonce, kcsString), user.getPassword()));
         } catch (NoSuchAlgorithmException | InvalidKeyException | InvalidKeySpecException | IllegalBlockSizeException
-                | BadPaddingException | NoSuchPaddingException | UnsupportedEncodingException e1) {
+                | BadPaddingException | NoSuchPaddingException | UnsupportedEncodingException
+                | InvalidAlgorithmParameterException e1) {
 
             if (verbose) {
                 e1.printStackTrace();
@@ -153,46 +164,53 @@ public class IdImpl implements SDId {
 
     private String cipherXMLForClient(String xml, String password) throws NoSuchAlgorithmException, InvalidKeyException,
             InvalidKeySpecException, IllegalBlockSizeException, BadPaddingException, NoSuchPaddingException,
-            UnsupportedEncodingException {
+            UnsupportedEncodingException, InvalidAlgorithmParameterException {
         byte[] bytes = xml.getBytes();
         // generate a secret key
         MessageDigest cript = MessageDigest.getInstance("SHA-1");
         cript.reset();
         cript.update(password.getBytes("UTF8"));
         byte[] hash = cript.digest();
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("DES");
-        SecretKey key = factory.generateSecret(new DESKeySpec(hash));
+        hash = Arrays.copyOf(hash, 16);
+        //SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        //byte[] salt = "saltsalt".getBytes();
+        //SecretKey key = factory.generateSecret(new PBEKeySpec(password.toCharArray(), salt, 65536, 128));
 
-        // get a DES cipher object
-        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        Key key = new SecretKeySpec(hash, "AES");
+
+        // get a AES cipher object
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
         // encrypt using the key and the plaintext
-        cipher.init(Cipher.ENCRYPT_MODE, key);
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(new byte[16]));
         byte[] cipherBytes = cipher.doFinal(bytes);
 
         return printBase64Binary(cipherBytes);
     }
 
     private String cipherXMLForServer(String xml) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException,
-            IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException {
+            IllegalBlockSizeException, BadPaddingException, InvalidKeySpecException, InvalidAlgorithmParameterException {
         byte[] bytes = xml.getBytes();
-        byte[] secretServerKey = "SecretSecretSecretSecretSecretSecretSecret".getBytes();
+        String secretServerKey = "SecretSecretSecr";
         // generate a secret key
-        SecretKeyFactory factory = SecretKeyFactory.getInstance("DES");
-        SecretKey key = factory.generateSecret(new DESKeySpec(secretServerKey));
+        // SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        //byte[] salt = "saltsalt".getBytes();
+        //SecretKey key = factory.generateSecret(new PBEKeySpec(secretServerKey.toCharArray(), salt, 65536, 128));
 
-        // get a DES cipher object
-        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
+        Key key = new SecretKeySpec(secretServerKey.getBytes(), "AES");
+
+        // get a AES cipher object
+        Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
         // encrypt using the key and the plaintext
-        cipher.init(Cipher.ENCRYPT_MODE, key);
+        cipher.init(Cipher.ENCRYPT_MODE, key, new IvParameterSpec(new byte[16]));
         byte[] cipherBytes = cipher.doFinal(bytes);
 
         return printBase64Binary(cipherBytes);
     }
 
-    private String generateTicket(String userId, String server) throws NoSuchAlgorithmException {
-        String kCS = generateKCS(); // TODO
+    private String generateTicket(String userId, String server, String kcsString) throws NoSuchAlgorithmException {
+        String kCS = kcsString;
         DateTime now = new DateTime();
         int SESSION_TIME = 2;
 
@@ -225,14 +243,18 @@ public class IdImpl implements SDId {
     }
 
     private String generateKCS() throws NoSuchAlgorithmException {
-        KeyGenerator keyGen = KeyGenerator.getInstance("DES");
-        keyGen.init(56);
+        KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+        keyGen.init(128);
         Key key = keyGen.generateKey();
+
+        System.out.println("Plain: " + new String(key.getEncoded()));
+        System.out.println("Encoded: " + printBase64Binary(key.getEncoded()));
+
         return printBase64Binary(key.getEncoded());
     }
 
-    private String generateClientServerKey(String nonce) {
-        String kCS = "SomeKeyAplha42"; // TODO
+    private String generateClientServerKey(String nonce, String kcsString) throws NoSuchAlgorithmException {
+        String kCS = kcsString;
         Document KcsNoncePair = new Document();
         XMLOutputter xmlOutputter = new XMLOutputter();
 
