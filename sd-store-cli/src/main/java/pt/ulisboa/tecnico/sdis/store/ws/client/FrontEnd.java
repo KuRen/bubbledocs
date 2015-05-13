@@ -1,24 +1,24 @@
 package pt.ulisboa.tecnico.sdis.store.ws.client;
 
-import static javax.xml.bind.DatatypeConverter.parseBase64Binary;
 import static javax.xml.bind.DatatypeConverter.printBase64Binary;
 
-import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.DESKeySpec;
 import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Response;
 import javax.xml.ws.handler.Handler;
@@ -37,8 +37,10 @@ import pt.ulisboa.tecnico.sdis.store.ws.SDStore;
 import pt.ulisboa.tecnico.sdis.store.ws.SDStore_Service;
 import pt.ulisboa.tecnico.sdis.store.ws.StoreResponse;
 import pt.ulisboa.tecnico.sdis.store.ws.UserDoesNotExist_Exception;
+import pt.ulisboa.tecnico.sdis.store.ws.client.command.CreateDocumentCommand;
+import pt.ulisboa.tecnico.sdis.store.ws.client.command.ListDocumentsCommand;
+import pt.ulisboa.tecnico.sdis.store.ws.client.command.dto.HandlerInfo;
 import pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler;
-import pt.ulisboa.tecnico.sdis.store.ws.handler.RelayClientHandler;
 import example.ws.uddi.UDDINaming;
 
 public class FrontEnd {
@@ -68,7 +70,6 @@ public class FrontEnd {
                 public List<Handler> getHandlerChain(PortInfo portInfo) {
                     List<Handler> handlerChain = new ArrayList<Handler>();
                     handlerChain.add(new FrontEndHandler());
-                    handlerChain.add(new RelayClientHandler());
                     return handlerChain;
                 }
             });
@@ -80,19 +81,19 @@ public class FrontEnd {
         }
     }
 
-    private BindingProvider putToHandler(String ticket, SDStore replica, String key, String user) {
+    public BindingProvider putToHandler(String ticket, SDStore replica, String key, String user) {
         BindingProvider bindingProvider;
         Map<String, Object> requestContext;
         bindingProvider = (BindingProvider) replica;
         requestContext = bindingProvider.getRequestContext();
         requestContext.put(FrontEndHandler.REQUEST_TICKET, ticket);
         String auth = null;
-        //try {
-        auth = cipherXML(makeAuth(user), key);
-        /*} catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException
-                | IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException e) {
+        try {
+            auth = cipherXML(makeAuth(user), key);
+        } catch (InvalidKeyException | NoSuchAlgorithmException | InvalidKeySpecException | NoSuchPaddingException
+                | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace(); //FIXME
-        }*/
+        }
         requestContext.put(FrontEndHandler.REQUEST_AUTH, auth);
 
         nonce = Integer.toString(new SecureRandom().nextInt());
@@ -122,31 +123,25 @@ public class FrontEnd {
         return xmlOutputter.outputString(auth);
     }
 
-    private String cipherXML(String xml, String key) {
+    private String cipherXML(String xml, String key) throws NoSuchAlgorithmException, InvalidKeyException,
+            InvalidKeySpecException, NoSuchPaddingException, IllegalBlockSizeException, BadPaddingException {
         byte[] bytes = xml.getBytes();
         // generate a secret key
-        Key CSkey = new SecretKeySpec(parseBase64Binary(key), "AES");
-        System.out.println("Made key! size: " + bytes.length);
-        // get a AES cipher object
-        Cipher cipher;
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("DES");
+        SecretKey CSkey = factory.generateSecret(new DESKeySpec(key.getBytes()));
 
-        byte[] cipherBytes = null;
-        try {
-            cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-            System.out.println("Got Cypher!");
-            // encrypt using the key and the plaintext
-            cipher.init(Cipher.ENCRYPT_MODE, CSkey, new IvParameterSpec(new byte[16]));
-            cipherBytes = cipher.doFinal(bytes);
+        // get a DES cipher object
+        Cipher cipher = Cipher.getInstance("DES/ECB/PKCS5Padding");
 
-        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | InvalidAlgorithmParameterException
-                | IllegalBlockSizeException | BadPaddingException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        // encrypt using the key and the plaintext
+        cipher.init(Cipher.ENCRYPT_MODE, CSkey);
+        byte[] cipherBytes = cipher.doFinal(bytes);
+
         return printBase64Binary(cipherBytes);
     }
 
     // Quorum Consensus protocol not needed 
+    @Deprecated
     public void createDoc(DocUserPair docUserPair) throws DocAlreadyExists_Exception {
         for (SDStore replica : listOfReplicas) {
             replica.createDoc(docUserPair);
@@ -154,14 +149,14 @@ public class FrontEnd {
     }
 
     //Using handler
-    public void createDoc(DocUserPair docUserPair, String ticket, String key) throws DocAlreadyExists_Exception {
-        for (SDStore replica : listOfReplicas) {
-            putToHandler(ticket, replica, key, docUserPair.getUserId());
-            replica.createDoc(docUserPair);
-        }
+    public void createDoc(DocUserPair docUserPair, String ticket, String key) throws DocAlreadyExists_Exception,
+            InterruptedException, TimeoutException {
+        HandlerInfo handlerInfo = new HandlerInfo(ticket, key, docUserPair.getUserId());
+        new CreateDocumentCommand(this, handlerInfo, listOfReplicas, docUserPair).execute();
     }
 
     // Quorum Consensus protocol not needed 
+    @Deprecated
     public List<String> listDocs(String userId) throws UserDoesNotExist_Exception {
         List<String> listOfDocuments = null;
         for (SDStore replica : listOfReplicas) {
@@ -171,20 +166,10 @@ public class FrontEnd {
     }
 
     //Using handler
-    public List<String> listDocs(String userId, String ticket, String key) throws UserDoesNotExist_Exception {
-        BindingProvider bindingProvider = null;
-
-        List<String> listOfDocuments = null;
-        for (SDStore replica : listOfReplicas) {
-            bindingProvider = putToHandler(ticket, replica, key, userId);
-            listOfDocuments = replica.listDocs(userId);
-        }
-
-        Map<String, Object> responseContext = bindingProvider.getResponseContext();
-
-        String finalValue = (String) responseContext.get(FrontEndHandler.RESPONSE_HEADER);
-
-        return listOfDocuments;
+    public List<String> listDocs(String userId, String ticket, String key) throws UserDoesNotExist_Exception,
+            InterruptedException, TimeoutException {
+        HandlerInfo handlerInfo = new HandlerInfo(ticket, key, userId);
+        return new ListDocumentsCommand(this, handlerInfo, listOfReplicas, userId).execute();
     }
 
     public void store(DocUserPair docUserPair, byte[] contents) throws Throwable {
@@ -292,7 +277,7 @@ public class FrontEnd {
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("newTag", maxTag);
-            putToHandler(ticket, port, key, docUserPair.getUserId());
+            //putToHandler(ticket, port, key, docUserPair.getUserId());
             Response<StoreResponse> response = port.storeAsync(docUserPair, contents);
             listOfStoreResponses.add(response);
             binding.getRequestContext().remove("newTag");
@@ -404,7 +389,7 @@ public class FrontEnd {
             binding = (BindingProvider) port;
             context = binding.getRequestContext();
             context.put("requestTag", true);
-            putToHandler(ticket, port, key, docUserPair.getUserId());
+            //putToHandler(ticket, port, key, docUserPair.getUserId());
             Response<LoadResponse> response = port.loadAsync(docUserPair);
             listOfLoadResponses.add(response);
             binding.getRequestContext().remove("requestTag");
