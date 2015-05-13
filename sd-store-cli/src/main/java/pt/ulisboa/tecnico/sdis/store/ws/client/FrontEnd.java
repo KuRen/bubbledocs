@@ -41,6 +41,7 @@ import pt.ulisboa.tecnico.sdis.store.ws.client.command.CreateDocumentCommand;
 import pt.ulisboa.tecnico.sdis.store.ws.client.command.ListDocumentsCommand;
 import pt.ulisboa.tecnico.sdis.store.ws.client.command.dto.HandlerInfo;
 import pt.ulisboa.tecnico.sdis.store.ws.handler.FrontEndHandler;
+import pt.ulisboa.tecnico.sdis.store.ws.handler.RelayClientHandler;
 import example.ws.uddi.UDDINaming;
 
 public class FrontEnd {
@@ -70,6 +71,7 @@ public class FrontEnd {
                 public List<Handler> getHandlerChain(PortInfo portInfo) {
                     List<Handler> handlerChain = new ArrayList<Handler>();
                     handlerChain.add(new FrontEndHandler());
+                    handlerChain.add(new RelayClientHandler());
                     return handlerChain;
                 }
             });
@@ -86,7 +88,7 @@ public class FrontEnd {
         Map<String, Object> requestContext;
         bindingProvider = (BindingProvider) replica;
         requestContext = bindingProvider.getRequestContext();
-        requestContext.put(FrontEndHandler.REQUEST_TICKET, ticket);
+        requestContext.put(RelayClientHandler.REQUEST_TICKET, ticket);
         String auth = null;
         try {
             auth = cipherXML(makeAuth(user), key);
@@ -94,10 +96,10 @@ public class FrontEnd {
                 | IllegalBlockSizeException | BadPaddingException e) {
             e.printStackTrace(); //FIXME
         }
-        requestContext.put(FrontEndHandler.REQUEST_AUTH, auth);
+        requestContext.put(RelayClientHandler.REQUEST_AUTH, auth);
 
         nonce = Integer.toString(new SecureRandom().nextInt());
-        requestContext.put(FrontEndHandler.REQUEST_NONCE, nonce);
+        requestContext.put(RelayClientHandler.REQUEST_NONCE, nonce);
 
         return bindingProvider;
     }
